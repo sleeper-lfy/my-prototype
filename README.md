@@ -1,5 +1,9 @@
 # Game UI Studio · local experiment
 
+<img src="previews/branding/game-ui-studio-logo.png" alt="Game UI Studio Logo" width="120">
+
+[Logo 透明 PNG 原图](previews/branding/game-ui-studio-logo.png)
+
 用于独立游戏 UI 原型的本地组件编辑与审阅实验。React + Konva 提供真实画布，Node 保存本地文件；角色详情页示例可以编辑、评论、导出反馈包、应用受约束的 JSON 补丁，以及导出 Godot 4 场景。不需要账户、付费 API 或在线 AI 服务。
 
 **第一阶段范围**：固定尺寸游戏界面、标准 Control 节点、单人文件工作流。不是完整 Figma 替代品。Penpot 自托管和官方本地 MCP 已单独做可行性验证，具体证据、许可和选型成本见 [技术选型](docs/TECHNICAL-DECISION.md)。

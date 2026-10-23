@@ -1,0 +1,19 @@
+{
+  "format": "PNG",
+  "width": 1254,
+  "height": 1254,
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "source": "/workspace/generated_images/exec-bc4c23a0-45f9-483d-bd12-0d1058256ef6.png",
+  "repositoryPath": "previews/branding/game-ui-studio-logo.png",
+  "sizeBytes": 962818,
+  "sha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd",
+  "decodeVerified": true,
+  "originalBytesPreserved": true,
+  "createdOn": "2026-10-23",
+  "tool": "image_gen",
+  "transparentBackgroundRequested": true
+}
