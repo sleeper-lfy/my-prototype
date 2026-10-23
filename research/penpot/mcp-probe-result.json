@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-10-23T08:53:30.430Z",
+  "sourceTag": "2.15.4",
+  "sourceCommit": "d49fa51fefc2faaafa69bd46ec273ba48d682731",
+  "node": "v24.19.0",
+  "initialize": {
+    "status": 200,
+    "data": {
+      "result": {
+        "protocolVersion": "2025-03-26",
+        "capabilities": {
+          "tools": {
+            "listChanged": true
+          }
+        },
+        "serverInfo": {
+          "name": "penpot",
+          "version": "1.0.0"
+        },
+        "instructions": "You have access to Penpot tools in order to interact with Penpot designs.\nBefore working with these tools, be sure to read the 'Penpot High-Level Overview' via the `high_level_overview` tool.\n"
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  "toolNames": [
+    "execute_code",
+    "high_level_overview",
+    "penpot_api_info",
+    "export_shape",
+    "import_image"
+  ],
+  "overviewStatus": 200,
+  "overviewHasContent": true,
+  "pluginManifestStatus": 200,
+  "connectedPenpotDocumentTested": false
+}

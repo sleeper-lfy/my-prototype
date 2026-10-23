@@ -1,0 +1,39 @@
+
+> game-ui-studio@0.1.0 test
+> node --test tests/*.test.js
+
+✔ exports real native controls, parent-relative free offsets, stable mapping and escaped text (6.776556ms)
+✔ padded native containers retain a frame wrapper and own child layout (1.579243ms)
+✔ nine-slice panels, button states and fonts reference copied local assets (2.934245ms)
+✔ PNG comparison measures differences and rejects mismatched sizes (8.327169ms)
+✔ reports unmapped visible styles and exports local opacity without inheriting it (4.484916ms)
+✔ valid project has stable IDs; mutation-free validation returns its input (16.533555ms)
+✔ patch changes only reviewed fields, records exact diff and requires manual approval (6.020445ms)
+✔ patch failure is atomic when a later change targets a protected field (1.426756ms)
+✔ stale revisions, wrong project, unreviewed nodes and invalid values are rejected (1.863933ms)
+✔ duplicate writes, empty effective changes and non-pending reviews cannot be applied (0.958897ms)
+✔ locked targets and ancestor locks block patches (0.447173ms)
+✔ other unresolved review restrictions cannot be bypassed by omitting its ID (0.568591ms)
+✔ feedback exports effective restrictions from unresolved reviews without exporting their work twice (1.335438ms)
+✔ rollback restores exact fields and review status, preserving unrelated changes (1.487945ms)
+✔ rollback conflicts are detected without erasing later edits (1.02405ms)
+✔ rollback survives JSON disk roundtrip and removes newly added optional properties (1.864418ms)
+✔ feedback includes only pending reviews, targets, ancestors, used assets and relevant screenshots (1.194233ms)
+✔ validation rejects broken graphs, duplicate IDs, invalid sizes, traversal and prototype pollution (1.812409ms)
+✔ layout preserves free positioning and gives containers the placement authority (1.228918ms)
+✔ diff exposes scalar before and after values without reserializing the whole screen (0.758154ms)
+✔ font files referenced by selected styles and design tokens accompany the feedback (0.882067ms)
+✔ nested containers propagate minimum dimensions and hidden children do not reserve space (1.636367ms)
+✔ patches cannot claim to reposition a child whose coordinates are controlled by a Container (0.539552ms)
+✔ local save is persistent, atomically rejects stale concurrent writes, and patch can roll back (129.326491ms)
+✔ feedback includes only pending comments and real PNG files; Godot archive contains runnable source (400.439682ms)
+✔ local API rejects cross-site writes, unsafe assets, and bad project imports (28.237173ms)
+✔ stale feedback and missing imported assets cannot replace a valid working document (38.67158ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 889.08407

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="314" height="438" viewBox="0 0 314 438">
+<defs><linearGradient id="back" x2="0" y2="1"><stop stop-color="#253d35"/><stop offset="1" stop-color="#13221e"/></linearGradient><radialGradient id="halo"><stop stop-color="#9da978" stop-opacity=".38"/><stop offset="1" stop-color="#344a3c" stop-opacity="0"/></radialGradient><linearGradient id="cloak" x2=".9" y2="1"><stop stop-color="#536456"/><stop offset=".45" stop-color="#263e35"/><stop offset="1" stop-color="#11261f"/></linearGradient><linearGradient id="steel" x2="1" y2="1"><stop stop-color="#95a094"/><stop offset=".25" stop-color="#65786d"/><stop offset=".55" stop-color="#2b443a"/><stop offset="1" stop-color="#172d26"/></linearGradient><linearGradient id="gold" x2=".5" y2="1"><stop stop-color="#d7c48c"/><stop offset=".45" stop-color="#a28a54"/><stop offset="1" stop-color="#695d3b"/></linearGradient><linearGradient id="skin" x2="1" y2="1"><stop stop-color="#d4c2a4"/><stop offset=".5" stop-color="#b69e80"/><stop offset="1" stop-color="#70644f"/></linearGradient><linearGradient id="fade" x2="0" y2="1"><stop offset=".55" stop-color="#101e1a" stop-opacity="0"/><stop offset="1" stop-color="#101e1a"/></linearGradient></defs>
+<path fill="url(#back)" d="M0 0h314v438H0z"/>
+<ellipse cx="160" cy="137" rx="190" ry="190" fill="url(#halo)"/>
+<g fill="none" stroke="#b2b58a"><circle cx="159" cy="123" r="94" opacity=".15"/><circle cx="159" cy="123" r="99" opacity=".12"/><path d="M159 18v18m0 175v18M54 123h18m175 0h18M86 50l12 12m122 122 12 12M86 196l12-12M220 62l12-12" opacity=".28"/></g>
+<path d="M0 242 55 181 83 210 132 168 193 235 233 201 314 261V438H0Z" fill="#20392d"/>
+<g stroke="#65765b" stroke-width="1" opacity=".22"><path d="M17 304v-76m0 13-10 16m10-7 13 17m-13 1-14 18m14-8 18 20M283 302v-91m0 16-14 18m14-6 18 21m-18 0-18 22m18-10 20 25"/></g>
+<!-- Cloak, silhouette and layered shoulder armour. -->
+<path d="M119 142 88 177 62 220 31 402 48 438h234l-22-191-39-73-31-31Z" fill="#10291f"/>
+<path d="M121 151 81 180 60 236 38 438h97l-6-191 30-51Z" fill="url(#cloak)"/>
+<path d="m185 149 44 34 31 72 20 183h-96l-7-202-25-37Z" fill="#203c2f"/>
+<path d="M128 190 105 244l-28 194M121 203 93 287 71 424M196 193l29 92 18 153M211 204l31 129 7 105" fill="none" stroke="#6f7c5b" stroke-opacity=".25" stroke-width="3"/>
+<!-- Hair and face. -->
+<path d="M112 111c-7-41 15-63 46-63 37 0 58 27 51 66l-5 63-30 25-50-21Z" fill="#171e1b"/>
+<path d="m129 117 52-4 8 57-20 33-38-32Z" fill="url(#skin)"/>
+<path d="m147 150-6 31 16 13 15-13-5-28" fill="#948168"/>
+<path d="M126 88q11-32 35-24 33 1 34 36l-8 37-23 24-18-2-22-31Z" fill="url(#skin)"/>
+<path d="M123 83q17-35 43-26 28 2 34 36l-3 36-12 25 3-45-14-27-13 14-24-2-14 38-9-22Z" fill="#282a23"/>
+<path d="m130 90 16-17 17 4 10-8 13 12-16-24-27 2-17 22Z" fill="#666450"/>
+<path d="m128 111 16-4 7 4m12 0 9-5 13 4" fill="none" stroke="#4a4b3d" stroke-width="3"/>
+<path d="m132 115 10-1m24-1 12-1" stroke="#1a3025" stroke-width="2"/>
+<path d="m155 111-3 20 8 2" fill="none" stroke="#89745d" stroke-width="2"/>
+<path d="m145 140 10 3 13-4-10 1Z" fill="#715b4e"/>
+<path d="m180 118-6 20" stroke="#dbccac" stroke-width="1.5" opacity=".7"/>
+<path d="m193 109 8 7-5 20-7 5" fill="#a58e70"/>
+<path d="m122 107-6 8 6 24 6 1" fill="#b39b7d"/>
+<!-- Crown / forehead band. -->
+<path d="m122 94 19-8 17 7 18-9 20 7-2 8-18-7-18 9-18-8-17 8Z" fill="url(#gold)"/>
+<path d="m151 94 7-12 7 12-7 12Z" fill="#cab67b"/><path d="m155 94 3-6 3 6-3 6Z" fill="#4f7765"/>
+<!-- Neck and chest armour with gilt seams. -->
+<path d="m129 168 25 17 25-18 16 28-40 39-42-38Z" fill="#18392b"/>
+<path d="m128 166 27 19-10 13-28-18Zm51 0-24 19 11 13 25-18Z" fill="url(#steel)" stroke="#a49b71" stroke-width="1"/>
+<path d="m117 197 37 32 40-33 24 86-59 38-67-35Z" fill="url(#steel)" stroke="#a49b71" stroke-width="1.5"/>
+<path d="m117 209 37 33 43-33-7 48-33 33-42-35Z" fill="#294a39"/>
+<path d="m128 218 27 25 29-24-6 30-22 26-25-25Z" fill="none" stroke="url(#gold)" stroke-width="3"/>
+<path d="m155 246-13-16-8 1 10 12-5 11 17 17 17-17-7-10 9-13-9-1Z" fill="url(#gold)"/>
+<path d="m105 266 52 34 48-34 8 15-56 39-59-38Z" fill="#172f25" stroke="#857c53"/>
+<path d="m103 288 54 34 50-35 1 25-51 30-54-30Z" fill="url(#steel)" stroke="#817954"/>
+<path d="m104 315 53 30 50-28 5 32-55 19-58-22Z" fill="#2f4b3b" stroke="#77764f"/>
+<!-- Layered pauldrons. -->
+<path d="m113 176-34 5-25 37 43 13 30-26Z" fill="url(#steel)" stroke="#aaa178" stroke-width="1.5"/>
+<path d="m78 184-17 29 36 10 23-20-10-20Z" fill="#45604b"/>
+<path d="m76 189-11 20 31 11 20-17" fill="none" stroke="#c0ad75" stroke-width="2"/>
+<path d="m58 219 37 13-9 24-40-9Z" fill="#2a4536" stroke="#8d8c62"/>
+<path d="m199 176 31 11 23 37-41 8-28-27Z" fill="url(#steel)" stroke="#a79d71" stroke-width="1.5"/>
+<path d="m205 182 22 11 17 24-30 9-23-23Z" fill="#354f3d"/>
+<path d="m207 188 16 9 16 18-24 7-19-18" fill="none" stroke="#b9a46d" stroke-width="2"/>
+<path d="m214 233 39-10 9 25-42 10Z" fill="#284332" stroke="#8d8c62"/>
+<!-- Gauntlet and sword. -->
+<path d="m219 256 31-6 9 57-28 18-14-20Z" fill="url(#steel)" stroke="#8a8861"/>
+<path d="m240 314 17 4 4 26-15 9-15-18Z" fill="#aa9271"/>
+<path d="m249 276 6 1-1 79-5 1Z" fill="#18261e" stroke="#baa467"/>
+<path d="m231 348 37-3 1 8-37 3Z" fill="url(#gold)"/>
+<path d="m247 354 10-1 14 85h-17Z" fill="#8c9982"/><path d="m252 355 5-1 14 84h-8Z" fill="#c2c4a0"/>
+<path d="m248 273 6-7 6 9-6 7Z" fill="#c4ae70"/>
+<path d="m46 250 36 10-12 76-28 18-11-24Z" fill="#233d2e"/>
+<path d="m40 298 34 10-7 27-32-6Z" fill="url(#steel)" stroke="#8f8b60"/>
+<path d="m38 332 28 8-4 28-19 5-15-17Z" fill="#9a8769"/>
+<!-- Belt and restrained decorative framing. -->
+<path d="m94 346 63 21 61-21 5 21-66 25-67-26Z" fill="#1d2c22" stroke="#a38d55"/>
+<path d="m144 362 23 1 8 15-18 13-20-12Z" fill="url(#gold)"/><path d="m149 369 15 1 4 8-11 7-13-7Z" fill="#284432"/>
+<path fill="url(#fade)" d="M0 0h314v438H0z"/>
+<g fill="none" stroke="#ad9b67" stroke-width="1" opacity=".65"><path d="M8 45V8h37M269 8h37v37M8 393v37h37M269 430h37v-37"/><path d="m8 22 14-14M292 8l14 14M8 416l14 14m270 0 14-14"/></g>
+<g fill="#c2b780" opacity=".5"><path d="m31 127 2-5 2 5-2 5Zm248 55 2-5 2 5-2 5ZM47 271l1.5-4 1.5 4-1.5 4Z"/><circle cx="272" cy="189" r="1"/><circle cx="63" cy="80" r="1"/></g>
+</svg>

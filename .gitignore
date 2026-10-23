@@ -1,0 +1,10 @@
+node_modules/
+dist/
+data/
+.cache/
+*.log
+__pycache__/
+*.pyc
+artifacts/godot-project/
+artifacts/browser/
+research/penpot/node_modules/

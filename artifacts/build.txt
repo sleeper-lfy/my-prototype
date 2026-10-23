@@ -1,0 +1,14 @@
+
+> game-ui-studio@0.1.0 build
+> vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 86 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.72 kB │ gzip:   0.47 kB
+dist/assets/index-DewiB7-5.css   21.94 kB │ gzip:   5.64 kB
+dist/assets/index-DhXckJ_Z.js   608.25 kB │ gzip: 186.36 kB
+
+✓ built in 405ms

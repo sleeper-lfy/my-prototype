@@ -1,0 +1,61 @@
+{
+  "recordedAt": "2026-10-23T08:58:09.673416+00:00",
+  "images": [
+    {
+      "image": "penpotapp/frontend:2.15.4",
+      "id": "sha256:2b89ad30f5c9ceb7f12afe17cb11341e0dd4fe16445d1d2676e83e48a8a62389",
+      "repoDigests": [
+        "penpotapp/frontend@sha256:a918223cbcac28626fb879506f98d9a4550b75cc84827833f751488b18be1397"
+      ],
+      "sizeBytes": 585281362
+    },
+    {
+      "image": "penpotapp/backend:2.15.4",
+      "id": "sha256:84cd572883f181b11f57fb47c80e3b2e76084757c7d9e9be674f59ed7bed89c8",
+      "repoDigests": [
+        "penpotapp/backend@sha256:489e15cdcc38861282e4007281539599c5989efdd5392d018bc73b5b3f6c349c"
+      ],
+      "sizeBytes": 839457130
+    },
+    {
+      "image": "penpotapp/exporter:2.15.4",
+      "id": "sha256:5af943794d86a0759a4ebcbe4217f680d4d8f6006d220e23f04c6614540be2b0",
+      "repoDigests": [
+        "penpotapp/exporter@sha256:f53df624f4f2cb649075070b160a0365d1e2060aad82450ae8402417f97f0508"
+      ],
+      "sizeBytes": 1716569956
+    },
+    {
+      "image": "penpotapp/mcp:2.15.4",
+      "id": "sha256:72a62fd52260a99605a23b724fc29afe50735dae4f0083868b855bf4b8a80b0d",
+      "repoDigests": [
+        "penpotapp/mcp@sha256:d23111451527c96b6417da2ec565fa190d520a82b9bf95ecf09e9f0cda23439a"
+      ],
+      "sizeBytes": 434048925
+    },
+    {
+      "image": "postgres:15",
+      "id": "sha256:20fd00b87c6f0a89c5defff2312154761c1d84580af196bcaac19dcb0bf51547",
+      "repoDigests": [
+        "postgres@sha256:baa22e6286bf832cb147b8bb5aa9d8bc999846d69c21d11bf63f58fbeed1fa48"
+      ],
+      "sizeBytes": 444899703
+    },
+    {
+      "image": "valkey/valkey:8.1",
+      "id": "sha256:2a9928a7ce4e0e57fd0cc5b35ffe1f3cbc3c028db902461fbee4e2b6c6b1f375",
+      "repoDigests": [
+        "valkey/valkey@sha256:640c5e62cea04b6d6f2084232651d0cc70362d31f4f805e7be94dbed6855e8f2"
+      ],
+      "sizeBytes": 112415261
+    },
+    {
+      "image": "sj26/mailcatcher:latest",
+      "id": "sha256:69caf15171a21d804e0791a424015f0e46fb3a134179fb85e36e2a7d1ca32d68",
+      "repoDigests": [
+        "sj26/mailcatcher@sha256:572048324658d2198e0a96785cca4f0260f2c4cadb2cb057bd837b9ee0c60533"
+      ],
+      "sizeBytes": 99173637
+    }
+  ]
+}

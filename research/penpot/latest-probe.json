@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-10-23T08:58:25.526Z",
+  "node": "v24.19.0",
+  "checks": [
+    {
+      "name": "Penpot frontend serves application",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "bytes": 257780
+      }
+    },
+    {
+      "name": "Penpot backend database readiness",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "body": "OK"
+      }
+    },
+    {
+      "name": "Penpot anonymous profile RPC",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "anonymousProfileReturned": true
+      }
+    },
+    {
+      "name": "Official local MCP protocol and tools",
+      "passed": true,
+      "details": {
+        "protocolVersion": "2025-03-26",
+        "toolNames": [
+          "execute_code",
+          "high_level_overview",
+          "penpot_api_info",
+          "export_shape",
+          "import_image"
+        ],
+        "pluginManifestStatus": 200,
+        "connectedDesignMutationTested": false
+      }
+    }
+  ]
+}

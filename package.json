@@ -1,0 +1,25 @@
+{
+  "name": "game-ui-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server/index.js",
+    "build": "vite build",
+    "start": "node server/index.js --production",
+    "test": "node --test tests/*.test.js",
+    "test:godot": "node scripts/test-godot.js",
+    "package:release": "node scripts/package-release.mjs"
+  },
+  "dependencies": {
+    "express": "5.3.0",
+    "fflate": "0.8.3",
+    "konva": "10.9.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-konva": "19.3.2"
+  },
+  "devDependencies": {
+    "vite": "8.3.5"
+  }
+}

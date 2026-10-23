@@ -1,0 +1,60 @@
+{
+  "recordedAt": "2026-10-23T09:30:14.803117+00:00",
+  "skill": "game-ui-studio",
+  "format": {
+    "passed": true,
+    "output": "Skill is valid!",
+    "validatorSource": "https://raw.githubusercontent.com/openai/skills/main/skills/.system/skill-creator/scripts/quick_validate.py",
+    "validatorSha256": "6cc9dc3199c935916cf6f73fcbbbb0e3bb1b58c8f5109fefa499978908164f51"
+  },
+  "helperDryRun": {
+    "status": "project-dry-run-valid",
+    "projectId": "ashfall",
+    "baseRevision": 9,
+    "reviewIds": [
+      "review-cta"
+    ],
+    "nodeIds": [
+      "recruit-button"
+    ],
+    "propertyCount": 1,
+    "currentProjectVerified": true,
+    "onlineProjectVerified": false,
+    "changes": [
+      {
+        "nodeId": "recruit-button",
+        "path": "style.text",
+        "before": "RECRUIT HERO",
+        "beforeExists": true,
+        "after": "RECRUIT · 240"
+      }
+    ],
+    "media": {
+      "declared": 2,
+      "available": [
+        {
+          "nodeId": "recruit-button",
+          "reference": "screenshots/recruit-button.png"
+        },
+        {
+          "nodeId": "character-card",
+          "reference": "screenshots/character-card.png"
+        }
+      ],
+      "missing": [],
+      "visualReviewPerformed": false
+    },
+    "note": "Validated against the supplied project snapshot; no live project was modified."
+  },
+  "tests": {
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "skillIntegrationTests": 7,
+    "record": "artifacts/skill-test-suite.txt"
+  },
+  "buildPassed": true,
+  "codexClientInstallationTested": false,
+  "windowsMachineTested": false
+}

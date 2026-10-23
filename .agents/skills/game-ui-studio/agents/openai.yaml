@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game UI Studio"
+  short_description: "Review local game UI with scoped patches and Godot checks"
+  default_prompt: "使用 $game-ui-studio 读取本轮反馈包，保留受保护字段，生成并验证最小增量补丁，再展示差异与 Godot 验证结果。"
