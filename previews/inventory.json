@@ -1,0 +1,682 @@
+{
+  "schema_version": 1,
+  "audited_at_utc": "2026-10-23T09:40:00.802696+00:00",
+  "source_commit": "07f432be8377e5788bfc9d18e401777dfb0199e5",
+  "scope": {
+    "roots": [
+      "/workspace",
+      "/tmp"
+    ],
+    "image_extensions": [
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".webp"
+    ],
+    "excluded_directories": [
+      ".git",
+      "node_modules",
+      "__pycache__"
+    ],
+    "excluded_upstream_image_files": 424,
+    "excluded_upstream_prefix": "/tmp/game-ui-research/",
+    "inaccessible_directories": [
+      "[Errno 13] Permission denied: '/tmp/codex-daemon-1000'"
+    ],
+    "image_tool_result": "No image generation invocation or result-only image found in the available task history. All recovered images came from real files or ZIP members.",
+    "chat_display_status": "Preview attempted; client-side display cannot be verified in this environment."
+  },
+  "summary": {
+    "loose_task_image_files": 10,
+    "archive_image_occurrences": 20,
+    "unique_image_contents": 13,
+    "preserved_image_files": 14,
+    "decode_failures": 0,
+    "original_bytes_preserved": true
+  },
+  "files": [
+    {
+      "path": "previews/game/character-detail.png",
+      "description": "角色详情页初始画布",
+      "size_bytes": 626426,
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "a1c9706b19d485f39c3b195ee00fc79e84445a73a4886dd6070806ee707d6e1a",
+      "copied_from": "/workspace/my-prototype/artifacts/canvas.png",
+      "matching_sources": [
+        "/workspace/my-prototype/artifacts/canvas.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/canvas.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/canvas.png"
+      ]
+    },
+    {
+      "path": "previews/godot/character-detail.png",
+      "description": "Godot 实际运行截图",
+      "size_bytes": 182926,
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "7a31ee211d12595d902128bf28f5aef5ea0a3a1e2003786560d01991d7634d63",
+      "copied_from": "/workspace/my-prototype/artifacts/godot.png",
+      "matching_sources": [
+        "/workspace/my-prototype/artifacts/godot.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/godot.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/godot.png"
+      ]
+    },
+    {
+      "path": "previews/godot/difference-x4.png",
+      "description": "画布与 Godot 差异增强图（原有 ×4）",
+      "size_bytes": 294548,
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "39bac89547b5748cbc60987da025b6ed2adc6ae4ec742e1f7d78c3b32b17c7dc",
+      "copied_from": "/workspace/my-prototype/artifacts/godot-difference.png",
+      "matching_sources": [
+        "/workspace/my-prototype/artifacts/godot-difference.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/godot-difference.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/godot-difference.png"
+      ]
+    },
+    {
+      "path": "previews/editor/editor.png",
+      "description": "编辑器补丁审阅界面",
+      "size_bytes": 492255,
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "copied_from": "/workspace/my-prototype/artifacts/editor.png",
+      "matching_sources": [
+        "/workspace/my-prototype/artifacts/editor.png",
+        "/workspace/my-prototype/artifacts/patch-diff.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/editor.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/patch-diff.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/editor.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/patch-diff.png"
+      ]
+    },
+    {
+      "path": "previews/editor/patch-diff.png",
+      "description": "补丁差异截图（与 editor.png 字节相同）",
+      "size_bytes": 492255,
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "copied_from": "/workspace/my-prototype/artifacts/patch-diff.png",
+      "matching_sources": [
+        "/workspace/my-prototype/artifacts/editor.png",
+        "/workspace/my-prototype/artifacts/patch-diff.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/editor.png",
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/patch-diff.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/editor.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/patch-diff.png"
+      ]
+    },
+    {
+      "path": "previews/editor/initial.png",
+      "description": "初始编辑器与待处理意见",
+      "size_bytes": 508934,
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "30dc157cfea3bcf98e817a37f20290866e33e18bacce88b7e4dfc2a35a41f4c5",
+      "copied_from": "/tmp/studio-first.png",
+      "matching_sources": [
+        "/tmp/studio-first.png"
+      ]
+    },
+    {
+      "path": "previews/art/warden.png",
+      "description": "角色 SVG 的已有栅格预览",
+      "size_bytes": 328217,
+      "width": 628,
+      "height": 876,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "70bee82fae7d33f773ed4c66ac4da9898839bb91d3ff7bc1393c92d16fb7e1b7",
+      "copied_from": "/tmp/warden-preview.png",
+      "matching_sources": [
+        "/tmp/warden-preview.png"
+      ]
+    },
+    {
+      "path": "previews/diagnostics/browser-runtime.png",
+      "description": "浏览器运行诊断截图",
+      "size_bytes": 5534,
+      "width": 1280,
+      "height": 720,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "861a08605460f697ae6d2f005012b05fea0e63f9996875095915d7704df32d44",
+      "copied_from": "/tmp/runtime-probe-browser.png",
+      "matching_sources": [
+        "/tmp/runtime-probe-browser.png"
+      ]
+    },
+    {
+      "path": "previews/diagnostics/godot-layout.png",
+      "description": "Godot 容器布局诊断截图",
+      "size_bytes": 5902,
+      "width": 640,
+      "height": 360,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "97825ad057824e0a716c9cdcc680d2a8eaedd3bbec299f5354bada4b8e31a138",
+      "copied_from": "/tmp/godot-layout-validation/godot.png",
+      "matching_sources": [
+        "/tmp/godot-layout-validation/godot.png"
+      ]
+    },
+    {
+      "path": "previews/diagnostics/godot-runtime.png",
+      "description": "Godot 运行诊断截图",
+      "size_bytes": 8214,
+      "width": 640,
+      "height": 360,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "6f49e32d5a419a36a316c81bca729746343ae53384a29202d8940fae1ec959ca",
+      "copied_from": "/tmp/godot-runtime-probe/screenshot.png",
+      "matching_sources": [
+        "/tmp/godot-runtime-probe/screenshot.png"
+      ]
+    },
+    {
+      "path": "previews/feedback/revision-9/recruit-button.png",
+      "description": "revision 9 招募按钮反馈截图",
+      "size_bytes": 17218,
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "70fd0c260e6e7d39d2d6ee1531fd92ec7206da10eb99c672baea7ac6562a6e0b",
+      "copied_from": "/workspace/my-prototype/artifacts/feedback-sample.zip!/screenshots/recruit-button.png",
+      "matching_sources": [
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/recruit-button.png",
+        "/workspace/my-prototype/artifacts/feedback-sample.zip!/screenshots/recruit-button.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/recruit-button.png"
+      ]
+    },
+    {
+      "path": "previews/feedback/revision-9/character-card.png",
+      "description": "revision 9 角色卡反馈截图",
+      "size_bytes": 201193,
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "9c6a480e3d3a113c0e8fba3961235b316ed4e2535603fb681b699496bbcb03f3",
+      "copied_from": "/workspace/my-prototype/artifacts/feedback-sample.zip!/screenshots/character-card.png",
+      "matching_sources": [
+        "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/character-card.png",
+        "/workspace/my-prototype/artifacts/feedback-sample.zip!/screenshots/character-card.png",
+        "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/character-card.png"
+      ]
+    },
+    {
+      "path": "previews/feedback/revision-1/recruit-button.png",
+      "description": "revision 1 招募按钮反馈截图",
+      "size_bytes": 17442,
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "4e9717aaf8f5bb7b72091312e6adf3824eb9726394b3502998848773718d8985",
+      "copied_from": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip!/screenshots/recruit-button.png",
+      "matching_sources": [
+        "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip!/screenshots/recruit-button.png",
+        "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip!/screenshots/recruit-button.png"
+      ]
+    },
+    {
+      "path": "previews/feedback/revision-1/character-card.png",
+      "description": "revision 1 角色卡反馈截图",
+      "size_bytes": 202385,
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "decode_ok": true,
+      "byte_preservation_verified": true,
+      "sha256": "958b63d1ab4f0ee5e7dfa112806c04408c719a7c66a103da8623280dd657d658",
+      "copied_from": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip!/screenshots/character-card.png",
+      "matching_sources": [
+        "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip!/screenshots/character-card.png",
+        "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip!/screenshots/character-card.png"
+      ]
+    }
+  ],
+  "loose_source_audit": [
+    {
+      "source": "/workspace/my-prototype/artifacts/godot.png",
+      "bytes": 182926,
+      "sha256": "7a31ee211d12595d902128bf28f5aef5ea0a3a1e2003786560d01991d7634d63",
+      "format": "PNG",
+      "width": 960,
+      "height": 600,
+      "mode": "RGBA",
+      "decode": "ok"
+    },
+    {
+      "source": "/workspace/my-prototype/artifacts/editor.png",
+      "bytes": 492255,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "format": "PNG",
+      "width": 1600,
+      "height": 1000,
+      "mode": "RGB",
+      "decode": "ok"
+    },
+    {
+      "source": "/workspace/my-prototype/artifacts/canvas.png",
+      "bytes": 626426,
+      "sha256": "a1c9706b19d485f39c3b195ee00fc79e84445a73a4886dd6070806ee707d6e1a",
+      "format": "PNG",
+      "width": 960,
+      "height": 600,
+      "mode": "RGBA",
+      "decode": "ok"
+    },
+    {
+      "source": "/workspace/my-prototype/artifacts/patch-diff.png",
+      "bytes": 492255,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "format": "PNG",
+      "width": 1600,
+      "height": 1000,
+      "mode": "RGB",
+      "decode": "ok"
+    },
+    {
+      "source": "/workspace/my-prototype/artifacts/godot-difference.png",
+      "bytes": 294548,
+      "sha256": "39bac89547b5748cbc60987da025b6ed2adc6ae4ec742e1f7d78c3b32b17c7dc",
+      "format": "PNG",
+      "width": 960,
+      "height": 600,
+      "mode": "RGBA",
+      "decode": "ok"
+    },
+    {
+      "source": "/tmp/studio-first.png",
+      "bytes": 508934,
+      "sha256": "30dc157cfea3bcf98e817a37f20290866e33e18bacce88b7e4dfc2a35a41f4c5",
+      "format": "PNG",
+      "width": 1600,
+      "height": 1000,
+      "mode": "RGB",
+      "decode": "ok"
+    },
+    {
+      "source": "/tmp/warden-preview.png",
+      "bytes": 328217,
+      "sha256": "70bee82fae7d33f773ed4c66ac4da9898839bb91d3ff7bc1393c92d16fb7e1b7",
+      "format": "PNG",
+      "width": 628,
+      "height": 876,
+      "mode": "RGB",
+      "decode": "ok"
+    },
+    {
+      "source": "/tmp/runtime-probe-browser.png",
+      "bytes": 5534,
+      "sha256": "861a08605460f697ae6d2f005012b05fea0e63f9996875095915d7704df32d44",
+      "format": "PNG",
+      "width": 1280,
+      "height": 720,
+      "mode": "RGB",
+      "decode": "ok"
+    },
+    {
+      "source": "/tmp/godot-layout-validation/godot.png",
+      "bytes": 5902,
+      "sha256": "97825ad057824e0a716c9cdcc680d2a8eaedd3bbec299f5354bada4b8e31a138",
+      "format": "PNG",
+      "width": 640,
+      "height": 360,
+      "mode": "RGBA",
+      "decode": "ok"
+    },
+    {
+      "source": "/tmp/godot-runtime-probe/screenshot.png",
+      "bytes": 8214,
+      "sha256": "6f49e32d5a419a36a316c81bca729746343ae53384a29202d8940fae1ec959ca",
+      "format": "PNG",
+      "width": 640,
+      "height": 360,
+      "mode": "RGBA",
+      "decode": "ok"
+    }
+  ],
+  "archive_audit": [
+    {
+      "archive": "/tmp/godot-layout-validation/godot-export.zip",
+      "image_members": 0,
+      "entries": 6
+    },
+    {
+      "archive": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip",
+      "image_members": 2,
+      "entries": 10
+    },
+    {
+      "archive": "/workspace/game-ui-studio-delivery.zip",
+      "image_members": 5,
+      "entries": 69
+    },
+    {
+      "archive": "/workspace/my-prototype/artifacts/feedback-sample.zip",
+      "image_members": 2,
+      "entries": 10,
+      "demo_provenance": {
+        "projectId": "ashfall",
+        "projectName": "Ashfall · Character dossier",
+        "baseRevision": 9
+      }
+    },
+    {
+      "archive": "/workspace/my-prototype/artifacts/godot-export.zip",
+      "image_members": 0,
+      "entries": 17
+    },
+    {
+      "archive": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip",
+      "image_members": 2,
+      "entries": 10,
+      "demo_provenance": {
+        "projectId": "ashfall",
+        "projectName": "Ashfall · Character dossier",
+        "baseRevision": 1
+      }
+    },
+    {
+      "archive": "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip",
+      "image_members": 2,
+      "entries": 10,
+      "demo_provenance": {
+        "projectId": "ashfall",
+        "projectName": "Ashfall · Character dossier",
+        "baseRevision": 1
+      }
+    },
+    {
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-skill-v0.1.0.zip",
+      "image_members": 0,
+      "entries": 6
+    },
+    {
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip",
+      "image_members": 2,
+      "entries": 10
+    },
+    {
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip",
+      "image_members": 5,
+      "entries": 83
+    }
+  ],
+  "archive_image_audit": [
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/canvas.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip",
+      "member": "game-ui-studio/artifacts/canvas.png",
+      "size_bytes": 626426,
+      "sha256": "a1c9706b19d485f39c3b195ee00fc79e84445a73a4886dd6070806ee707d6e1a",
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/editor.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip",
+      "member": "game-ui-studio/artifacts/editor.png",
+      "size_bytes": 492255,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "mode": "RGB",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/recruit-button.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip",
+      "member": "screenshots/recruit-button.png",
+      "size_bytes": 17218,
+      "sha256": "70fd0c260e6e7d39d2d6ee1531fd92ec7206da10eb99c672baea7ac6562a6e0b",
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/character-card.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/feedback-sample.zip",
+      "member": "screenshots/character-card.png",
+      "size_bytes": 201193,
+      "sha256": "9c6a480e3d3a113c0e8fba3961235b316ed4e2535603fb681b699496bbcb03f3",
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/godot-difference.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip",
+      "member": "game-ui-studio/artifacts/godot-difference.png",
+      "size_bytes": 294548,
+      "sha256": "39bac89547b5748cbc60987da025b6ed2adc6ae4ec742e1f7d78c3b32b17c7dc",
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/godot.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip",
+      "member": "game-ui-studio/artifacts/godot.png",
+      "size_bytes": 182926,
+      "sha256": "7a31ee211d12595d902128bf28f5aef5ea0a3a1e2003786560d01991d7634d63",
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/game-ui-studio-delivery.zip!/game-ui-studio/artifacts/patch-diff.png",
+      "archive": "/workspace/game-ui-studio-delivery.zip",
+      "member": "game-ui-studio/artifacts/patch-diff.png",
+      "size_bytes": 492255,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "mode": "RGB",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/artifacts/feedback-sample.zip!/screenshots/recruit-button.png",
+      "archive": "/workspace/my-prototype/artifacts/feedback-sample.zip",
+      "member": "screenshots/recruit-button.png",
+      "size_bytes": 17218,
+      "sha256": "70fd0c260e6e7d39d2d6ee1531fd92ec7206da10eb99c672baea7ac6562a6e0b",
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/artifacts/feedback-sample.zip!/screenshots/character-card.png",
+      "archive": "/workspace/my-prototype/artifacts/feedback-sample.zip",
+      "member": "screenshots/character-card.png",
+      "size_bytes": 201193,
+      "sha256": "9c6a480e3d3a113c0e8fba3961235b316ed4e2535603fb681b699496bbcb03f3",
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip!/screenshots/recruit-button.png",
+      "archive": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip",
+      "member": "screenshots/recruit-button.png",
+      "size_bytes": 17442,
+      "sha256": "4e9717aaf8f5bb7b72091312e6adf3824eb9726394b3502998848773718d8985",
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip!/screenshots/character-card.png",
+      "archive": "/workspace/my-prototype/data/exports/feedback-1792746414574-041a81.zip",
+      "member": "screenshots/character-card.png",
+      "size_bytes": 202385,
+      "sha256": "958b63d1ab4f0ee5e7dfa112806c04408c719a7c66a103da8623280dd657d658",
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip!/screenshots/recruit-button.png",
+      "archive": "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip",
+      "member": "screenshots/recruit-button.png",
+      "size_bytes": 17442,
+      "sha256": "4e9717aaf8f5bb7b72091312e6adf3824eb9726394b3502998848773718d8985",
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip!/screenshots/character-card.png",
+      "archive": "/workspace/my-prototype/data/exports/feedback-1792746588870-d42fea.zip",
+      "member": "screenshots/character-card.png",
+      "size_bytes": 202385,
+      "sha256": "958b63d1ab4f0ee5e7dfa112806c04408c719a7c66a103da8623280dd657d658",
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/canvas.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip",
+      "member": "game-ui-studio/artifacts/canvas.png",
+      "size_bytes": 626426,
+      "sha256": "a1c9706b19d485f39c3b195ee00fc79e84445a73a4886dd6070806ee707d6e1a",
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/editor.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip",
+      "member": "game-ui-studio/artifacts/editor.png",
+      "size_bytes": 492255,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "mode": "RGB",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/recruit-button.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip",
+      "member": "screenshots/recruit-button.png",
+      "size_bytes": 17218,
+      "sha256": "70fd0c260e6e7d39d2d6ee1531fd92ec7206da10eb99c672baea7ac6562a6e0b",
+      "width": 370,
+      "height": 82,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip!/screenshots/character-card.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/feedback-sample.zip",
+      "member": "screenshots/character-card.png",
+      "size_bytes": 201193,
+      "sha256": "9c6a480e3d3a113c0e8fba3961235b316ed4e2535603fb681b699496bbcb03f3",
+      "width": 362,
+      "height": 486,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/godot-difference.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip",
+      "member": "game-ui-studio/artifacts/godot-difference.png",
+      "size_bytes": 294548,
+      "sha256": "39bac89547b5748cbc60987da025b6ed2adc6ae4ec742e1f7d78c3b32b17c7dc",
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/godot.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip",
+      "member": "game-ui-studio/artifacts/godot.png",
+      "size_bytes": 182926,
+      "sha256": "7a31ee211d12595d902128bf28f5aef5ea0a3a1e2003786560d01991d7634d63",
+      "width": 960,
+      "height": 600,
+      "format": "PNG",
+      "mode": "RGBA",
+      "decode_ok": true
+    },
+    {
+      "source": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip!/game-ui-studio/artifacts/patch-diff.png",
+      "archive": "/workspace/my-prototype/releases/v0.1.0/game-ui-studio-v0.1.0.zip",
+      "member": "game-ui-studio/artifacts/patch-diff.png",
+      "size_bytes": 492255,
+      "sha256": "87c0c6198a2ed7d3574aa2ddd10a712c28cbb15f6b906fa7b448840903b8871e",
+      "width": 1600,
+      "height": 1000,
+      "format": "PNG",
+      "mode": "RGB",
+      "decode_ok": true
+    }
+  ]
+}

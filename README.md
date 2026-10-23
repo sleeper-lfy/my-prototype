@@ -6,6 +6,8 @@
 
 配套 Codex skill：[`$game-ui-studio`](.agents/skills/game-ui-studio/SKILL.md)。[安装与使用](docs/CODEX-SKILL.md)；[v0.1.0 项目与 skill 发行包](https://github.com/sleeper-lfy/my-prototype/tree/v0.1.0/releases/v0.1.0)。
 
+已有图片已集中保存在 [previews/](previews/README.md)：包含原始画布、编辑器、Godot、角色插图和反馈局部截图，并附路径、尺寸、文件大小及 SHA-256 清单，可直接在 GitHub 查看。
+
 ## Windows 安装和启动
 
 1. 安装 [Node.js 24 LTS](https://nodejs.org/)。
