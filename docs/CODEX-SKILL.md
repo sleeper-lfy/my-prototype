@@ -2,6 +2,18 @@
 
 配套 skill 的名称是 **`game-ui-studio`**，位于 [`.agents/skills/game-ui-studio/`](../.agents/skills/game-ui-studio/SKILL.md)。它包含任务触发说明、审阅协议、Godot/美术验收规则和跨平台 Node helper。没有内置收费 API、远程 MCP 或账户依赖。
 
+使用 Windows 一键安装版时，skill 已随应用放在 `%LOCALAPPDATA%\Programs\Game UI Studio\app\.agents\skills\game-ui-studio`。让 Codex 打开 `app` 目录发现 skill，或显式读取其中的 `SKILL.md`。客户端是否自动发现取决于其版本；安装器不会覆盖已有的用户级 skills。
+
+安装版使用内置 Node，无需运行 npm：
+
+```powershell
+$studioInstall = Join-Path $env:LOCALAPPDATA 'Programs\Game UI Studio'
+$studioApp = Join-Path $studioInstall 'app'
+& "$studioInstall\node.exe" "$studioApp\.agents\skills\game-ui-studio\scripts\review.mjs" --help --root "$studioApp"
+```
+
+先从桌面打开应用。`apply` / `rollback` 的 `--url` 传入当前浏览器地址；安装版使用动态端口。当前项目位于 `%LOCALAPPDATA%\GameUIStudio\data\project.json`，不在安装目录内。以下源码版命令中的 `node` 和 `data/...` 在安装版中应替换成这些实际路径。
+
 ## 方式一：在本仓库中使用
 
 在支持 repository skills 的 Codex 版本中打开仓库，再开启一个新会话，让 Codex 重新发现 `.agents/skills/`。可直接输入：

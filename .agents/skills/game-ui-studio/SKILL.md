@@ -11,7 +11,8 @@ description: Review and incrementally edit local Game UI Studio designs using st
 
 - 找到 `package.json` 中 `name` 为 `game-ui-studio` 的应用目录。优先使用现有 checkout；云任务已有隔离环境，不另建 worktree，除非用户要求。
 - helper 位于本 skill 的 `scripts/review.mjs`。它从 `--root`、`GAME_UI_STUDIO_ROOT`、当前目录或脚本祖先定位应用。用户级安装后，若当前目录不在应用内，传入 `--root`；不要假定 skill 的父目录就是应用。
-- 使用 Node 24 LTS（最低 22.12）。缺依赖时在应用目录运行 `npm ci`；Windows 可用 `npm.cmd ci`。启动编辑器用 `npm run dev`，默认本地端口 4380；已有服务先检查并复用。不要改远端 origin、重置用户文件或为此请求 GitHub token。
+- 源码版使用 Node 24 LTS（最低 22.12）。缺依赖时在应用目录运行 `npm ci`；Windows 可用 `npm.cmd ci`。启动编辑器用 `npm run dev`，默认本地端口 4380；已有服务先检查并复用。不要改远端 origin、重置用户文件或为此请求 GitHub token。
+- Windows 安装版的应用根目录是 `%LOCALAPPDATA%\Programs\Game UI Studio\app`，helper 使用其上一级内置的 `node.exe`，无需执行 `npm ci` 或 `npm run dev`。先通过桌面快捷方式启动；从浏览器地址或 `%LOCALAPPDATA%\GameUIStudio\runtime\state.json` 的 `url` 字段取得当前地址，不能假定端口为 4380。只读取所需字段，不输出该状态文件中的控制 token。工作项目在 `%LOCALAPPDATA%\GameUIStudio\data\project.json`，以实际路径替换下列 `data/...` 示例；`--root` 指向安装目录内的 `app`。
 - 下列命令将 `<SKILL_DIR>`、`<APP_ROOT>` 和文件名替换为实际路径，包含空格的路径必须保留引号。所有 helper 命令均可附加 `--root "<APP_ROOT>"`。
 
 ## 读取本轮反馈

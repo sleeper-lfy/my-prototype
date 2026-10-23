@@ -1,0 +1,53 @@
+{
+  "platform": "Windows Node 24.19.0 executable under Wine 10 on Linux x86_64",
+  "exitCode": 0,
+  "source": "Bundled production app payload; actual supplied feedback ZIP and project snapshot",
+  "validation": {
+    "status": "project-dry-run-valid",
+    "projectId": "ashfall",
+    "baseRevision": 9,
+    "reviewIds": [
+      "review-cta"
+    ],
+    "nodeIds": [
+      "recruit-button"
+    ],
+    "propertyCount": 1,
+    "currentProjectVerified": true,
+    "onlineProjectVerified": false,
+    "changes": [
+      {
+        "nodeId": "recruit-button",
+        "path": "style.text",
+        "before": "RECRUIT HERO",
+        "beforeExists": true,
+        "after": "RECRUIT · 240"
+      }
+    ],
+    "media": {
+      "declared": 2,
+      "available": [
+        {
+          "nodeId": "recruit-button",
+          "reference": "screenshots/recruit-button.png"
+        },
+        {
+          "nodeId": "character-card",
+          "reference": "screenshots/character-card.png"
+        }
+      ],
+      "missing": [],
+      "visualReviewPerformed": false
+    },
+    "note": "Validated against the supplied project snapshot; no live project was modified."
+  },
+  "nativeWindowsTested": false,
+  "stdio": "Regular files used for Wine child stdout/stderr; Unix subprocess pipes were incompatible with Windows Node stdio in the initial probe.",
+  "installerSha256": "a70ff4ec60c686a95d3962f3d3f810703a4c707d85b2e49e190204cf50a3231d",
+  "testedPayloadIdentityVerifiedAgainstFinalInstaller": {
+    "node.exe": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+    "app/.agents/skills/game-ui-studio/scripts/review.mjs": "52325ecf891fee4ac04a6f3150011d769a93a555a38e463c442033159e3fbc0c",
+    "app/src/model.js": "fbf6bd72f5ce6a0999e989836355bea48e42964d4de1609bd61de25ae710c8a3",
+    "app/node_modules/fflate/esm/index.mjs": "8d75534a30a0580608e1271c13d70943ed4cd3589fddff7b1197748036a5116e"
+  }
+}

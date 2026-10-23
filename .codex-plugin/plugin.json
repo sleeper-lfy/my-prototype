@@ -1,6 +1,6 @@
 {
   "name": "game-ui-studio",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local game UI component reviews, constrained JSON patches, and Godot 4 verification.",
   "repository": "https://github.com/sleeper-lfy/my-prototype",
   "license": "MIT",

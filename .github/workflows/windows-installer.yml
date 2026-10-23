@@ -1,0 +1,75 @@
+name: Windows installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/windows-installer.yml'
+      - 'packaging/**'
+      - 'scripts/**'
+      - 'server/**'
+      - 'src/**'
+      - 'public/**'
+      - 'examples/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - 'index.html'
+
+permissions:
+  contents: read
+
+jobs:
+  install-and-run:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies and validate source
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          "STUDIO_RELEASE_DIR=releases/v$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          npm ci
+          if ($LASTEXITCODE -ne 0) { throw 'npm ci failed' }
+          npm run build
+          if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed' }
+          npm test
+          if ($LASTEXITCODE -ne 0) { throw 'Tests failed' }
+      - name: Prepare NSIS
+        run: |
+          $compiler = Join-Path ${env:ProgramFiles(x86)} 'NSIS/makensis.exe'
+          if (-not (Test-Path $compiler)) {
+            choco install nsis --yes --no-progress --limit-output
+            if ($LASTEXITCODE -ne 0) { throw 'NSIS installation failed' }
+          }
+          if (-not (Test-Path $compiler)) { throw 'NSIS compiler not found' }
+          "MAKENSIS_BIN=$compiler" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "STUDIO_BUILD_DIR=$env:RUNNER_TEMP/game-ui-studio-build" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Build the self-contained Windows installer
+        run: |
+          npm run package:windows
+          if ($LASTEXITCODE -ne 0) { throw 'Installer build failed' }
+      - name: Install, launch, save, upgrade and uninstall on Windows
+        run: ./scripts/test-windows-install.ps1
+      - name: Keep installer and validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-ui-studio-windows-x64
+          if-no-files-found: warn
+          path: |
+            ${{ env.STUDIO_RELEASE_DIR }}/Game-UI-Studio-Setup-*-x64.exe
+            ${{ env.STUDIO_RELEASE_DIR }}/*.sha256
+            ${{ env.STUDIO_RELEASE_DIR }}/windows-*.json
+            ${{ env.STUDIO_RELEASE_DIR }}/SHA256SUMS*
+            artifacts/windows-installer-native.json
+            artifacts/windows-installer-logs/

@@ -23,6 +23,8 @@ For the standard workspace, from the application root:
 npm run test:godot -- --project "data/project.json" --reference "data/review/round-01.canvas.png" --out "data/review/round-01-godot"
 ```
 
+The Windows installer contains the production runtime, not this source-checkout npm runner. For an installed application, export the current design's Godot ZIP from the editor and follow the generated-project commands below. This also resolves imported assets from the installed application's separate LocalAppData data directory.
+
 Use a freshly exported, original-size editor canvas PNG from the same project revision, with selection and review overlays hidden. Do not compare a modified project to the bundled original screenshot. On Windows, use `npm.cmd` and set `GODOT_BIN` to the Godot console executable if it is not on PATH. A Windows desktop supplies the rendering display. On Linux, use an available X11/virtual display for screenshots; do not assume DISPLAY=:93 exists on another machine.
 
 The runner defaults to the immutable example if `--project` is omitted. That does not validate a user's current work. It creates a Godot ZIP, runs actual import and node checks, captures a rendered image when a display is available, and writes `godot-results.json`. Read its project identity/revision, hashes, exit codes, node counts, screenshot status and measured comparison. A nonzero exit is a failed run even if an older screenshot exists.
