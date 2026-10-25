@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "host": "Debian 13 x86_64",
+    "windowsCompatibility": "Wine 10.0, Windows 10.0.19043 profile",
+    "nativeWindows": false,
+    "runtime": "Windows Node.js v24.19.0 x64",
+    "browser": "Linux Chromium accessing the installed Windows Node service"
+  },
+  "installer": {
+    "file": "Game-UI-Studio-Setup-0.1.2-x64.exe",
+    "sha256": "e754f2651027f9df1397fb5bc87af83ef25328e2362f0ed2acf589efcdc68bcc",
+    "bytes": 24297537
+  },
+  "installPath": "Z:\\tmp\\studio-windows-tools\\安装 测试\\Game UI Studio",
+  "checks": [
+    {
+      "name": "upgrade from running v0.1.1 preserves the existing project",
+      "status": "passed",
+      "seconds": 15.835,
+      "details": {
+        "fromVersion": "0.1.1",
+        "toVersion": "0.1.2",
+        "oldActiveProcessStopped": true,
+        "projectBytesPreserved": true
+      }
+    },
+    {
+      "name": "installer runs and preserves all payload hashes in Unicode/space path",
+      "status": "passed",
+      "seconds": 5.477,
+      "details": {
+        "exitCode": 0,
+        "payloadFilesVerified": 666,
+        "unicodeAndSpacesPath": true
+      }
+    },
+    {
+      "name": "HKCU uninstall registration and actual Shell shortcut targets",
+      "status": "passed",
+      "seconds": 0.323,
+      "details": {
+        "registryVersion": "0.1.2",
+        "desktopShortcut": true,
+        "startMenuShortcuts": 4,
+        "targetsAndArgumentsVerified": true,
+        "method": "Parsed actual .lnk binary; Wine WScript Shell shortcut enumeration unavailable"
+      }
+    },
+    {
+      "name": "installed wscript launch.vbs starts bundled Windows Node",
+      "status": "passed",
+      "seconds": 0.0,
+      "details": {
+        "pid": 696,
+        "dataOutsideInstallDirectory": true
+      }
+    },
+    {
+      "name": "second install directory is refused while original app remains intact",
+      "status": "passed",
+      "seconds": 0.884,
+      "details": {
+        "exitCode": 2,
+        "originalServiceStillRunning": true,
+        "registrationAndShortcutsUnchanged": true,
+        "newDirectoryCreated": false
+      }
+    },
+    {
+      "name": "local health, built frontend and bundled artwork are served",
+      "status": "passed",
+      "seconds": 0.013,
+      "details": {
+        "health": {
+          "ok": true,
+          "app": "Game UI Studio",
+          "schemaVersion": 1
+        },
+        "htmlBytes": 728,
+        "svgBytes": 6295
+      }
+    },
+    {
+      "name": "installed UI imports editable projects and switches Chinese/English with durable preference",
+      "status": "passed",
+      "seconds": 4.728,
+      "details": {
+        "canvasLayers": 2,
+        "nodes": 36,
+        "propertyEditAndReload": true,
+        "nativeProjectImportViaVisibleEntry": true,
+        "bothLanguages": true,
+        "languageSurvivesClearedBrowserStorage": true,
+        "smallViewportDialogFits": true,
+        "pageErrors": [],
+        "chromiumVersion": "154.0.8037.57",
+        "screenshotsGenerated": false
+      }
+    },
+    {
+      "name": "Windows API saves design, applies patch and imports existing artwork",
+      "status": "passed",
+      "seconds": 0.07,
+      "details": {
+        "revision": 6,
+        "incrementalPatch": true,
+        "savedToAppData": true,
+        "importedAssetSha256": "56fda67a311f0ba5f416c38d774ba38624f6ab629acfafcb4006082bd54e3ec3"
+      }
+    },
+    {
+      "name": "repeated launch reuses the existing Windows instance",
+      "status": "passed",
+      "seconds": 0.983,
+      "details": {
+        "reused": true,
+        "samePid": true,
+        "sameUrl": true
+      }
+    },
+    {
+      "name": "wscript stop wrapper shuts down owner and clears runtime state",
+      "status": "passed",
+      "seconds": 1.272,
+      "details": {
+        "wrapperExitCode": 0,
+        "stateRemoved": true
+      }
+    },
+    {
+      "name": "unrelated process occupying control port blocks unsafe second instance",
+      "status": "passed",
+      "seconds": 0.769,
+      "details": {
+        "exitCode": 1,
+        "unrelatedListenerPreserved": true,
+        "secondServerStarted": false
+      }
+    },
+    {
+      "name": "simultaneous Windows launches converge on one owner",
+      "status": "passed",
+      "seconds": 1.633,
+      "details": {
+        "processes": 2,
+        "oneOwner": true,
+        "oneReuse": true,
+        "bothExitZeroAfterStop": true
+      }
+    },
+    {
+      "name": "restart retains saved design and patch",
+      "status": "passed",
+      "seconds": 0.005,
+      "details": {
+        "savedName": "Windows installed persistence 验收",
+        "patchedText": "RECRUIT · 240"
+      }
+    },
+    {
+      "name": "running application upgrades safely and preserves all user data",
+      "status": "passed",
+      "seconds": 5.334,
+      "details": {
+        "activeProcessStopped": true,
+        "dataHashesPreserved": 3,
+        "payloadFilesVerified": 666
+      }
+    },
+    {
+      "name": "active uninstall removes program and shortcuts but keeps design/imports",
+      "status": "passed",
+      "seconds": 1.998,
+      "details": {
+        "activeProcessStopped": true,
+        "programFilesRemoved": true,
+        "registryRemoved": true,
+        "shortcutsRemoved": true,
+        "dataHashesPreserved": 3
+      }
+    }
+  ],
+  "status": "passed",
+  "limitations": [
+    "This is Wine compatibility testing, not a native Windows machine.",
+    "Default Windows browser association and SmartScreen were not exercised. No screenshots were generated."
+  ],
+  "passed": 15,
+  "failed": 0,
+  "verifiedAtUtc": "2026-10-25T04:57:55.424555+00:00",
+  "testHarnessSha256": "0c00e49cf051a33afaad9eea6af0fd3fb92b194ac1c5e62a6e9ea5a7451dacaf"
+}

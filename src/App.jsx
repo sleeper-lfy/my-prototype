@@ -17,16 +17,19 @@ import {
   Line,
 } from "react-konva";
 import { computeLayout, validateProject, makeId } from "./model.js";
+import { useLocale } from './useLocale.js';
+import { errorMessage, translateMessage } from './i18n.js';
+import ImportDialog from './ImportDialog.jsx';
 
 const clone = (value) => structuredClone(value);
 const containers = ["HBoxContainer", "VBoxContainer", "MarginContainer"];
 const statuses = {
-  pending: "待处理",
-  modified: "已修改",
-  review: "待验收",
-  approved: "已通过",
+  pending: "status.pending",
+  modified: "status.modified",
+  review: "status.review",
+  approved: "status.approved",
 };
-const priorityNames = { low: "低", medium: "中", high: "高", critical: "紧急" };
+const priorityNames = { low: "priority.low", medium: "priority.medium", high: "priority.high", critical: "priority.critical" };
 const typeIcons = {
   Control: "group",
   TextureRect: "image",
@@ -303,6 +306,7 @@ function NineSlice({ image, width, height, margins }) {
   );
 }
 function DesignNode({
+  t,
   node,
   rect,
   asset,
@@ -341,7 +345,7 @@ function DesignNode({
       onTransformEnd={(event) => onTransform(node, event)}
       onDblClick={() =>
         disabledDrag &&
-        showTip("此组件由 Container 自动布局；请编辑父容器的间距或尺寸。")
+        showTip(t("notify.autoLayout"))
       }
     >
       <Rect
@@ -424,6 +428,7 @@ function Field({
 }
 
 export default function App() {
+  const { locale, setLocale, t, preferenceError, ready: localeReady } = useLocale();
   const [project, setProject] = useState(null),
     projectRef = useRef(null),
     [selected, setSelected] = useState([]),
@@ -462,7 +467,6 @@ export default function App() {
     shapeRefs = useRef(new Map()),
     canvasWrap = useRef(null),
     patchInput = useRef(null),
-    projectInput = useRef(null),
     assetInput = useRef(null),
     componentInput = useRef(null),
     panRef = useRef(null);
@@ -511,13 +515,13 @@ export default function App() {
           if (projectRef.current.revision === next.revision) accept(saved);
         } catch (e) {
           saveEpoch.current += 1;
-          setError(`保存失败：${e.message}。后续旧版本编辑已取消。`);
+          setError({ key: "error.save", values: { detail: e.message } });
           try {
             const saved = await api("/api/project");
             accept(saved);
           } catch (reloadError) {
             setError(
-              `连接已断开：${reloadError.message}。请重新加载项目后继续编辑。`,
+              { key: "error.connection", values: { detail: reloadError.message } },
             );
           }
           undo.current = [];
@@ -585,7 +589,7 @@ export default function App() {
         if (alive) setFontEpoch((n) => n + 1);
       })
       .catch((e) => {
-        if (alive) setError(`字体加载失败：${e.message}`);
+        if (alive) setError({ key: "error.font", values: { detail: e.message } });
       });
     return () => {
       alive = false;
@@ -749,7 +753,7 @@ export default function App() {
         .map((n) => ({
           ...clone(n),
           id: mapping.get(n.id),
-          name: `${n.name} copy`,
+                          name: t("copyName", { name: n.name }),
           parentId: mapping.get(n.parentId) || n.parentId,
           frame: {
             ...n.frame,
@@ -761,7 +765,7 @@ export default function App() {
       d.nodes.push(...copies);
     });
     setSelected(selected.map((id) => mapping.get(id)));
-  }, [selected, edit]);
+  }, [selected, edit, t]);
   const group = () => {
     if (selected.length < 2) return;
     const nodes = project.nodes.filter((n) => selected.includes(n.id));
@@ -773,7 +777,7 @@ export default function App() {
           effectiveLocked(n),
       )
     ) {
-      notify("分组需要同一自由布局父级下的未锁定组件。");
+      notify(t("notify.group"));
       return;
     }
     const x = Math.min(...nodes.map((n) => n.frame.x)),
@@ -785,7 +789,7 @@ export default function App() {
       const index = d.nodes.findIndex((n) => n.id === nodes[0].id);
       d.nodes.splice(index, 0, {
         id,
-        name: "Component group",
+        name: t("newGroup"),
         type: "Control",
         parentId: nodes[0].parentId,
         frame: { x, y, width: right - x, height: bottom - y },
@@ -847,7 +851,7 @@ export default function App() {
     const id = makeId("node");
     const node = {
       id,
-      name: asset ? asset.name : `New ${type}`,
+      name: asset ? asset.name : t("newComponent", { type: t(`type.${type}`) }),
       type,
       parentId: null,
       frame: {
@@ -865,7 +869,7 @@ export default function App() {
         fontSize: 18,
         fontFamily: "Studio Sans",
         text:
-          type === "Label" ? "New label" : type === "Button" ? "ACTION" : "",
+          type === "Label" ? t("newLabel") : type === "Button" ? t("newAction") : "",
         align: type === "Button" ? "center" : "left",
         opacity: 1,
       },
@@ -912,12 +916,17 @@ export default function App() {
   useEffect(() => {
     const handler = (e) => {
       if (busy) return;
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key.toLowerCase() === "o") {
+        e.preventDefault();
+        setDialog("import");
+        return;
+      }
       if (
         ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName) ||
         e.target.isContentEditable
       )
         return;
-      const mod = e.metaKey || e.ctrlKey;
       if (mod && e.key.toLowerCase() === "z") {
         e.preventDefault();
         e.shiftKey ? doRedo() : doUndo();
@@ -999,7 +1008,7 @@ export default function App() {
         screenshots: shots,
       });
       downloadArchive(result.downloadUrl);
-      notify(`已导出 ${result.count} 条待处理意见及局部截图`);
+      notify({ key: "notify.feedback", values: { count: result.count } });
     });
   const snapshotVisible = (value) => {
     overlayRef.current?.visible(value);
@@ -1013,7 +1022,7 @@ export default function App() {
         requestAnimationFrame(() => requestAnimationFrame(resolve)),
       );
       const stage = stageRef.current;
-      if (!stage) throw new Error("Canvas is not ready");
+      if (!stage) throw new Error(t("error.canvas"));
       snapshotVisible(false);
       try {
         return stage.toDataURL({ pixelRatio: 1 / zoom });
@@ -1096,7 +1105,7 @@ export default function App() {
         (a) => assets.has(a.id) || a.kind === "font",
       ),
     });
-    notify("组件模板已导出；资源文件需随项目一起共享。");
+    notify(t("notify.exportComponent"));
   };
   const componentImport = async (event) => {
     const file = event.target.files?.[0];
@@ -1110,7 +1119,7 @@ export default function App() {
         !Array.isArray(value.nodes) ||
         !Array.isArray(value.assets)
       )
-        throw new Error("无效组件模板文件。");
+        throw new Error(t("error.component"));
       const mapping = new Map(value.nodes.map((n) => [n.id, makeId("node")])),
         assetMapping = new Map(
           value.assets.map((a) => [
@@ -1147,7 +1156,7 @@ export default function App() {
       validateProject(next);
       commit(next);
       setSelected(imported.filter((n) => !n.parentId).map((n) => n.id));
-      notify("组件模板已插入，所有组件已分配新 ID。");
+      notify(t("notify.importComponent"));
     } catch (e) {
       setError(e.message);
     }
@@ -1174,7 +1183,7 @@ export default function App() {
       undo.current = [];
       redo.current = [];
       setTab("history");
-      notify("增量修改已应用；请查看差异并人工验收。");
+      notify(t("notify.patch"));
     });
   const samplePatch = () =>
     action(async () => {
@@ -1182,28 +1191,29 @@ export default function App() {
       setJsonText(JSON.stringify(value, null, 2));
       setDialog("patch");
     });
-  const uploadJson = async (event, type) => {
+  const uploadJson = async (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
     try {
       const value = JSON.parse(await file.text());
-      if (type === "patch") {
-        setJsonText(JSON.stringify(value, null, 2));
-        setDialog("patch");
-      } else
-        await action(async () => {
-          const result = await api("/api/import", value);
-          accept(result);
-          undo.current = [];
-          redo.current = [];
-          setSelected([]);
-          notify("项目已载入并保存在本地。");
-        });
-    } catch (e) {
-      setError(e.message);
-    }
+      setJsonText(JSON.stringify(value, null, 2));
+      setDialog("patch");
+    } catch { setError("import.invalidJson"); }
   };
+  const importProject = (value, backup) => action(async () => {
+    if (backup) downloadJson(`${projectRef.current.id}.backup-${Date.now()}.project.json`, projectRef.current);
+    const result = await api("/api/import", value);
+    accept(result);
+    undo.current = [];
+    redo.current = [];
+    setSelected([]);
+    setLeftTab("layers");
+    setTab("design");
+    setDialog(null);
+    setTimeout(fit, 60);
+    notify({ key: "notify.import" });
+  });
   const addReview = (event) => {
     event.preventDefault();
     if (!selectedNode) return;
@@ -1221,7 +1231,7 @@ export default function App() {
       }),
     );
     setReviewForm({ ...reviewForm, target: "", expected: "" });
-    notify("意见已绑定稳定组件 ID，移动组件不会丢失。");
+    notify(t("notify.review"));
   };
   const assetUpload = (event) => {
     const file = event.target.files?.[0];
@@ -1244,7 +1254,7 @@ export default function App() {
         dataUrl,
       });
       edit((d) => d.assets.push(asset));
-      notify("资源已保存到本地项目。");
+      notify(t("notify.asset"));
     });
   };
   const rows = [];
@@ -1270,15 +1280,15 @@ export default function App() {
     ) || [];
   const pendingReviews =
     project?.reviews.filter((r) => r.status === "pending") || [];
-  if (!project)
+  if (!project || !localeReady)
     return (
       <div className="loading">
         <div className="brand-mark">
           <Icon name="diamond" size={24} />
         </div>
         <h2>Game UI Studio</h2>
-        <p>{error || "Opening your local workspace…"}</p>
-        {error && <button onClick={() => location.reload()}>Retry</button>}
+        <p>{error ? errorMessage(locale, error) : t("loading")}</p>
+        {error && <button onClick={() => location.reload()}>{t("retry")}</button>}
       </div>
     );
   return (
@@ -1292,28 +1302,39 @@ export default function App() {
             <strong>
               GAME UI <span>STUDIO</span>
             </strong>
-            <small>LOCAL DESIGN LAB</small>
+            <small>{t("localLab")}</small>
           </div>
         </div>
         <div className="project-breadcrumb">
           <Icon name="folder" />
           <span>{project.name.split("·")[0]}</span>
           <Icon name="chevron" size={12} />
-          <strong>{project.name.split("·")[1] || "Character dossier"}</strong>
-          <span className="phase-badge">PROTOTYPE</span>
+          <strong>{project.name.split("·")[1] || t("canvas")}</strong>
+          <span className="phase-badge">{t("prototype")}</span>
         </div>
         <div className="header-actions">
+          <label className="language-control">
+            <span className="sr-only">{t("language")}</span>
+            <select data-testid="language-select" aria-label={t("language")} value={locale} onChange={event => setLocale(event.target.value)}>
+              <option value="zh-CN">简体中文</option>
+              <option value="en">English</option>
+            </select>
+          </label>
           <span className={`save-status ${pending ? "saving" : ""}`}>
             <i />
-            {pending ? "Saving…" : "Saved locally"}
+            {pending ? t("saving") : t("saved")}
           </span>
+          <button data-testid="import-ui" className="button import-ui-button" title={t("importUI")} disabled={busy || pending > 0} onClick={() => setDialog("import")}>
+            <Icon name="upload" />{t("importUI")}
+          </button>
           <button
+            data-testid="export-project"
             className="button subtle"
             onClick={() => downloadJson(`${project.id}.project.json`, project)}
-            title="Export project JSON"
+            title={t("exportProject")}
           >
             <Icon name="save" />
-            项目文件
+            {t("exportProject")}
           </button>
           <button
             data-testid="export-feedback"
@@ -1322,7 +1343,7 @@ export default function App() {
             disabled={busy || pending > 0 || !pendingReviews.length}
           >
             <Icon name="download" />
-            导出反馈
+            {t("exportFeedback")}
             <span className="button-count">{pendingReviews.length}</span>
           </button>
         </div>
@@ -1335,36 +1356,36 @@ export default function App() {
               onClick={() => setLeftTab("layers")}
             >
               <Icon name="layers" />
-              图层
+              {t("layers")}
             </button>
             <button
               className={leftTab === "assets" ? "selected" : ""}
               onClick={() => setLeftTab("assets")}
             >
               <Icon name="image" />
-              资源
+              {t("assets")}
             </button>
             <button
               className={leftTab === "tokens" ? "selected" : ""}
               onClick={() => setLeftTab("tokens")}
             >
               <Icon name="palette" />
-              规范
+              {t("tokens")}
             </button>
           </div>
           {leftTab === "layers" ? (
             <>
               <div className="section-title">
-                <span>CHARACTER DOSSIER</span>
+                <span>{t("layerTree")}</span>
                 <span className="muted">{project.nodes.length}</span>
               </div>
               <div className="search">
                 <Icon name="search" size={14} />
                 <input
-                  placeholder="查找组件或 ID…"
+                  placeholder={t("searchPlaceholder")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  aria-label="Search layers"
+                  aria-label={t("searchLayers")}
                 />
               </div>
               <div className="layer-list">
@@ -1383,7 +1404,7 @@ export default function App() {
                     >
                       <button
                         className="collapse"
-                        aria-label={`Toggle children ${node.name}`}
+                        aria-label={t("childrenLabel", { name: node.name })}
                         onClick={() =>
                           setCollapsed((old) => {
                             const s = new Set(old);
@@ -1414,9 +1435,9 @@ export default function App() {
                       <button
                         className="layer-mini"
                         title={
-                          node.locked ? "Unlock component" : "Lock component"
+                          node.locked ? t("unlock") : t("lock")
                         }
-                        aria-label={`Lock ${node.name}`}
+                        aria-label={t("lockLabel", { name: node.name })}
                         onClick={() =>
                           edit((d) => {
                             d.nodes.find((n) => n.id === node.id).locked =
@@ -1431,8 +1452,8 @@ export default function App() {
                       </button>
                       <button
                         className="layer-mini"
-                        title="Toggle visibility"
-                        aria-label={`Visibility ${node.name}`}
+                        title={t("visibility")}
+                        aria-label={t("visibilityLabel", { name: node.name })}
                         onClick={() =>
                           edit((d) => {
                             d.nodes.find((n) => n.id === node.id).visible =
@@ -1448,17 +1469,17 @@ export default function App() {
               </div>
               <div className="add-component">
                 <select
-                  aria-label="New component type"
+                  aria-label={t("newType")}
                   value={addType}
                   onChange={(e) => setAddType(e.target.value)}
                 >
                   {Object.keys(typeIcons).map((type) => (
-                    <option key={type}>{type}</option>
+                    <option key={type} value={type} title={type}>{t(`type.${type}`)}</option>
                   ))}
                 </select>
                 <button
-                  title="Add component"
-                  aria-label="Add component"
+                  title={t("addComponent")}
+                  aria-label={t("addComponent")}
                   onClick={() => addNode()}
                 >
                   <Icon name="plus" />
@@ -1468,37 +1489,37 @@ export default function App() {
                 <button
                   onClick={componentExport}
                   disabled={!selected.length}
-                  title="Export selected component template"
+                  title={t("exportComponentTip")}
                 >
-                  导出组件
+                  {t("exportComponent")}
                 </button>
                 <button
                   onClick={() => componentInput.current.click()}
-                  title="Import component template"
+                  title={t("importComponentTip")}
                 >
-                  导入组件
+                  {t("importComponent")}
                 </button>
               </div>
               <div className="local-note">
                 <span className="live-dot" />
                 <div>
-                  <strong>Everything stays local</strong>
-                  <span>JSON + assets · no cloud account</span>
+                  <strong>{t("localTitle")}</strong>
+                  <span>{t("localSubtitle")}</span>
                 </div>
               </div>
             </>
           ) : leftTab === "assets" ? (
             <div className="assets-panel">
               <div className="section-title">
-                <span>PROJECT LIBRARY</span>
+                <span>{t("projectLibrary")}</span>
                 <span>{project.assets.length}</span>
               </div>
               <p className="hint">
-                游戏美术资源与九宫格面板。点击资源放入画布。
+                {t("assetsHint")}
               </p>
               <div className="asset-import">
                 <select
-                  aria-label="Asset kind"
+                  aria-label={t("assetKind")}
                   value={assetKind}
                   onChange={(e) => setAssetKind(e.target.value)}
                 >
@@ -1510,7 +1531,7 @@ export default function App() {
                     "icon",
                     "font",
                   ].map((k) => (
-                    <option key={k}>{k}</option>
+                    <option key={k} value={k}>{t(`kind.${k}`)}</option>
                   ))}
                 </select>
                 <button
@@ -1518,7 +1539,7 @@ export default function App() {
                   onClick={() => assetInput.current.click()}
                 >
                   <Icon name="upload" />
-                  导入
+                  {t("importAsset")}
                 </button>
               </div>
               {project.assets
@@ -1533,17 +1554,17 @@ export default function App() {
                         asset,
                       )
                     }
-                    title={`Place ${asset.name}`}
+                    title={t("placeAsset", { name: asset.name })}
                   >
                     <img src={asset.src} />
                     <div>
                       <strong>{asset.name}</strong>
-                      <span>{asset.kind}</span>
+                      <span>{t(`kind.${asset.kind}`)}</span>
                     </div>
                     <Icon name="plus" size={14} />
                   </button>
                 ))}
-              <h4 className="library-subtitle">FONTS</h4>
+              <h4 className="library-subtitle">{t("fonts")}</h4>
               {project.assets
                 .filter((a) => a.kind === "font")
                 .map((asset) => (
@@ -1551,7 +1572,7 @@ export default function App() {
                     <span style={{ fontFamily: asset.name }}>Aa</span>
                     <div>
                       <strong>{asset.name}</strong>
-                      <small>Local typeface · available in inspector</small>
+                      <small>{t("fontHint")}</small>
                     </div>
                   </div>
                 ))}
@@ -1559,17 +1580,17 @@ export default function App() {
           ) : (
             <div className="tokens-panel">
               <div className="section-title">
-                <span>ART DIRECTION</span>
+                <span>{t("artDirection")}</span>
                 <Icon name="diamond" size={13} />
               </div>
-              <h3>Project foundations</h3>
-              <p className="hint">项目级配色、字体和设计约束随反馈包传递。</p>
-              <h4>COLOR PALETTE</h4>
+              <h3>{t("foundations")}</h3>
+              <p className="hint">{t("tokensHint")}</p>
+              <h4>{t("colorPalette")}</h4>
               {Object.entries(project.tokens.colors || {}).map(
                 ([key, value]) => (
                   <div className="token-row" key={key}>
                     <input
-                      aria-label={`Token ${key}`}
+                      aria-label={t("tokenLabel", { name: key })}
                       type="color"
                       value={value}
                       onChange={(e) =>
@@ -1583,7 +1604,7 @@ export default function App() {
                   </div>
                 ),
               )}
-              <h4>TYPOGRAPHY</h4>
+              <h4>{t("typography")}</h4>
               {Object.entries(project.tokens.fonts || {}).map(
                 ([key, value]) => (
                   <Field
@@ -1598,9 +1619,9 @@ export default function App() {
                   />
                 ),
               )}
-              <h4>DESIGN RULES</h4>
+              <h4>{t("designRules")}</h4>
               <textarea
-                aria-label="Project design rules"
+                aria-label={t("projectRules")}
                 className="rules-editor"
                 key={project.id}
                 defaultValue={(project.tokens.rules || []).join("\n")}
@@ -1616,7 +1637,7 @@ export default function App() {
                 }}
               />
               <p className="hint">
-                每行一条约束。修改 token 不会覆盖组件已有值。
+                {t("rulesHint")}
               </p>
             </div>
           )}
@@ -1626,26 +1647,26 @@ export default function App() {
             <div className="toolbar-cluster">
               <Tool
                 icon="cursor"
-                label="Select tool"
+                label={t("selectTool")}
                 active={!hand}
                 onClick={() => setHand(false)}
               />
               <Tool
                 icon="hand"
-                label="Pan tool (Space)"
+                label={t("panTool")}
                 active={hand}
                 onClick={() => setHand(!hand)}
               />
               <span className="toolbar-separator" />
               <Tool
                 icon="undo"
-                label="Undo (Ctrl+Z)"
+                label={t("undo")}
                 disabled={!undo.current.length || busy}
                 onClick={doUndo}
               />
               <Tool
                 icon="redo"
-                label="Redo (Ctrl+Shift+Z)"
+                label={t("redo")}
                 disabled={!redo.current.length || busy}
                 onClick={doRedo}
               />
@@ -1653,44 +1674,44 @@ export default function App() {
             <div className="toolbar-cluster">
               <Tool
                 icon="align"
-                label="Align left"
+                label={t("alignLeft")}
                 disabled={selected.length < 2}
                 onClick={() => align("left")}
               />
               <Tool
                 icon="columns"
-                label="Align horizontal centers"
+                label={t("alignCenter")}
                 disabled={selected.length < 2}
                 onClick={() => align("center")}
               />
               <Tool
                 icon="rows"
-                label="Align top"
+                label={t("alignTop")}
                 disabled={selected.length < 2}
                 onClick={() => align("top")}
               />
               <Tool
                 icon="group"
-                label="Group selection"
+                label={t("group")}
                 disabled={selected.length < 2}
                 onClick={group}
               />
               <Tool
                 icon="duplicate"
-                label="Duplicate (Ctrl+D)"
+                label={t("duplicate")}
                 disabled={!selected.length}
                 onClick={duplicate}
               />
               <span className="toolbar-separator" />
               <Tool
                 icon="snap"
-                label="Toggle snapping"
+                label={t("snap")}
                 active={snap}
                 onClick={() => setSnap(!snap)}
               />
               <Tool
                 icon="comment"
-                label="Toggle review pins"
+                label={t("pins")}
                 active={showPins}
                 onClick={() => setShowPins(!showPins)}
               />
@@ -1698,7 +1719,7 @@ export default function App() {
             <div className="zoom-controls">
               <Tool
                 icon="minus"
-                label="Zoom out"
+                label={t("zoomOut")}
                 onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}
               />
               <button className="zoom-value" onClick={() => setZoom(1)}>
@@ -1706,20 +1727,20 @@ export default function App() {
               </button>
               <Tool
                 icon="plus"
-                label="Zoom in"
+                label={t("zoomIn")}
                 onClick={() => setZoom((z) => Math.min(2, z + 0.1))}
               />
-              <Tool icon="fit" label="Fit canvas" onClick={fit} />
+              <Tool icon="fit" label={t("fit")} onClick={fit} />
             </div>
           </div>
           <div className="canvas-context">
             <span>
               <i className="live-dot" />
-              CHARACTER / OVERVIEW
+              {t("canvasOverview")}
             </span>
             <span>
               {project.canvas.width} × {project.canvas.height}
-              <b>FREE LAYOUT</b>
+              <b>{t("freeLayout")}</b>
             </span>
           </div>
           <div
@@ -1763,7 +1784,7 @@ export default function App() {
             >
               <div className="artboard-label">
                 <Icon name="panel" size={11} />
-                Character dossier<span>01</span>
+                {project.name}<span>01</span>
               </div>
               <Stage
                 ref={stageRef}
@@ -1789,6 +1810,7 @@ export default function App() {
                   />
                   {visibleNodes.map((node) => (
                     <DesignNode
+                      t={t}
                       key={`${node.id}-${fontEpoch}`}
                       node={node}
                       rect={layout.get(node.id)}
@@ -1874,37 +1896,37 @@ export default function App() {
               <Icon name="cursor" size={12} />
               <span>
                 {selected.length
-                  ? `${selected.length} selected · ${selectedNode?.name}`
-                  : "选择组件开始编辑"}
+                  ? t("selectedLabel", { count: selected.length, name: selectedNode?.name || "" })
+                  : t("selectHint")}
               </span>
             </div>
             <span>
-              Shift 多选 <i>·</i> Space 平移 <i>·</i> 方向键微调
+              {t("shiftHint")} <i>·</i> {t("spaceHint")} <i>·</i> {t("arrowsHint")}
             </span>
-            <button onClick={exportCanvas}>导出画布 PNG</button>
+            <button onClick={exportCanvas}>{t("exportCanvas")}</button>
           </div>
           <div className="workflow-strip">
             <div className="workflow-step">
               <span>01</span>
               <div>
-                <strong>Compose</strong>
-                <small>编辑组件</small>
+                <strong>{t("compose")}</strong>
+                <small>{t("composeHint")}</small>
               </div>
             </div>
             <Icon name="chevron" size={13} />
             <div className="workflow-step active">
               <span>02</span>
               <div>
-                <strong>Review</strong>
-                <small>提出修改意见</small>
+                <strong>{t("reviewTab")}</strong>
+                <small>{t("reviewStepHint")}</small>
               </div>
             </div>
             <Icon name="chevron" size={13} />
             <div className="workflow-step">
               <span>03</span>
               <div>
-                <strong>Patch</strong>
-                <small>增量修改与验收</small>
+                <strong>{t("patchStep")}</strong>
+                <small>{t("patchStepHint")}</small>
               </div>
             </div>
             <Icon name="chevron" size={13} />
@@ -1912,7 +1934,7 @@ export default function App() {
               <span>04</span>
               <div>
                 <strong>Godot</strong>
-                <small>导出原生节点</small>
+                <small>{t("exportStepHint")}</small>
               </div>
             </div>
           </div>
@@ -1923,13 +1945,13 @@ export default function App() {
               className={tab === "design" ? "selected" : ""}
               onClick={() => setTab("design")}
             >
-              属性
+              {t("properties")}
             </button>
             <button
               className={tab === "review" ? "selected" : ""}
               onClick={() => setTab("review")}
             >
-              审阅{" "}
+              {t("reviewTab")}{" "}
               <span className="tab-count">
                 {project.reviews.filter((r) => r.status !== "approved").length}
               </span>
@@ -1938,7 +1960,7 @@ export default function App() {
               className={tab === "history" ? "selected" : ""}
               onClick={() => setTab("history")}
             >
-              差异
+              {t("changesTab")}
             </button>
           </div>
           <div className="inspector-scroll">
@@ -1946,16 +1968,16 @@ export default function App() {
               selectedNode ? (
                 <>
                   <div className="selection-heading">
-                    <span className="type-label">{selectedNode.type}</span>
+                    <span className="type-label" title={selectedNode.type}>{t(`type.${selectedNode.type}`)}</span>
                     <h3>{selectedNode.name}</h3>
                     <code title={selectedNode.id}>{selectedNode.id}</code>
                   </div>
                   <div className="inspector-section">
                     <div className="section-title">
-                      <span>COMPONENT</span>
+                      <span>{t("component")}</span>
                       <Tool
                         icon={selectedNode.locked ? "lock" : "unlock"}
-                        label="Toggle selected lock"
+                        label={t("toggleLock")}
                         onClick={() =>
                           edit((d) => {
                             d.nodes.find(
@@ -1966,15 +1988,15 @@ export default function App() {
                       />
                     </div>
                     <Field
-                      label="Name"
+                      label={t("name")}
                       value={selectedNode.name}
                       onChange={(v) => updateNode("name", v)}
                       disabled={effectiveLocked(selectedNode)}
                     />
                     <label className="field">
-                      <span>Parent</span>
+                      <span>{t("parent")}</span>
                       <select
-                        aria-label="Parent component"
+                        aria-label={t("parentComponent")}
                         value={selectedNode.parentId || ""}
                         disabled={effectiveLocked(selectedNode)}
                         onChange={(e) =>
@@ -1990,7 +2012,7 @@ export default function App() {
                           })
                         }
                       >
-                        <option value="">Canvas</option>
+                        <option value="">{t("canvas")}</option>
                         {project.nodes
                           .filter(
                             (n) =>
@@ -2031,21 +2053,20 @@ export default function App() {
                     </div>
                     {autoPosition(selectedNode) && (
                       <p className="info-note">
-                        位置由父 Container 自动排列。自由拖动需将父级改为 Canvas
-                        或 Control。
+                        {t("autoLayoutHint")}
                       </p>
                     )}
                     {containers.includes(selectedNode.type) && (
                       <div className="property-grid">
                         <Field
-                          label="Gap"
+                          label={t("gap")}
                           type="number"
                           min="0"
                           value={selectedNode.layout?.gap || 0}
                           onChange={(v) => updateNode("layout.gap", v)}
                         />
                         <Field
-                          label="Padding"
+                          label={t("padding")}
                           type="number"
                           min="0"
                           value={selectedNode.layout?.padding || 0}
@@ -2056,14 +2077,14 @@ export default function App() {
                   </div>
                   <div className="inspector-section">
                     <div className="section-title">
-                      <span>APPEARANCE</span>
+                      <span>{t("appearance")}</span>
                     </div>
                     {["Label", "Button"].includes(selectedNode.type) && (
                       <>
                         <label className="field vertical">
-                          <span>Text</span>
+                          <span>{t("text")}</span>
                           <textarea
-                            aria-label="Component text"
+                            aria-label={t("componentText")}
                             value={selectedNode.style?.text || ""}
                             disabled={effectiveLocked(selectedNode)}
                             onChange={(e) =>
@@ -2073,31 +2094,31 @@ export default function App() {
                         </label>
                         <div className="property-grid">
                           <Field
-                            label="Font size"
+                            label={t("fontSize")}
                             type="number"
                             min="8"
                             value={selectedNode.style?.fontSize || 16}
                             onChange={(v) => updateNode("style.fontSize", v)}
                           />
                           <label className="field">
-                            <span>Align</span>
+                            <span>{t("align")}</span>
                             <select
-                              aria-label="Text align"
+                              aria-label={t("textAlign")}
                               value={selectedNode.style?.align || "left"}
                               onChange={(e) =>
                                 updateNode("style.align", e.target.value)
                               }
                             >
                               {["left", "center", "right"].map((v) => (
-                                <option key={v}>{v}</option>
+                                <option key={v} value={v}>{t(`align.${v}`)}</option>
                               ))}
                             </select>
                           </label>
                         </div>
                         <label className="field">
-                          <span>Typeface</span>
+                          <span>{t("typeface")}</span>
                           <select
-                            aria-label="Typeface"
+                            aria-label={t("typeface")}
                             value={
                               selectedNode.style?.fontFamily || "Studio Sans"
                             }
@@ -2126,13 +2147,13 @@ export default function App() {
                       <label className="color-field" key={key}>
                         <span>
                           {key === "color"
-                            ? "Text color"
-                            : key[0].toUpperCase() + key.slice(1)}
+                            ? t("textColor")
+                            : t(key)}
                         </span>
                         <div>
                           <input
                             type="color"
-                            aria-label={`${key} color`}
+                            aria-label={t("colorLabel", { field: t(key === "color" ? "textColor" : key) })}
                             value={
                               /^#[a-fA-F0-9]{6}$/.test(
                                 selectedNode.style?.[key] || "",
@@ -2146,7 +2167,7 @@ export default function App() {
                             }
                           />
                           <input
-                            aria-label={`${key} hex`}
+                            aria-label={t("hexLabel", { field: t(key === "color" ? "textColor" : key) })}
                             value={selectedNode.style?.[key] || "transparent"}
                             onChange={(e) =>
                               updateNode(`style.${key}`, e.target.value)
@@ -2157,21 +2178,21 @@ export default function App() {
                     ))}
                     <div className="property-grid">
                       <Field
-                        label="Radius"
+                        label={t("radius")}
                         type="number"
                         min="0"
                         value={selectedNode.style?.radius || 0}
                         onChange={(v) => updateNode("style.radius", v)}
                       />
                       <Field
-                        label="Stroke"
+                        label={t("stroke")}
                         type="number"
                         min="0"
                         value={selectedNode.style?.strokeWidth || 0}
                         onChange={(v) => updateNode("style.strokeWidth", v)}
                       />
                       <Field
-                        label="Opacity"
+                        label={t("opacity")}
                         type="number"
                         min="0"
                         max="1"
@@ -2181,15 +2202,15 @@ export default function App() {
                       />
                     </div>
                     <label className="field">
-                      <span>Texture</span>
+                      <span>{t("kind.texture")}</span>
                       <select
-                        aria-label="Component texture"
+                        aria-label={t("componentTexture")}
                         value={selectedNode.assetId || ""}
                         onChange={(e) =>
                           updateNode("assetId", e.target.value || null)
                         }
                       >
-                        <option value="">None</option>
+                        <option value="">{t("none")}</option>
                         {project.assets
                           .filter((a) => a.kind !== "font")
                           .map((a) => (
@@ -2202,7 +2223,7 @@ export default function App() {
                     {selectedNode.type === "Button" && (
                       <>
                         <div className="section-title">
-                          <span>BUTTON STATES</span>
+                          <span>{t("buttonStates")}</span>
                         </div>
                         <div className="segmented">
                           {["normal", "hover", "pressed"].map((state) => (
@@ -2211,14 +2232,14 @@ export default function App() {
                               className={buttonState === state ? "active" : ""}
                               onClick={() => setButtonState(state)}
                             >
-                              {state}
+                              {t(`state.${state}`)}
                             </button>
                           ))}
                         </div>
                         <label className="field">
-                          <span>{buttonState}</span>
+                          <span>{t(`state.${buttonState}`)}</span>
                           <select
-                            aria-label="Button state texture"
+                            aria-label={t("buttonStateTexture")}
                             value={
                               selectedNode.buttonAssets?.[buttonState] || ""
                             }
@@ -2234,7 +2255,7 @@ export default function App() {
                               })
                             }
                           >
-                            <option value="">Use default</option>
+                            <option value="">{t("useDefault")}</option>
                             {project.assets
                               .filter((a) => a.kind !== "font")
                               .map((a) => (
@@ -2259,7 +2280,7 @@ export default function App() {
                       }}
                     >
                       <Icon name="comment" />
-                      为此组件添加意见
+                      {t("addReview")}
                     </button>
                     {selectedNode.type === "Control" &&
                       project.nodes.some(
@@ -2269,31 +2290,31 @@ export default function App() {
                           className="button full subtle"
                           onClick={ungroup}
                         >
-                          取消分组
+                          {t("ungroup")}
                         </button>
                       )}
                     <button className="button full danger" onClick={remove}>
                       <Icon name="trash" />
-                      删除选中组件
+                      {t("delete")}
                     </button>
                   </div>
                 </>
               ) : (
                 <div className="empty-panel">
                   <Icon name="cursor" size={32} />
-                  <h3>Select a component</h3>
-                  <p>从画布或图层树选择组件，编辑尺寸、样式和布局。</p>
+                  <h3>{t("selectComponent")}</h3>
+                  <p>{t("selectDescription")}</p>
                 </div>
               )
             ) : tab === "review" ? (
               <>
                 <div className="review-heading">
-                  <div className="eyebrow">COMPONENT REVIEW</div>
-                  <h2>Make it intentional.</h2>
-                  <p>让每条修改意见，都有明确的目标。</p>
+                  <div className="eyebrow">{t("componentReview")}</div>
+                  <h2>{t("reviewTitle")}</h2>
+                  <p>{t("reviewDescription")}</p>
                   <div className="review-summary">
                     <span>
-                      <b>{pendingReviews.length}</b> 待处理
+                      <b>{pendingReviews.length}</b> {t("status.pending")}
                     </span>
                     <span>
                       <b>
@@ -2302,7 +2323,7 @@ export default function App() {
                             .length
                         }
                       </b>{" "}
-                      待验收
+                      {t("status.review")}
                     </span>
                     <span>
                       <b>
@@ -2311,7 +2332,7 @@ export default function App() {
                             .length
                         }
                       </b>{" "}
-                      已通过
+                      {t("status.approved")}
                     </span>
                   </div>
                 </div>
@@ -2319,14 +2340,14 @@ export default function App() {
                   <span>
                     {selectedNode
                       ? selectedNode.name.toUpperCase()
-                      : "ALL COMPONENTS"}
+                      : t("allComponents")}
                   </span>
                   {selected.length > 0 && (
                     <button
                       className="text-button"
                       onClick={() => setSelected([])}
                     >
-                      显示全部
+                      {t("showAll")}
                     </button>
                   )}
                 </div>
@@ -2338,10 +2359,10 @@ export default function App() {
                     >
                       <div className="review-card-top">
                         <span className={`priority ${review.priority}`}>
-                          {priorityNames[review.priority]}优先级
+                          {t(priorityNames[review.priority])}{t("prioritySuffix")}
                         </span>
                         <span className="review-status">
-                          {statuses[review.status]}
+                          {t(statuses[review.status])}
                         </span>
                       </div>
                       <button
@@ -2358,14 +2379,14 @@ export default function App() {
                         <div className="protected">
                           <Icon name="lock" size={12} />
                           <span>
-                            保持 {review.protectedProperties.join(", ")}
+                            {t("keep")} {review.protectedProperties.join(", ")}
                           </span>
                         </div>
                       )}
                       <div className="review-card-footer">
                         <code title={review.id}>{review.id.slice(0, 20)}</code>
                         <select
-                          aria-label={`Review status ${review.id}`}
+                          aria-label={t("reviewStatusLabel", { id: review.id })}
                           value={review.status}
                           onChange={(e) =>
                             edit((d) => {
@@ -2376,7 +2397,7 @@ export default function App() {
                         >
                           {Object.entries(statuses).map(([key, label]) => (
                             <option key={key} value={key}>
-                              {label}
+                              {t(label)}
                             </option>
                           ))}
                         </select>
@@ -2386,26 +2407,26 @@ export default function App() {
                 ) : (
                   <div className="small-empty">
                     <Icon name="comment" size={24} />
-                    <p>这个组件还没有修改意见。</p>
+                    <p>{t("noReviews")}</p>
                   </div>
                 )}
                 <div className="review-form">
                   <div className="section-title">
-                    <span>NEW FEEDBACK</span>
+                    <span>{t("newFeedback")}</span>
                     <Icon name="plus" size={14} />
                   </div>
                   {selectedNode ? (
                     <form onSubmit={addReview}>
                       <div className="attached-to">
                         <Icon name="layers" size={12} />
-                        <span>关联：{selectedNode.name}</span>
+                        <span>{t("attached")}{selectedNode.name}</span>
                       </div>
                       <label>
-                        修改目标
+                        {t("reviewTarget")}
                         <input
-                          aria-label="Review target"
+                          aria-label={t("reviewTarget")}
                           required
-                          placeholder="例如：招募按钮的文案层级"
+                          placeholder={t("targetPlaceholder")}
                           value={reviewForm.target}
                           onChange={(e) =>
                             setReviewForm({
@@ -2416,11 +2437,11 @@ export default function App() {
                         />
                       </label>
                       <label>
-                        期望效果
+                        {t("expectedResult")}
                         <textarea
-                          aria-label="Expected result"
+                          aria-label={t("expectedResult")}
                           required
-                          placeholder="描述需要发生的变化…"
+                          placeholder={t("expectedPlaceholder")}
                           value={reviewForm.expected}
                           onChange={(e) =>
                             setReviewForm({
@@ -2431,9 +2452,9 @@ export default function App() {
                         />
                       </label>
                       <label>
-                        禁止修改的属性
+                        {t("protected")}
                         <input
-                          aria-label="Protected properties"
+                          aria-label={t("protected")}
                           placeholder="frame.x, frame.y"
                           value={reviewForm.protectedProperties}
                           onChange={(e) =>
@@ -2446,7 +2467,7 @@ export default function App() {
                       </label>
                       <div className="review-submit">
                         <select
-                          aria-label="Review priority"
+                          aria-label={t("reviewPriority")}
                           value={reviewForm.priority}
                           onChange={(e) =>
                             setReviewForm({
@@ -2455,27 +2476,28 @@ export default function App() {
                             })
                           }
                         >
-                          <option value="high">高优先级</option>
-                          <option value="medium">中优先级</option>
-                          <option value="low">低优先级</option>
+                          <option value="critical">{t("criticalPriority")}</option>
+                          <option value="high">{t("highPriority")}</option>
+                          <option value="medium">{t("mediumPriority")}</option>
+                          <option value="low">{t("lowPriority")}</option>
                         </select>
                         <button className="button primary small" type="submit">
                           <Icon name="plus" size={13} />
-                          添加意见
+                          {t("submitReview")}
                         </button>
                       </div>
                     </form>
                   ) : (
-                    <p className="hint">请先选择一个按钮、卡片或其他组件。</p>
+                    <p className="hint">{t("reviewSelectHint")}</p>
                   )}
                 </div>
               </>
             ) : (
               <>
                 <div className="review-heading">
-                  <div className="eyebrow">INCREMENTAL CHANGES</div>
-                  <h2>Every change, visible.</h2>
-                  <p>导入本地 patch，只更新被审阅的组件。</p>
+                  <div className="eyebrow">{t("incremental")}</div>
+                  <h2>{t("changesTitle")}</h2>
+                  <p>{t("changesHint")}</p>
                 </div>
                 <div className="inspector-section">
                   <button
@@ -2484,17 +2506,17 @@ export default function App() {
                     disabled={busy}
                   >
                     <Icon name="upload" />
-                    导入 Codex patch
+                    {t("importPatch")}
                   </button>
                   <button
                     className="button full subtle"
                     onClick={samplePatch}
                     disabled={busy}
                   >
-                    查看并应用示例修改
+                    {t("samplePatch")}
                   </button>
                   <p className="hint">
-                    过期版本、受保护属性、无关组件修改会被拒绝。验收需手动完成。
+                    {t("patchHint")}
                   </p>
                 </div>
                 {project.history.length ? (
@@ -2533,12 +2555,12 @@ export default function App() {
                               accept(value);
                               undo.current = [];
                               redo.current = [];
-                              notify("已回退修改并恢复原审阅状态。");
+                              notify(t("notify.rollback"));
                             })
                           }
                         >
                           <Icon name="undo" size={13} />
-                          {entry.rolledBack ? "已回退" : "安全回退此次修改"}
+                          {entry.rolledBack ? t("rolledBack") : t("rollback")}
                         </button>
                       )}
                     </article>
@@ -2547,9 +2569,9 @@ export default function App() {
                   <div className="small-empty">
                     <Icon name="history" size={28} />
                     <p>
-                      还没有增量修改记录。
+                      {t("noHistory")}
                       <br />
-                      导出反馈，再导入 Codex 返回的 patch。
+                      {t("noHistoryHint")}
                     </p>
                   </div>
                 )}
@@ -2561,9 +2583,9 @@ export default function App() {
               <Icon name="code" size={18} />
               <span>
                 <strong>Godot 4</strong>
-                <small>Native Control nodes</small>
+                <small>{t("nativeNodes")}</small>
               </span>
-              <span className="export-label">EXPERIMENTAL</span>
+              <span className="export-label">{t("experimental")}</span>
             </div>
             <button
               className="button full"
@@ -2574,14 +2596,14 @@ export default function App() {
                   downloadArchive(result.downloadUrl);
                   notify(
                     result.warnings?.length
-                      ? `Godot 项目已导出，有 ${result.warnings.length} 条兼容性提示；请查看 ZIP 内 export-warnings.json。`
-                      : "Godot 项目已导出。请在 Godot 4 中运行验证。",
+                      ? { key: "notify.godotWarnings", values: { count: result.warnings.length } }
+                      : t("notify.godot"),
                   );
                 })
               }
             >
               <Icon name="download" />
-              导出 Godot 项目
+              {t("exportGodot")}
             </button>
           </div>
         </aside>
@@ -2589,28 +2611,28 @@ export default function App() {
       <footer className="app-footer">
         <span>
           <i className="live-dot" />
-          LOCAL WORKSPACE <b>·</b> r{project.revision}
+          {t("localWorkspace")} <b>·</b> r{project.revision}
         </span>
         <span>
-          {project.nodes.length} components <b>·</b> {project.assets.length}{" "}
-          assets <b>·</b> {project.reviews.length} reviews
+          {project.nodes.length} {t("componentsCount")} <b>·</b> {project.assets.length}{" "}
+          {t("assetsCount")} <b>·</b> {project.reviews.length} {t("reviewsCount")}
         </span>
         <div>
-          <button onClick={() => projectInput.current.click()}>打开项目</button>
-          <button onClick={() => patchInput.current.click()}>导入 patch</button>
-          <span>PHASE 01 / DESIGN EXPERIMENT</span>
+          <button onClick={() => setDialog("import")}>{t("importUI")}</button>
+          <button onClick={() => patchInput.current.click()}>{t("importPatch")}</button>
+          <span>{t("phase")}</span>
         </div>
       </footer>
       {busy && (
-        <div className="busy-shield" aria-label="Working" role="status">
-          <span>处理中…</span>
+        <div className="busy-shield" aria-label={t("working")} role="status">
+          <span>{t("working")}</span>
         </div>
       )}
       {error && (
         <div role="alert" className="error-banner">
           <Icon name="close" />
-          <span>{error}</span>
-          <button aria-label="Dismiss error" onClick={() => setError("")}>
+          <span>{errorMessage(locale, error)}</span>
+          <button aria-label={t("closeError")} onClick={() => setError("")}>
             <Icon name="close" />
           </button>
         </div>
@@ -2618,33 +2640,35 @@ export default function App() {
       {toast && (
         <div role="status" className="toast">
           <Icon name="check" size={16} />
-          {toast}
+          {translateMessage(locale, toast)}
         </div>
       )}
-      {dialog && (
+      {preferenceError && <div className="preference-notice" role="status">{t("languageFailure")}</div>}
+      {dialog === "import" && <ImportDialog t={t} locale={locale} busy={busy} externalError={error} onClearError={() => setError("")} onClose={() => setDialog(null)} onImport={importProject} downloadJson={downloadJson} />}
+      {dialog === "patch" && (
         <div
           className="modal-backdrop"
           onClick={(e) => {
             if (e.target === e.currentTarget) setDialog(null);
           }}
         >
-          <section className="modal" role="dialog" aria-label="Review patch">
+          <section className="modal" role="dialog" aria-label={t("patchDialog")}>
             <div className="modal-heading">
               <div>
-                <span className="eyebrow">LOCAL FILE EXCHANGE</span>
-                <h2>Review incremental patch</h2>
+                <span className="eyebrow">{t("fileExchange")}</span>
+                <h2>{t("patchDialogTitle")}</h2>
               </div>
               <Tool
                 icon="close"
-                label="Close patch dialog"
+                label={t("closePatch")}
                 onClick={() => setDialog(null)}
               />
             </div>
             <p>
-              应用前检查目标组件、版本和字段。系统将校验修改约束，并记录可回退的差异。
+              {t("patchDialogHint")}
             </p>
             <textarea
-              aria-label="Patch JSON"
+              aria-label={t("patchJSON")}
               spellCheck={false}
               value={jsonText}
               onChange={(e) => setJsonText(e.target.value)}
@@ -2664,7 +2688,7 @@ export default function App() {
                 }}
               >
                 <Icon name="download" />
-                保存 patch 文件
+                {t("savePatch")}
               </button>
               <button
                 className="button primary"
@@ -2680,7 +2704,7 @@ export default function App() {
                 }}
               >
                 <Icon name="check" />
-                应用增量修改
+                {t("applyPatch")}
               </button>
             </div>
           </section>
@@ -2688,7 +2712,7 @@ export default function App() {
       )}
       <input
         data-testid="component-file"
-        aria-label="Component template file"
+        aria-label={t("componentFile")}
         hidden
         type="file"
         accept="application/json,.json"
@@ -2697,7 +2721,7 @@ export default function App() {
       />
       <input
         data-testid="patch-file"
-        aria-label="Patch file"
+        aria-label={t("patchFile")}
         hidden
         type="file"
         accept="application/json,.json"
@@ -2705,17 +2729,8 @@ export default function App() {
         onChange={(e) => uploadJson(e, "patch")}
       />
       <input
-        data-testid="project-file"
-        aria-label="Project file"
-        hidden
-        type="file"
-        accept="application/json,.json"
-        ref={projectInput}
-        onChange={(e) => uploadJson(e, "project")}
-      />
-      <input
         data-testid="asset-file"
-        aria-label="Asset file"
+        aria-label={t("assetFile")}
         hidden
         type="file"
         accept="image/png,image/jpeg,image/webp,image/svg+xml,.ttf,.otf"

@@ -1,0 +1,26 @@
+{
+  "version": "0.1.2",
+  "checkedOn": "2026-10-25",
+  "unitTests": {
+    "passed": 42,
+    "failed": 0
+  },
+  "browserImportAndLanguage": {
+    "passed": 9,
+    "failed": 0
+  },
+  "browserRegression": {
+    "passed": 16,
+    "failed": 0
+  },
+  "componentChecks": {
+    "passed": 11,
+    "failed": 0
+  },
+  "windowsWine": {
+    "passed": 15,
+    "failed": 0
+  },
+  "nativeWindows": "Not verified in this cloud environment; workflow provided",
+  "installerSha256": "e754f2651027f9df1397fb5bc87af83ef25328e2362f0ed2acf589efcdc68bcc"
+}

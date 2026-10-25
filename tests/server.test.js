@@ -95,3 +95,31 @@ test('stale feedback and missing imported assets cannot replace a valid working 
   assert.equal(retained.name, changed.name);
   assert.deepEqual(retained.assets, changed.assets);
 }));
+
+test('language preferences persist across a new server port without changing design content or revision', async () => {
+  const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'studio-language-'));
+  let server, studio;
+  async function open() {
+    studio = await createStudioServer({ dataDir, vite: false });
+    server = await new Promise(resolve => { const s = studio.httpServer.listen(0, '127.0.0.1', () => resolve(s)); });
+    return `http://127.0.0.1:${server.address().port}`;
+  }
+  async function close() { if (server) { await new Promise(resolve => server.close(resolve)); server = null; } await studio?.close(); }
+  try {
+    let base = await open();
+    const original = await (await fetch(base + '/api/project')).json();
+    assert.deepEqual(await (await fetch(base + '/api/preferences')).json(), { locale: null });
+    const put = locale => fetch(base + '/api/preferences', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ locale }) });
+    assert.equal((await put('en')).status, 200);
+    assert.equal((await put('de')).status, 400);
+    assert.deepEqual(await (await fetch(base + '/api/project')).json(), original);
+    const before = base;
+    await close();
+    base = await open();
+    assert.notEqual(base, before);
+    assert.deepEqual(await (await fetch(base + '/api/preferences')).json(), { locale: 'en' });
+    assert.deepEqual(await (await fetch(base + '/api/project')).json(), original);
+    assert.equal((await put('zh-CN')).status, 200);
+    assert.deepEqual(JSON.parse(await fs.readFile(path.join(dataDir, 'preferences.json'), 'utf8')), { locale: 'zh-CN' });
+  } finally { await close(); await fs.rm(dataDir, { recursive: true, force: true }); }
+});

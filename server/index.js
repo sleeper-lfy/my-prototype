@@ -19,6 +19,12 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
   const projectFile = path.join(dataDir, 'project.json');
   const exportDir = path.join(dataDir, 'exports');
   const assetDir = path.join(dataDir, 'assets');
+  const preferencesFile = path.join(dataDir, 'preferences.json');
+  let preferences = { locale: null };
+  try {
+    const saved = JSON.parse(await fs.readFile(preferencesFile, 'utf8'));
+    if (['zh-CN', 'en'].includes(saved.locale)) preferences.locale = saved.locale;
+  } catch { /* Optional preferences never prevent opening the project. */ }
   await fs.mkdir(exportDir, { recursive: true });
   await fs.mkdir(assetDir, { recursive: true });
   const sample = () => fs.readFile(path.join(ROOT, 'examples/character.project.json'), 'utf8').then(JSON.parse);
@@ -57,6 +63,16 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
   app.use('/assets', express.static(path.join(ROOT, 'public/assets')));
   app.use('/local-assets', express.static(assetDir));
   app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'Game UI Studio', schemaVersion: 1 }));
+  app.get('/api/preferences', (_req, res) => res.json(preferences));
+  app.put('/api/preferences', async (req, res) => res.json(await mutate(async () => {
+    if (!['zh-CN', 'en'].includes(req.body.locale)) throw fail('Unsupported interface language.');
+    const next = { locale: req.body.locale };
+    const temp = `${preferencesFile}.${randomUUID()}.tmp`;
+    await fs.writeFile(temp, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+    await fs.rename(temp, preferencesFile);
+    preferences = next;
+    return next;
+  })));
   app.get('/api/project', (_req, res) => res.json(current));
   app.put('/api/project', async (req, res) => res.json(await mutate(async () => {
     if (req.body.id !== current.id) throw fail('Project identity changed; use Import project.');

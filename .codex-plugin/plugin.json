@@ -1,6 +1,6 @@
 {
   "name": "game-ui-studio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Local game UI component reviews, constrained JSON patches, and Godot 4 verification.",
   "repository": "https://github.com/sleeper-lfy/my-prototype",
   "license": "MIT",
@@ -8,6 +8,8 @@
   "interface": {
     "displayName": "Game UI Studio",
     "shortDescription": "Review local game UI with scoped patches and Godot checks",
-    "defaultPrompt": ["Use $game-ui-studio to inspect this feedback package and produce a validated incremental patch."]
+    "defaultPrompt": [
+      "Use $game-ui-studio to inspect this feedback package and produce a validated incremental patch."
+    ]
   }
 }

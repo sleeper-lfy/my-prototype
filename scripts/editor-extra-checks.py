@@ -58,6 +58,7 @@ with tempfile.TemporaryDirectory(prefix='studio-ui-extra-') as temporary:
             page.on('pageerror', lambda error: result['browserErrors'].append(str(error)))
             page.goto(base)
             page.get_by_test_id('layer-character-card').wait_for()
+            page.get_by_test_id('language-select').select_option('en')
             page.wait_for_function('window.__studioCapture !== undefined')
             def project():
                 return page.request.get(base + '/api/project').json()
@@ -71,7 +72,7 @@ with tempfile.TemporaryDirectory(prefix='studio-ui-extra-') as temporary:
             n0 = len(original['nodes'])
             page.get_by_test_id('layer-character-card').click()
             with page.expect_download() as download:
-                page.get_by_role('button', name='导出组件', exact=True).click()
+                page.get_by_role('button', name='Export component', exact=True).click()
             template_path = Path(temporary) / 'character.component.json'
             download.value.save_as(template_path)
             template = json.loads(template_path.read_text(encoding='utf-8'))
@@ -89,7 +90,7 @@ with tempfile.TemporaryDirectory(prefix='studio-ui-extra-') as temporary:
                 wait_nodes(before + 1)
                 assert project()['nodes'][-1]['type'] == node_type
                 passed('insert-' + node_type, 'Created through UI and persisted through local API')
-            page.get_by_role('button', name='资源', exact=True).click()
+            page.get_by_role('button', name='Assets', exact=True).click()
             page.get_by_label('Asset kind').select_option('font')
             page.get_by_test_id('asset-file').set_input_files(ROOT / 'public/assets/studio-serif.ttf')
             page.wait_for_function("Array.from(document.fonts).some(face => face.family.replaceAll(String.fromCharCode(34), '') === 'studio-serif.ttf' && face.status === 'loaded')")

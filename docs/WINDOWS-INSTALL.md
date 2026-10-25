@@ -4,14 +4,22 @@
 
 ## 下载与使用
 
-1. 下载 [Game-UI-Studio-Setup-0.1.1-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.1.1/Game-UI-Studio-Setup-0.1.1-x64.exe)。[发行文件目录](../releases/v0.1.1/) 提供校验和及构建、验证记录。
+1. 下载 [Game-UI-Studio-Setup-0.1.2-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.1.2/Game-UI-Studio-Setup-0.1.2-x64.exe)。[发行文件目录](../releases/v0.1.2/) 提供校验和及构建、验证记录。
 2. 双击安装包。应用安装到当前 Windows 用户的目录，创建桌面和开始菜单入口，完成后打开默认浏览器中的编辑器。
 3. 以后双击桌面 **Game UI Studio** 即可使用。修改自动保存在本机；重复打开会复用同一实例。
+
+## 导入 UI 与切换语言
+
+顶部点击 **导入 UI / Import UI**，选择或拖入 `.json` 项目文件，也可粘贴完整项目 JSON 并点击检查。窗口会显示项目名称、画布尺寸、组件数及资源数；确认后导入为可独立编辑的组件。默认先下载当前项目 JSON 备份。素材文件需先导入资源库；备份 JSON 不包含素材文件本体。
+
+工具接受原生项目 JSON。已有 HTML/React 页面需由 Codex 转为项目组件配置；组件模板使用图层面板的“导入组件”，增量补丁使用差异面板的“导入 Codex 补丁”。
+
+右上角语言选择器支持 **简体中文 / English**。语言会即时应用到工具栏、属性、资源、审阅、差异、导入窗口和提示。选择保存在本机数据目录的 `preferences.json`，应用重启或本地端口变化后仍会恢复。切换语言不修改设计文案或项目版本。
 
 安装包尚未签名，Windows 可能显示“未知发布者”或 SmartScreen 提示。可以用发行目录中的 SHA-256 核对下载文件：
 
 ```powershell
-Get-FileHash "$HOME\Downloads\Game-UI-Studio-Setup-0.1.1-x64.exe" -Algorithm SHA256
+Get-FileHash "$HOME\Downloads\Game-UI-Studio-Setup-0.1.2-x64.exe" -Algorithm SHA256
 ```
 
 ## 数据、退出与卸载
@@ -47,6 +55,6 @@ npm run package:windows
 
 构建脚本先构建前端，再按锁文件安装最小运行依赖，下载固定版本的官方 Windows Node.js ZIP 并核对 SHA-256，最后编译 NSIS。临时文件使用系统临时目录；工作项目、个人资源、凭据和研究依赖不会进入安装包。
 
-可配置 `MAKENSIS_BIN` 指向 NSIS 编译器、`STUDIO_BUILD_DIR` 指向构建目录、`NODE_WINDOWS_ZIP` 指向已下载的固定版本 Node.js ZIP。即使使用本地 ZIP 也必须通过预定校验和。发行产物位于 `releases/v0.1.1/`。
+可配置 `MAKENSIS_BIN` 指向 NSIS 编译器、`STUDIO_BUILD_DIR` 指向构建目录、`NODE_WINDOWS_ZIP` 指向已下载的固定版本 Node.js ZIP。即使使用本地 ZIP 也必须通过预定校验和。发行产物位于 `releases/v0.1.2/`。
 
 原生 Windows 验收脚本为 `scripts/test-windows-install.ps1`，只允许在没有既有应用数据的干净测试用户中运行。GitHub Actions 的 Windows installer workflow 会执行安装、启动、保存、升级、卸载和数据保留检查。是否通过以实际报告为准，工作流存在不代表已经在 Windows 实机验收。

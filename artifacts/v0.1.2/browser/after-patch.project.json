@@ -1,0 +1,1131 @@
+{
+  "schemaVersion": 1,
+  "id": "ashfall",
+  "name": "Ashfall · Character dossier",
+  "revision": 10,
+  "canvas": {
+    "width": 960,
+    "height": 600,
+    "background": "#111b18"
+  },
+  "tokens": {
+    "colors": {
+      "ink": "#111b18",
+      "forest": "#253d35",
+      "verdigris": "#4d6753",
+      "gold": "#c0a96c",
+      "parchment": "#e2dfc9",
+      "muted": "#81917f"
+    },
+    "fonts": {
+      "display": "Studio Serif",
+      "body": "Studio Sans"
+    },
+    "rules": [
+      "Dark fantasy RPG art direction: weathered verdigris, restrained antique gold, parchment typography. No bright dashboard-blue default styling.",
+      "Use serif display typography for hero names and lore; sans for HUD labels and controls. Preserve hierarchy and quiet negative space.",
+      "Main CTA uses three textured states. Nine-slice panel corners are 12px; do not stretch their corner ornament.",
+      "Free-position portrait card and CTA preserve their exact placement unless a review explicitly permits layout edits.",
+      "Stats are a horizontal automatic layout. Move the parent container, not the positions of its individual children.",
+      "Original vector illustration is a concept-level asset. Final game art quality requires separate human art-direction acceptance."
+    ]
+  },
+  "assets": [
+    {
+      "id": "valley",
+      "name": "Northern Reach · landscape",
+      "kind": "background",
+      "src": "/assets/valley.svg"
+    },
+    {
+      "id": "portrait",
+      "name": "Elara Voss · original vector portrait",
+      "kind": "portrait",
+      "src": "/assets/warden.svg"
+    },
+    {
+      "id": "panel",
+      "name": "Verdigris · nine-slice frame",
+      "kind": "nineSlice",
+      "src": "/assets/panel.svg",
+      "margins": {
+        "left": 12,
+        "top": 12,
+        "right": 12,
+        "bottom": 12
+      }
+    },
+    {
+      "id": "button-normal",
+      "name": "Gilt button · normal",
+      "kind": "button",
+      "src": "/assets/button-normal.svg"
+    },
+    {
+      "id": "button-hover",
+      "name": "Gilt button · hover",
+      "kind": "button",
+      "src": "/assets/button-hover.svg"
+    },
+    {
+      "id": "button-pressed",
+      "name": "Gilt button · pressed",
+      "kind": "button",
+      "src": "/assets/button-pressed.svg"
+    },
+    {
+      "id": "shield",
+      "name": "Shield sigil",
+      "kind": "icon",
+      "src": "/assets/shield.svg"
+    },
+    {
+      "id": "sword",
+      "name": "Sword sigil",
+      "kind": "icon",
+      "src": "/assets/sword.svg"
+    },
+    {
+      "id": "leaf",
+      "name": "Leaf sigil",
+      "kind": "icon",
+      "src": "/assets/leaf.svg"
+    },
+    {
+      "id": "star",
+      "name": "Star sigil",
+      "kind": "icon",
+      "src": "/assets/star.svg"
+    },
+    {
+      "id": "font-serif",
+      "name": "Studio Serif",
+      "kind": "font",
+      "src": "/assets/studio-serif.ttf"
+    },
+    {
+      "id": "font-sans",
+      "name": "Studio Sans",
+      "kind": "font",
+      "src": "/assets/studio-sans.ttf"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "scene-backdrop",
+      "name": "Northern Reach / painted backdrop",
+      "type": "TextureRect",
+      "parentId": null,
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 600
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": true,
+      "visible": true,
+      "assetId": "valley"
+    },
+    {
+      "id": "brand",
+      "name": "ASHFALL / wordmark",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 30,
+        "y": 25,
+        "width": 220,
+        "height": 30
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 23,
+        "fontFamily": "Studio Serif",
+        "color": "#d9cda4",
+        "text": "A S H F A L L",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "chapter",
+      "name": "Roster / section label",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 379,
+        "y": 33,
+        "width": 330,
+        "height": 20
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 10,
+        "color": "#8a9686",
+        "text": "C H A R A C T E R   D O S S I E R",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "chapter-count",
+      "name": "Roster / count",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 799,
+        "y": 31,
+        "width": 132,
+        "height": 22
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 11,
+        "color": "#9caa95",
+        "align": "right",
+        "text": "YOUR PARTY    03 / 06",
+        "fontFamily": "Studio Sans"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "character-card",
+      "name": "Elara / portrait card",
+      "type": "Panel",
+      "parentId": null,
+      "frame": {
+        "x": 38,
+        "y": 84,
+        "width": 330,
+        "height": 454
+      },
+      "style": {
+        "opacity": 1,
+        "fill": "#15251f",
+        "stroke": "#4d5545",
+        "strokeWidth": 1,
+        "radius": 2
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "character-portrait",
+      "name": "Elara / illustration",
+      "type": "TextureRect",
+      "parentId": "character-card",
+      "frame": {
+        "x": 8,
+        "y": 8,
+        "width": 314,
+        "height": 438
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true,
+      "assetId": "portrait"
+    },
+    {
+      "id": "portrait-caption-bg",
+      "name": "Elara / nameplate",
+      "type": "Panel",
+      "parentId": "character-card",
+      "frame": {
+        "x": 22,
+        "y": 369,
+        "width": 286,
+        "height": 60
+      },
+      "style": {
+        "opacity": 0.93,
+        "fill": "#101d18",
+        "stroke": "#4c5942",
+        "strokeWidth": 1,
+        "radius": 0
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "portrait-caption",
+      "name": "Elara / oath",
+      "type": "Label",
+      "parentId": "character-card",
+      "frame": {
+        "x": 34,
+        "y": 380,
+        "width": 262,
+        "height": 23
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 16,
+        "color": "#d2c28f",
+        "align": "center",
+        "text": "THE EVERGREEN WARDEN"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "portrait-caption-detail",
+      "name": "Elara / origin",
+      "type": "Label",
+      "parentId": "character-card",
+      "frame": {
+        "x": 34,
+        "y": 407,
+        "width": 262,
+        "height": 16
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#82927b",
+        "align": "center",
+        "text": "N O R T H E R N   R E A C H",
+        "fontFamily": "Studio Sans"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "rarity",
+      "name": "Elara / rarity",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 398,
+        "y": 91,
+        "width": 420,
+        "height": 20
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 11,
+        "color": "#c0a96c",
+        "text": "✦  LEGENDARY     /     SENTINEL",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "hero-name",
+      "name": "Elara / name",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 396,
+        "y": 121,
+        "width": 528,
+        "height": 54
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 44,
+        "color": "#e2dfc9",
+        "text": "Elara Voss",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "hero-subtitle",
+      "name": "Elara / title",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 183,
+        "width": 500,
+        "height": 22
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 17,
+        "color": "#a6b29d",
+        "text": "Keeper of the last green flame",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "hero-lore",
+      "name": "Elara / biography",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 221,
+        "width": 490,
+        "height": 46
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 15,
+        "color": "#7f9282",
+        "text": "“The forest remembers every oath.\n  I intend to keep mine.”",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "stats-row",
+      "name": "Combat attributes / auto layout",
+      "type": "HBoxContainer",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 286,
+        "width": 516,
+        "height": 66
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "horizontal",
+        "gap": 14,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "stat-vitality",
+      "name": "Vitality stat",
+      "type": "Control",
+      "parentId": "stats-row",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 158,
+        "height": 66
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "vitality-line",
+      "name": "Vitality divider",
+      "type": "Panel",
+      "parentId": "stat-vitality",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 145,
+        "height": 1
+      },
+      "style": {
+        "opacity": 1,
+        "fill": "#48513a",
+        "strokeWidth": 0
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "vitality-label",
+      "name": "Vitality label",
+      "type": "Label",
+      "parentId": "stat-vitality",
+      "frame": {
+        "x": 0,
+        "y": 12,
+        "width": 148,
+        "height": 15
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#7b8d79",
+        "text": "VITALITY",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "vitality-value",
+      "name": "Vitality value",
+      "type": "Label",
+      "parentId": "stat-vitality",
+      "frame": {
+        "x": 0,
+        "y": 32,
+        "width": 145,
+        "height": 31
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 25,
+        "color": "#cfceb5",
+        "text": "2,480",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "stat-attack",
+      "name": "Attack stat",
+      "type": "Control",
+      "parentId": "stats-row",
+      "frame": {
+        "x": 174,
+        "y": 0,
+        "width": 158,
+        "height": 66
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "attack-line",
+      "name": "Attack divider",
+      "type": "Panel",
+      "parentId": "stat-attack",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 145,
+        "height": 1
+      },
+      "style": {
+        "opacity": 1,
+        "fill": "#48513a",
+        "strokeWidth": 0
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "attack-label",
+      "name": "Attack label",
+      "type": "Label",
+      "parentId": "stat-attack",
+      "frame": {
+        "x": 0,
+        "y": 12,
+        "width": 148,
+        "height": 15
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#7b8d79",
+        "text": "ATTACK",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "attack-value",
+      "name": "Attack value",
+      "type": "Label",
+      "parentId": "stat-attack",
+      "frame": {
+        "x": 0,
+        "y": 32,
+        "width": 145,
+        "height": 31
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 25,
+        "color": "#cfceb5",
+        "text": "186",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "stat-defense",
+      "name": "Defense stat",
+      "type": "Control",
+      "parentId": "stats-row",
+      "frame": {
+        "x": 348,
+        "y": 0,
+        "width": 158,
+        "height": 66
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "defense-line",
+      "name": "Defense divider",
+      "type": "Panel",
+      "parentId": "stat-defense",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 145,
+        "height": 1
+      },
+      "style": {
+        "opacity": 1,
+        "fill": "#48513a",
+        "strokeWidth": 0
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "defense-label",
+      "name": "Defense label",
+      "type": "Label",
+      "parentId": "stat-defense",
+      "frame": {
+        "x": 0,
+        "y": 12,
+        "width": 148,
+        "height": 15
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#7b8d79",
+        "text": "DEFENSE",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "defense-value",
+      "name": "Defense value",
+      "type": "Label",
+      "parentId": "stat-defense",
+      "frame": {
+        "x": 0,
+        "y": 32,
+        "width": 145,
+        "height": 31
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 25,
+        "color": "#cfceb5",
+        "text": "324",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ability-rule",
+      "name": "Abilities / divider",
+      "type": "Panel",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 372,
+        "width": 514,
+        "height": 1
+      },
+      "style": {
+        "opacity": 1,
+        "fill": "#344535",
+        "strokeWidth": 0
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ability-frame",
+      "name": "Verdant oath / nine-slice frame",
+      "type": "Panel",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 390,
+        "width": 58,
+        "height": 58
+      },
+      "style": {
+        "opacity": 1,
+        "fill": "#1b2a21",
+        "stroke": "#68735a",
+        "strokeWidth": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true,
+      "assetId": "panel"
+    },
+    {
+      "id": "ability-icon",
+      "name": "Verdant oath / leaf sigil",
+      "type": "TextureRect",
+      "parentId": "ability-frame",
+      "frame": {
+        "x": 10,
+        "y": 10,
+        "width": 38,
+        "height": 38
+      },
+      "style": {
+        "opacity": 1
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true,
+      "assetId": "leaf"
+    },
+    {
+      "id": "ability-name",
+      "name": "Verdant oath / name",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 473,
+        "y": 392,
+        "width": 400,
+        "height": 22
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Serif",
+        "fontSize": 18,
+        "color": "#c9c9af",
+        "text": "Verdant oath",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ability-description",
+      "name": "Verdant oath / description",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 473,
+        "y": 421,
+        "width": 416,
+        "height": 24
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 11,
+        "color": "#81917f",
+        "text": "Shield all allies. Restore 12% of maximum vitality.",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "recruit-button",
+      "name": "Recruit / primary action",
+      "type": "Button",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 477,
+        "width": 338,
+        "height": 50
+      },
+      "style": {
+        "opacity": 1,
+        "fontFamily": "Studio Sans",
+        "fontSize": 14,
+        "color": "#24291b",
+        "align": "center",
+        "fill": "#c2ad72",
+        "stroke": "#d8c68c",
+        "strokeWidth": 1,
+        "radius": 2,
+        "text": "RECRUIT · 240"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true,
+      "buttonAssets": {
+        "normal": "button-normal",
+        "hover": "button-hover",
+        "pressed": "button-pressed"
+      }
+    },
+    {
+      "id": "details-button",
+      "name": "Inspect / secondary action",
+      "type": "Button",
+      "parentId": null,
+      "frame": {
+        "x": 737,
+        "y": 445,
+        "width": 176,
+        "height": 50
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 11,
+        "color": "#adbb9f",
+        "align": "center",
+        "fill": "#1a2922",
+        "stroke": "#4a5b43",
+        "strokeWidth": 1,
+        "radius": 2,
+        "text": "INSPECT",
+        "fontFamily": "Studio Sans"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "recruit-note",
+      "name": "Recruit / supporting note",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 399,
+        "y": 539,
+        "width": 512,
+        "height": 16
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#64755f",
+        "text": "ONE HERO. A THOUSAND UNTOLD STORIES.",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "footer-left",
+      "name": "Journal / breadcrumb",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 30,
+        "y": 577,
+        "width": 470,
+        "height": 16
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#6c7b66",
+        "text": "THE NORTHERN REACH    /    FIELD JOURNAL 07",
+        "fontFamily": "Studio Sans",
+        "align": "left"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "footer-right",
+      "name": "Journal / page marker",
+      "type": "Label",
+      "parentId": null,
+      "frame": {
+        "x": 752,
+        "y": 577,
+        "width": 179,
+        "height": 16
+      },
+      "style": {
+        "opacity": 1,
+        "fontSize": 9,
+        "color": "#6c7b66",
+        "align": "right",
+        "text": "EST. THIRD AGE   •   019",
+        "fontFamily": "Studio Sans"
+      },
+      "layout": {
+        "mode": "free",
+        "gap": 0,
+        "padding": 0
+      },
+      "locked": false,
+      "visible": true
+    }
+  ],
+  "reviews": [
+    {
+      "id": "review-cta",
+      "nodeId": "recruit-button",
+      "target": "Primary recruitment button label",
+      "expected": "Make the cost explicit: change the label to “RECRUIT · 240”. Preserve the button artwork, dimensions, and location.",
+      "protectedProperties": [
+        "frame.x",
+        "frame.y",
+        "frame.width",
+        "frame.height",
+        "style.fill",
+        "style.fontSize",
+        "buttonAssets.normal",
+        "buttonAssets.hover",
+        "buttonAssets.pressed"
+      ],
+      "priority": "high",
+      "status": "modified",
+      "createdAt": "2026-10-23T08:00:00Z"
+    },
+    {
+      "id": "review-card",
+      "nodeId": "character-card",
+      "target": "Portrait card outer border",
+      "expected": "Increase the outer border contrast with antique gold #b59a62. Keep the portrait, nameplate, fill, dimensions, and all child positions unchanged.",
+      "protectedProperties": [
+        "frame.x",
+        "frame.y",
+        "frame.width",
+        "frame.height",
+        "style.fill"
+      ],
+      "priority": "medium",
+      "status": "pending",
+      "createdAt": "2026-10-23T08:01:00Z"
+    },
+    {
+      "id": "review-42d8c039-c33b-419c-96bf-d2b8c760a248",
+      "nodeId": "character-card",
+      "target": "Browser acceptance: portrait border",
+      "expected": "Increase the card border contrast; preserve its portrait and component ID.",
+      "protectedProperties": [
+        "frame.width",
+        "frame.height",
+        "style.fill"
+      ],
+      "priority": "high",
+      "status": "pending",
+      "createdAt": "2026-10-25T04:51:18.544Z"
+    }
+  ],
+  "history": [
+    {
+      "id": "patch-45cbfe60-c7f0-4f4a-87ed-a9ac36b69fa6",
+      "kind": "patch",
+      "summary": "Expose the recruitment cost without rebuilding the screen",
+      "createdAt": "2026-10-25T04:51:19.903Z",
+      "baseRevision": 9,
+      "revision": 10,
+      "reviewIds": [
+        "review-cta"
+      ],
+      "reviewStatuses": {
+        "review-cta": "pending"
+      },
+      "changes": [
+        {
+          "nodeId": "recruit-button",
+          "path": "style.text",
+          "before": "RECRUIT HERO",
+          "beforeExists": true,
+          "after": "RECRUIT · 240"
+        }
+      ],
+      "rolledBack": false
+    }
+  ]
+}

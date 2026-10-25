@@ -64,13 +64,17 @@ def read_zip(path):
 
 
 def main():
+    global ARTIFACTS, RESULT_FILE
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=4381)
     parser.add_argument("--chromium", default=shutil.which("chromium") or shutil.which("google-chrome"))
     parser.add_argument("--headed", action="store_true")
     parser.add_argument("--development", action="store_true", help="Use Vite dev middleware instead of building and serving production")
+    parser.add_argument("--out", type=Path, default=ARTIFACTS, help="Directory for this run; use a versioned path to retain earlier evidence")
     args = parser.parse_args()
-    ARTIFACTS.mkdir(exist_ok=True)
+    ARTIFACTS = args.out.resolve()
+    RESULT_FILE = ARTIFACTS / "browser-test-results.json"
+    ARTIFACTS.mkdir(parents=True, exist_ok=True)
     results = {
         "schemaVersion": 1,
         "runner": "Python Playwright / real Chromium UI interactions",
@@ -192,6 +196,8 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
 
     def open_editor():
         response = page.goto(base, wait_until="networkidle")
+        page.get_by_test_id("language-select").select_option("en")
+        expect(page.locator("html")).to_have_attribute("lang", "en")
         assert_true(response.status == 200, "Editor did not load")
         expect(layer("recruit-button")).to_be_visible()
         expect(page.locator(".konvajs-content canvas").first).to_be_visible()
@@ -201,20 +207,20 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
     check("editor loads real Konva scene", open_editor)
 
     def capture_original():
-        target = download(page.get_by_role("button", name="导出画布 PNG", exact=True), "sample-canvas.png")
+        target = download(page.get_by_role("button", name="Export canvas PNG", exact=True), "sample-canvas.png")
         raw = target.read_bytes()
         assert_true(raw[:8] == bytes([137,80,78,71,13,10,26,10]), "Canvas export is not PNG")
         size = struct.unpack(">II", raw[16:24])
         assert_true(size == (960, 600), f"Canvas must have native size, got {size}")
         (ARTIFACTS / "canvas.png").write_bytes(raw)
         page.screenshot(path=str(ARTIFACTS / "editor.png"), full_page=True)
-        results["canvasScreenshot"] = {"path": "artifacts/canvas.png", "width": size[0], "height": size[1], "projectId": original["id"], "revision": original["revision"], "selectionOverlays": False}
+        results["canvasScreenshot"] = {"path": str((ARTIFACTS / "canvas.png").relative_to(ROOT)), "width": size[0], "height": size[1], "projectId": original["id"], "revision": original["revision"], "selectionOverlays": False}
         return results["canvasScreenshot"]
     check("export original canvas PNG at native 960x600", capture_original)
 
     def select_component():
         layer("details-button").click()
-        page.get_by_role("button", name="属性", exact=True).click()
+        page.get_by_role("button", name="Properties", exact=True).click()
         expect(page.get_by_label("W", exact=True)).to_have_value(str(node(original, "details-button")["frame"]["width"]))
         expect(page.locator(".selection-heading code")).to_have_text("details-button")
         return {"nodeId": "details-button"}
@@ -264,12 +270,12 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
     def add_review():
         nonlocal review_id
         layer("character-card").click()
-        page.get_by_role("button", name="审阅", exact=False).filter(has_text="审阅").first.click()
+        page.get_by_role("button", name="Review", exact=False).filter(has_text="Review").first.click()
         page.get_by_label("Review target", exact=True).fill(review_target)
         page.get_by_label("Expected result", exact=True).fill(review_expected)
         page.get_by_label("Protected properties", exact=True).fill("frame.width, frame.height, style.fill")
         page.get_by_label("Review priority", exact=True).select_option("high")
-        page.get_by_role("button", name="添加意见", exact=True).click()
+        page.get_by_role("button", name="Add feedback", exact=True).click()
         value = saved(lambda p: any(r["target"] == review_target for r in p["reviews"]), "new review saved")
         review = next(r for r in value["reviews"] if r["target"] == review_target)
         review_id = review["id"]
@@ -277,7 +283,7 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
         assert_true(review["protectedProperties"] == ["frame.width", "frame.height", "style.fill"], "Review protections were not saved")
         # Move the commented component after attaching the review, then reload.
         card_x = node(value, "character-card")["frame"]["x"]
-        page.get_by_role("button", name="属性", exact=True).click()
+        page.get_by_role("button", name="Properties", exact=True).click()
         page.get_by_label("X", exact=True).fill(str(card_x + 8))
         page.get_by_label("X", exact=True).press("Tab")
         saved(lambda p: node(p, "character-card")["frame"]["x"] == card_x + 8, "commented card moves while preserving review ID")
@@ -321,7 +327,7 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
         page.get_by_test_id("patch-file").set_input_files(patch_path)
         expect(page.get_by_role("dialog", name="Review patch")).to_be_visible()
         assert_true(json.loads(page.get_by_label("Patch JSON").input_value())["baseRevision"] == before_patch["revision"], "Import preview revision differs")
-        page.get_by_role("button", name="应用增量修改", exact=True).click()
+        page.get_by_role("button", name="Apply incremental patch", exact=True).click()
         value = saved(lambda p: node(p, "recruit-button")["style"]["text"] == expected_text, "patch applied through UI")
         expect(page.locator(".diff-row ins").filter(has_text=expected_text)).to_be_visible()
         expect(page.locator(".diff-row del").filter(has_text=node(before_patch, "recruit-button")["style"]["text"])).to_be_visible()
@@ -333,7 +339,7 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
         # Reload from disk before accepting that the patch's diff is durable.
         page.reload(wait_until="networkidle")
         expect(page.get_by_label("Review status review-cta", exact=True)).to_have_value("modified")
-        page.get_by_role("button", name="差异", exact=True).click()
+        page.get_by_role("button", name="Changes", exact=True).click()
         expect(page.locator(".diff-row ins").filter(has_text=expected_text)).to_be_visible()
         expect(page.locator(".diff-row del").filter(has_text=node(before_patch, "recruit-button")["style"]["text"])).to_be_visible()
         assert_true(any(entry["id"] == history["id"] for entry in project()["history"]), "Patch history disappeared after reload")
@@ -343,16 +349,16 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
     check("import local patch, apply incrementally and display exact diff", import_patch)
 
     def rollback_patch():
-        page.get_by_role("button", name="安全回退此次修改", exact=True).click()
+        page.get_by_role("button", name="Safely roll back this change", exact=True).click()
         value = saved(lambda p: node(p, "recruit-button")["style"]["text"] == node(before_patch, "recruit-button")["style"]["text"], "safe rollback restores text")
         assert_true(next(r for r in value["reviews"] if r["id"] == "review-cta")["status"] == "pending", "Rollback did not restore review status")
         assert_true(node(value, "details-button")["frame"] == node(before_patch, "details-button")["frame"], "Rollback overwrote unrelated edits")
-        expect(page.get_by_role("button", name="已回退", exact=True)).to_be_disabled()
+        expect(page.get_by_role("button", name="Rolled back", exact=True)).to_be_disabled()
         return {"restoredText": node(value, "recruit-button")["style"]["text"], "unrelatedEditsPreserved": True}
     check("safe rollback restores reviewed change and preserves unrelated edits", rollback_patch)
 
     def export_godot():
-        target = download(page.get_by_role("button", name="导出 Godot 项目", exact=True), "godot.zip")
+        target = download(page.get_by_role("button", name="Export Godot project", exact=True), "godot.zip")
         files = read_zip(target)
         for filename in ["project.godot", "main.tscn", "capture.gd", "node-map.json"]:
             assert_true(filename in files, f"Godot export missing {filename}")
@@ -364,11 +370,11 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
 
     def container_layout():
         layer("stat-vitality").click()
-        page.get_by_role("button", name="属性", exact=True).click()
+        page.get_by_role("button", name="Properties", exact=True).click()
         expect(page.get_by_label("X", exact=True)).to_be_disabled()
         expect(page.get_by_label("Y", exact=True)).to_be_disabled()
         expect(page.get_by_label("W", exact=True)).to_be_enabled()
-        expect(page.get_by_text("位置由父 Container 自动排列。自由拖动需将父级改为 Canvas 或 Control。", exact=True)).to_be_visible()
+        expect(page.get_by_text("The parent container controls positioning. Move the component to the canvas or a free group to drag it freely.", exact=True)).to_be_visible()
         return {"nodeId": "stat-vitality", "parentId": "stats-row", "positionInputs": "disabled", "sizeInputs": "enabled"}
     check("Container children explain and enforce automatic position", container_layout)
 
@@ -392,7 +398,7 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
         group = next(item for item in value["nodes"] if item["id"] not in before_ids | {created["id"], duplicate["id"]})
         assert_true(group["type"] == "Control", "Group is not a free-layout Control")
         assert_true(node(value, created["id"])["parentId"] == node(value, duplicate["id"])["parentId"] == group["id"], "Group did not preserve child structure")
-        target = download(page.get_by_role("button", name="导出组件", exact=True), "selection.component.json")
+        target = download(page.get_by_role("button", name="Export component", exact=True), "selection.component.json")
         template = json.loads(target.read_text(encoding="utf-8"))
         assert_true(template["kind"] == "studio-component" and len(template["nodes"]) == 3, "Template did not include grouped subtree")
         template_ids = {item["id"] for item in template["nodes"]}
