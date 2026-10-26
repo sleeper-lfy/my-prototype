@@ -192,7 +192,7 @@ export function createGodotFiles(project) {
       } else {
         properties.push('clip_text = true', 'focus_mode = 0', `alignment = ${{ left: 0, center: 1, right: 2 }[style.align ?? 'center']}`);
         for (const state of ['normal', 'hover', 'pressed', 'disabled']) {
-          const stateAsset = node.buttonAssets?.[state] ?? node.buttonAssets?.normal ?? node.assetId;
+          const stateAsset = (state === 'disabled' ? node.disabledAssetId : undefined) ?? node.buttonAssets?.[state] ?? node.buttonAssets?.normal ?? node.assetId;
           properties.push(`theme_override_styles/${state} = ${styleBox(style, stateAsset)}`, `theme_override_colors/font_${state === 'normal' ? '' : state + '_'}color = ${color(style.color ?? '#ffffff')}`);
         }
       }

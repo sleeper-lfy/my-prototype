@@ -10,6 +10,7 @@ import { createGodotFiles } from './godot.js';
 import { previewSelectedPatch } from '../src/patchSelection.js';
 import { mountMapRoutes } from './mapRoutes.js';
 import { createMapGodotFiles } from './mapGodot.js';
+import { mountWorkbench } from './workbench.js';
 import { mountGenerationRoutes } from './generationRoutes.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -62,7 +63,7 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
     res.setHeader('X-Content-Type-Options', 'nosniff');
     next();
   });
-  app.use(express.json({ limit: '30mb' }));
+  app.use(express.json({ limit: '90mb' }));
   app.use('/api', (_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
   app.use('/assets', express.static(path.join(ROOT, 'public/assets')));
   app.use('/local-assets', express.static(assetDir));
@@ -115,12 +116,15 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
   async function readAsset(src) {
     return fs.readFile(await resolveAssetPath(src));
   }
-  async function archive(prefix, files) {
+  async function archive(prefix, files, options = {}) {
     const name = `${prefix}-${Date.now()}-${randomUUID().slice(0, 6)}.zip`;
-    await fs.writeFile(path.join(exportDir, name), zipSync(files, { level: 6 }));
+    const bytes = zipSync(files, { level: 6 });
+    if (options.maxBytes && bytes.length > options.maxBytes) throw fail('The project ZIP exceeds the portable package limit.');
+    await fs.writeFile(path.join(exportDir, name), bytes);
     return { path: `data/exports/${name}`, downloadUrl: `/api/files/${name}` };
   }
-  await mountMapRoutes(app, { dataDir, mutate, archive, readAsset, resolveAssetPath, createMapGodotFiles });
+  const mapWorkspace = await mountMapRoutes(app, { dataDir, mutate, archive, readAsset, resolveAssetPath, createMapGodotFiles });
+  await mountWorkbench(app, { dataDir, mutate, getUI: () => clone(current), setUI: project => persist({ ...project, revision: current.revision + 1 }), ...mapWorkspace, archive, readAsset });
   mountGenerationRoutes(app, { getProject: () => clone(current), archive, readAsset });
   app.post('/api/feedback', async (req, res) => {
     const project = clone(current);
@@ -146,7 +150,7 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
       asset.feedbackPath = `assets/${name}`;
     }
     files['feedback.json'] = strToU8(JSON.stringify(feedback, null, 2));
-    files['PATCH-INSTRUCTIONS.md'] = strToU8(`# Incremental review contract\n\nRead feedback.json and the local screenshots. Return only a JSON patch matching patch-template.json. Preserve projectId and baseRevision. Address only listed pending review IDs and their target node IDs. Change scalar fields explicitly requested; respect every protectedProperties path AND effectiveProtectedProperties for the node (prefix restrictions cover descendants, including other unresolved reviews). Do not generate a replacement screen or project. Never change stable IDs. Do not approve your own changes. Import the patch in Studio; conflicts are rejected.\n\nAllowed fields: frame.x/y/width/height; style.fill/stroke/strokeWidth/radius/color/fontSize/fontFamily/text/align/opacity; assetId; visible; layout.mode/gap/padding; buttonAssets.normal/hover/pressed. Check the current schema and node constraints.\n`);
+    files['PATCH-INSTRUCTIONS.md'] = strToU8(`# Incremental review contract\n\nRead feedback.json and the local screenshots. Return only a JSON patch matching patch-template.json. Preserve projectId and baseRevision. Address only listed pending review IDs and their target node IDs. Change scalar fields explicitly requested; respect every protectedProperties path AND effectiveProtectedProperties for the node (prefix restrictions cover descendants, including other unresolved reviews). Do not generate a replacement screen or project. Never change stable IDs. Do not approve your own changes. Import the patch in Studio; conflicts are rejected.\n\nAllowed fields: frame.x/y/width/height; style.fill/stroke/strokeWidth/radius/color/fontSize/fontFamily/text/align/opacity; assetId; disabledAssetId; visible; layout.mode/gap/padding; buttonAssets.normal/hover/pressed. Check the current schema and node constraints.\n`);
     files['patch-template.json'] = strToU8(JSON.stringify({ schemaVersion: 1, projectId: project.id, baseRevision: project.revision, summary: 'Describe this revision', reviewIds: feedback.reviews.map(r => r.id), changes: [] }, null, 2));
     res.json({ ...await archive('feedback', files), count: feedback.reviews.length, baseRevision: project.revision });
   });
@@ -180,7 +184,7 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
     res.json({ id, name: name.trim(), kind, src: `/local-assets/${filename}`, ...(kind === 'nineSlice' ? { margins: { left: 12, top: 12, right: 12, bottom: 12 } } : {}) });
   });
   app.get('/api/files/:name', async (req, res) => {
-    if (!/^(feedback|godot|map-feedback|map-godot|generation)-[0-9]+-[a-f0-9]+\.zip$/.test(req.params.name)) throw fail('Unknown export.', 404);
+    if (!/^(feedback|godot|map-feedback|map-godot|generation|workspace|godot-update)-[0-9]+-[a-f0-9]+\.zip$/.test(req.params.name)) throw fail('Unknown export.', 404);
     res.download(path.join(exportDir, req.params.name));
   });
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Unknown API route.' }));

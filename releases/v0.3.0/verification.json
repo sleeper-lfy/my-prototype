@@ -1,0 +1,27 @@
+{
+  "version": "0.3.0",
+  "status": "passed",
+  "unitTests": 98,
+  "browser": {
+    "toolbox": 12,
+    "legacyUI": 15,
+    "maps": 20,
+    "alignment": 6,
+    "importLanguages": 9
+  },
+  "godot": {
+    "engineVersion": "4.6.3",
+    "actualUserSceneBeforeAndAfter": true,
+    "userGameplayScriptExecuted": true,
+    "userScriptsScenesConfigBytesPreserved": true,
+    "nativeMapRendered": true,
+    "screenshots": "artifacts/v0.3.0/godot-update/"
+  },
+  "windows": {
+    "compatibility": "Wine 10 / Windows x64 Node / Linux Chromium",
+    "checks": 17,
+    "nativeWindows": false,
+    "installerSha256": "953e586253da8d1b45497d6e33ee06a247a47a17ac4c699e4ed9f5727b234b6e"
+  },
+  "artApproval": "pending user review"
+}

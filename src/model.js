@@ -34,6 +34,7 @@ const FIELD_CHECKS = {
   'layout.gap': value => finite(value, 0, 1024),
   'layout.padding': value => finite(value, 0, 1024),
   assetId: value => value === null || id(value),
+  disabledAssetId: value => value === null || id(value),
   'buttonAssets.normal': value => value === null || id(value),
   'buttonAssets.hover': value => value === null || id(value),
   'buttonAssets.pressed': value => value === null || id(value),
@@ -126,7 +127,7 @@ export function validateProject(project) {
     if (!string(node.name, 200) || !node.name.trim()) fail(`Node ${node.id} needs a name.`);
     if (node.parentId !== null && (!id(node.parentId) || !nodes.has(node.parentId))) fail(`Missing parent of node ${node.id}.`);
     validateNodeFields(node);
-    for (const assetId of [node.assetId, ...Object.values(node.buttonAssets || {})]) {
+    for (const assetId of [node.assetId, node.disabledAssetId, ...Object.values(node.buttonAssets || {})]) {
       if (assetId !== undefined && assetId !== null && !assets.has(assetId)) fail(`Node ${node.id} references missing asset ${assetId}.`);
     }
     const ancestors = new Set([node.id]);
@@ -143,6 +144,16 @@ export function validateProject(project) {
     if (!['low', 'medium', 'high', 'critical'].includes(review.priority) || !REVIEW_STATUSES.includes(review.status)) fail(`Invalid priority/status on review ${review.id}.`);
     if (!Array.isArray(review.protectedProperties) || !review.protectedProperties.every(path => typeof path === 'string' && (own(FIELD_CHECKS, path) || ['frame', 'style', 'layout', 'buttonAssets', 'id', 'type', 'parentId', 'locked'].includes(path)))) fail(`Invalid protected properties on review ${review.id}.`);
     if (!string(review.createdAt, 100) || !Number.isFinite(Date.parse(review.createdAt))) fail(`Review ${review.id} needs a valid creation date.`);
+  }
+  if (project.interactions !== undefined) {
+    if (!Array.isArray(project.interactions) || project.interactions.length > 1000) fail('Invalid UI interactions.');
+    for (const action of project.interactions) {
+      if (!record(action) || !nodes.has(action.sourceId) || !['open','close','toggle','page','setText'].includes(action.action) || (action.action === 'page' ? !id(action.targetId) : !nodes.has(action.targetId)) || (action.action === 'setText' && !string(action.text))) fail('Invalid UI interaction target or action.');
+    }
+  }
+  if (project.translations !== undefined) {
+    if (!record(project.translations)) fail('Invalid UI translations.');
+    for (const [locale, values] of Object.entries(project.translations)) if (!/^[A-Za-z][A-Za-z0-9-]{1,24}$/.test(locale) || !record(values) || !Object.entries(values).every(([nodeId,text]) => nodes.has(nodeId) && string(text))) fail('Invalid UI translation locale, target or text.');
   }
   return project;
 }
@@ -263,7 +274,7 @@ export function buildFeedback(project, nodeScreenshots = {}) {
     [...new Set(project.reviews.filter(review => review.nodeId === nodeId && review.status !== 'approved').flatMap(review => review.protectedProperties))],
   ]));
   const context = project.nodes.filter(node => contextIds.has(node.id)).map(node => ({ id: node.id, name: node.name, type: node.type, parentId: node.parentId, frame: clone(node.frame), layout: clone(node.layout || { mode: 'free', gap: 0, padding: 0 }), locked: Boolean(node.locked) }));
-  const assetIds = new Set(selected.flatMap(node => [node.assetId, ...Object.values(node.buttonAssets || {})]).filter(Boolean));
+  const assetIds = new Set(selected.flatMap(node => [node.assetId, node.disabledAssetId, ...Object.values(node.buttonAssets || {})]).filter(Boolean));
   const fontNames = new Set([...selected.map(node => node.style?.fontFamily), ...Object.values(project.tokens.fonts || {})].filter(Boolean));
   for (const asset of project.assets) if (asset.kind === 'font' && fontNames.has(asset.name)) assetIds.add(asset.id);
   const screenshots = {};

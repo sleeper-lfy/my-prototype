@@ -102,8 +102,8 @@ try {
   await npm(['run', 'build'], root);
   for (const name of [
     'dist', 'public/assets', 'examples/character.project.json', 'examples/recruit.patch.json',
-    'server', 'src/model.js', 'src/patchSelection.js', 'src/mapModel.js', 'src/generationModel.js', 'scripts/desktop-launcher.mjs',
-    'examples/village.map.json', 'docs/ALIGNMENT-AND-GRID.md', 'docs/MAP-WORKSPACE.md', 'docs/CODEX-GENERATION.md', 'docs/map-contract.md',
+    'server', 'src/model.js', 'src/patchSelection.js', 'src/mapModel.js', 'src/generationModel.js', 'src/studioFeatures.js', 'src/projectImport.js', 'scripts/desktop-launcher.mjs',
+    'examples/village.map.json', 'docs/PROJECT-TOOLBOX.md', 'docs/ALIGNMENT-AND-GRID.md', 'docs/MAP-WORKSPACE.md', 'docs/CODEX-GENERATION.md', 'docs/map-contract.md',
     '.agents/skills/game-ui-studio', 'LICENSE',
     'docs/TECHNICAL-DECISION.md', 'docs/CODEX-SKILL.md', 'docs/WINDOWS-INSTALL.md',
   ]) await copyTree(path.join(root, name), path.join(appDir, name));

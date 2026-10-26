@@ -43,3 +43,5 @@ Extraction is a separate local side effect, permitted only into a new directory.
 ## Validation provenance
 
 Inspect is not image review. Feedback-only lint is not full-project validation. Dry-run is not an applied change. API success is not visual or Godot verification. A valid ZIP is not an engine runtime test. Report each stage only when performed and preserve the process exit status.
+
+Since v0.3.0, `disabledAssetId` is an optional scalar image reference, validated and exported with button states. It is included in the authoritative `PATCH_FIELDS` and feedback asset context. Preserve it unless the reviewed request authorizes changing disabled artwork.

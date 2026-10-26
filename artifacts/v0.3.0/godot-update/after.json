@@ -1,0 +1,269 @@
+{
+  "checks": [
+    {
+      "errors": [],
+      "id": "scene-backdrop",
+      "passed": true,
+      "path": "TextureRect_1",
+      "type": "TextureRect"
+    },
+    {
+      "errors": [],
+      "id": "brand",
+      "passed": true,
+      "path": "Label_2",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "chapter",
+      "passed": true,
+      "path": "Label_3",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "chapter-count",
+      "passed": true,
+      "path": "Label_4",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "character-card",
+      "passed": true,
+      "path": "Panel_5",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "character-portrait",
+      "passed": true,
+      "path": "Panel_5/TextureRect_6",
+      "type": "TextureRect"
+    },
+    {
+      "errors": [],
+      "id": "portrait-caption-bg",
+      "passed": true,
+      "path": "Panel_5/Panel_7",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "portrait-caption",
+      "passed": true,
+      "path": "Panel_5/Label_8",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "portrait-caption-detail",
+      "passed": true,
+      "path": "Panel_5/Label_9",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "rarity",
+      "passed": true,
+      "path": "Label_10",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "hero-name",
+      "passed": true,
+      "path": "Label_11",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "hero-subtitle",
+      "passed": true,
+      "path": "Label_12",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "hero-lore",
+      "passed": true,
+      "path": "Label_13",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "stats-row",
+      "passed": true,
+      "path": "HBoxContainer_14",
+      "type": "HBoxContainer"
+    },
+    {
+      "errors": [],
+      "id": "stat-vitality",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_15",
+      "type": "Control"
+    },
+    {
+      "errors": [],
+      "id": "vitality-line",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_15/Panel_16",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "vitality-label",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_15/Label_17",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "vitality-value",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_15/Label_18",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "stat-attack",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_19",
+      "type": "Control"
+    },
+    {
+      "errors": [],
+      "id": "attack-line",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_19/Panel_20",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "attack-label",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_19/Label_21",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "attack-value",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_19/Label_22",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "stat-defense",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_23",
+      "type": "Control"
+    },
+    {
+      "errors": [],
+      "id": "defense-line",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_23/Panel_24",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "defense-label",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_23/Label_25",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "defense-value",
+      "passed": true,
+      "path": "HBoxContainer_14/Control_23/Label_26",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "ability-rule",
+      "passed": true,
+      "path": "Panel_27",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "ability-frame",
+      "passed": true,
+      "path": "Panel_28",
+      "type": "Panel"
+    },
+    {
+      "errors": [],
+      "id": "ability-icon",
+      "passed": true,
+      "path": "Panel_28/TextureRect_29",
+      "type": "TextureRect"
+    },
+    {
+      "errors": [],
+      "id": "ability-name",
+      "passed": true,
+      "path": "Label_30",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "ability-description",
+      "passed": true,
+      "path": "Label_31",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "recruit-button",
+      "passed": true,
+      "path": "Button_32",
+      "type": "Button"
+    },
+    {
+      "errors": [],
+      "id": "details-button",
+      "passed": true,
+      "path": "Button_33",
+      "type": "Button"
+    },
+    {
+      "errors": [],
+      "id": "recruit-note",
+      "passed": true,
+      "path": "Label_34",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "footer-left",
+      "passed": true,
+      "path": "Label_35",
+      "type": "Label"
+    },
+    {
+      "errors": [],
+      "id": "footer-right",
+      "passed": true,
+      "path": "Label_36",
+      "type": "Label"
+    }
+  ],
+  "display": "X11",
+  "failures": [],
+  "godot": "4.6.3-stable (official)",
+  "nodeCount": 36,
+  "passed": true,
+  "screenshot": {
+    "error": 0,
+    "height": 600,
+    "path": "/workspace/my-prototype/artifacts/v0.3.0/godot-update/after.png",
+    "requested": true,
+    "width": 960,
+    "written": true
+  }
+}

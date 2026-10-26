@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runner": "Python Playwright / real Chromium",
+  "isolatedData": true,
+  "mode": "production",
+  "checks": [
+    {
+      "name": "real drags draw edge/center guides, snap precisely and clear ephemeral state",
+      "status": "passed",
+      "seconds": 4.183,
+      "details": {
+        "edge": 280,
+        "center": 340,
+        "previewReadOnly": true,
+        "guidesClearOnDrop": true,
+        "documentContainsOnlyLayoutChanges": true
+      }
+    },
+    {
+      "name": "guide tolerance follows zoom and snap/display toggles work independently",
+      "status": "passed",
+      "seconds": 4.637,
+      "details": {
+        "zooms": [
+          1,
+          0.5
+        ],
+        "screenPixelTolerance": 6,
+        "snapToggleWorks": true,
+        "guideVisibilityIndependentOfSnap": true
+      }
+    },
+    {
+      "name": "multi-component drag snaps shared bounds while preserving relative positions",
+      "status": "passed",
+      "seconds": 1.384,
+      "details": {
+        "selected": [
+          "moving-a",
+          "reference-b"
+        ],
+        "groupCenter": 400,
+        "relativeOffset": [
+          210,
+          120
+        ],
+        "unselectedPreserved": true
+      }
+    },
+    {
+      "name": "multi-selection aligns edges and distributes equal gaps for mixed component sizes",
+      "status": "passed",
+      "seconds": 4.036,
+      "details": {
+        "rightEdge": 650,
+        "bottomEdge": 460,
+        "horizontalGaps": [
+          140,
+          140
+        ],
+        "verticalGaps": [
+          70,
+          70
+        ],
+        "endpointPreservation": true,
+        "reloadPersists": true
+      }
+    },
+    {
+      "name": "alignment and guide controls switch to Chinese",
+      "status": "passed",
+      "seconds": 0.415,
+      "details": {
+        "locale": "zh-CN",
+        "alignmentAndGuideLabelsLocalized": true
+      }
+    },
+    {
+      "name": "no uncaught browser errors",
+      "status": "passed",
+      "seconds": 0.0
+    }
+  ],
+  "status": "passed",
+  "startedAt": "2026-10-26T07:01:44Z",
+  "browserVersion": "154.0.8037.57",
+  "pageErrors": [],
+  "completedAt": "2026-10-26T07:02:01Z",
+  "passed": 6,
+  "failed": 0
+}

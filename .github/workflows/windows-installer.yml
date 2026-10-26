@@ -63,12 +63,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Browser test dependency installation failed' }
           python -m playwright install chromium
           if ($LASTEXITCODE -ne 0) { throw 'Chromium installation failed' }
-          python scripts/import-language-smoke.py --screenshots --out artifacts/v0.2.0/import-language-results.json --preview-dir previews/v0.2.0
+          python scripts/import-language-smoke.py --screenshots --out artifacts/v0.3.0/import-language-results.json --preview-dir previews/v0.3.0
           if ($LASTEXITCODE -ne 0) { throw 'UI import and language acceptance failed' }
-          python scripts/map-workspace-smoke.py
+          python scripts/map-workspace-smoke.py --out artifacts/v0.3.0/map-regression --previews previews/v0.3.0/map-regression
           if ($LASTEXITCODE -ne 0) { throw 'Map workspace and Codex task acceptance failed' }
-          python scripts/alignment-smoke.py
+          python scripts/alignment-smoke.py --out artifacts/v0.3.0/alignment --previews previews/v0.3.0/alignment
           if ($LASTEXITCODE -ne 0) { throw 'Alignment and snap-guide acceptance failed' }
+          python scripts/studio-features-smoke.py
+          if ($LASTEXITCODE -ne 0) { throw 'Project toolbox acceptance failed' }
       - name: Build the self-contained Windows installer
         run: |
           npm run package:windows
@@ -88,7 +90,9 @@ jobs:
             ${{ env.STUDIO_RELEASE_DIR }}/SHA256SUMS*
             artifacts/windows-installer-native.json
             artifacts/windows-installer-logs/
-            artifacts/v0.2.0/import-language-results.json
-            artifacts/v0.2.0/browser/
-            artifacts/v0.2.0/alignment/
-            previews/v0.2.0/*.png
+            artifacts/v0.3.0/import-language-results.json
+            artifacts/v0.3.0/browser/
+            artifacts/v0.3.0/map-regression/
+            artifacts/v0.3.0/alignment/
+            artifacts/v0.3.0/godot-update/
+            previews/v0.3.0/*.png

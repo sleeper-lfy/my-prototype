@@ -1,0 +1,106 @@
+{
+  "checks": [
+    {
+      "name": "project library manages separate projects and multiple pages through visible controls",
+      "status": "passed",
+      "details": {
+        "projects": 2,
+        "pages": 2,
+        "originalUIRestored": true
+      }
+    },
+    {
+      "name": "complete project ZIP downloads and restores original resource bytes into an independent project",
+      "status": "passed",
+      "details": {
+        "resourceCopies": 20,
+        "independentRestoredProject": true
+      }
+    },
+    {
+      "name": "UI components save as reusable linked templates and instantiate editable nodes",
+      "status": "passed",
+      "details": {
+        "templateKind": "ui-component",
+        "linkedInstance": true
+      }
+    },
+    {
+      "name": "UI preview executes real click interactions, translated text and safe-area resolution previews",
+      "status": "passed",
+      "details": {
+        "realClickHidesTargetSubtree": true,
+        "translations": true,
+        "ultrawideAndDisabledPreview": true
+      }
+    },
+    {
+      "name": "nine-slice boundaries drag and save, and button disabled artwork persists",
+      "status": "passed",
+      "details": {
+        "draggedBoundaryPersisted": true,
+        "disabledArtworkSaved": true
+      }
+    },
+    {
+      "name": "multi-layer map blocks capture, rotate, instantiate and appear in the drag palette",
+      "status": "passed",
+      "details": {
+        "multiLayerBlock": true,
+        "rotatedPlacedObject": true,
+        "draggablePaletteBlock": true
+      }
+    },
+    {
+      "name": "tile atlas grid split creates four independent cropped palette tiles",
+      "status": "passed",
+      "details": {
+        "newTiles": 4,
+        "sourceUnchanged": true
+      }
+    },
+    {
+      "name": "connected brush draws continuous terrain and asset placement policies persist",
+      "status": "passed",
+      "details": {
+        "continuousMouseStroke": true,
+        "connectionRulesSaved": true,
+        "placementRestrictionsSaved": true
+      }
+    },
+    {
+      "name": "locked reference overlays, map measurement and project checks are usable",
+      "status": "passed",
+      "details": {
+        "lockedOverlaySaved": true,
+        "checksRun": true,
+        "canvasMeasureToolAvailable": true
+      }
+    },
+    {
+      "name": "Godot incremental update downloads executable updater plus all managed UI/map scenes",
+      "status": "passed",
+      "details": {
+        "updaterAndManagedScenes": true
+      }
+    },
+    {
+      "name": "project switching with identical page IDs keeps interaction forms and local metadata isolated",
+      "status": "passed",
+      "details": {
+        "samePageIdAcrossProjects": true,
+        "interactionFormsRemainIsolated": true
+      }
+    },
+    {
+      "name": "new toolbox switches between Chinese and English",
+      "status": "passed",
+      "details": {
+        "ChineseToolbox": true
+      }
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "isolatedData": true
+}

@@ -1,0 +1,33 @@
+
+> game-ui-studio@0.3.0 package:windows
+> node scripts/package-windows.mjs
+
+Building Game UI Studio 0.3.0; temporary files: /tmp/game-ui-studio-windows-build/build-J2mNEs
+
+> game-ui-studio@0.3.0 build
+> vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.72 kB │ gzip:   0.47 kB
+dist/assets/index-DNJI9vuN.css   36.52 kB │ gzip:   8.92 kB
+dist/assets/index-NYqeuuSO.js   766.25 kB │ gzip: 237.79 kB
+
+✓ built in 346ms
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+added 66 packages in 478ms
+{
+  "installer": "releases/v0.3.0/Game-UI-Studio-Setup-0.3.0-x64.exe",
+  "bytes": 24368810,
+  "sha256": "953e586253da8d1b45497d6e33ee06a247a47a17ac4c699e4ed9f5727b234b6e",
+  "payload": "/tmp/game-ui-studio-windows-build/build-J2mNEs/payload",
+  "manifest": "releases/v0.3.0/windows-manifest.json"
+}

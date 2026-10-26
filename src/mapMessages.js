@@ -1,4 +1,6 @@
 export const mapMessages = {
+  connected: ["连接画笔", "Connected brush"],
+  measure: ["测量", "Measure"],
   newMap: ["新建地图", "New map"],
   newMapHelp: [
     "创建空白等距地图，保留当前素材库。先选地形素材绘制，再放置物件和出生点。",

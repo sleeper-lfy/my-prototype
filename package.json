@@ -1,6 +1,6 @@
 {
   "name": "game-ui-studio",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,7 +11,8 @@
     "test:godot": "node scripts/test-godot.js",
     "package:release": "node scripts/package-release.mjs",
     "package:windows": "node scripts/package-windows.mjs",
-    "test:map-godot": "node scripts/test-map-godot.js"
+    "test:map-godot": "node scripts/test-map-godot.js",
+    "test:godot-update": "node scripts/test-godot-update.mjs"
   },
   "dependencies": {
     "express": "5.3.0",

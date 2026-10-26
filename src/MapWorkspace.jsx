@@ -8,6 +8,7 @@ import {
   Line,
   Circle,
   Rect,
+  Text,
 } from "react-konva";
 import {
   validateMap,
@@ -22,6 +23,8 @@ import {
   getActorLayerId,
   getMapRenderLayers,
 } from "./mapModel.js";
+import StudioToolbox from './StudioToolbox.jsx';
+import { terrainStroke, checkPlacementRules, measureMap, placeMapBlock } from './studioFeatures.js';
 import { makeId } from "./model.js";
 import { mapTranslate } from "./mapMessages.js";
 import "./mapStyles.css";
@@ -44,6 +47,8 @@ const toolNames = [
   "exit",
   "trigger",
   "walk",
+  "connected",
+  "measure",
 ];
 const symbols = {
   select: "↖",
@@ -58,6 +63,8 @@ const symbols = {
   exit: "↗",
   trigger: "◎",
   walk: "♟",
+  connected: "⌁",
+  measure: "↔",
 };
 async function request(url, body, method) {
   const response = await fetch(url, {
@@ -768,6 +775,8 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
             footprint: values.footprint ?? object.footprint,
           });
         else next = copy(map);
+        const moved=next.objects.find(item=>item.id===id);
+        if (map.placementRules?.[moved.assetId]) checkPlacementRules({...next,objects:next.objects.filter(item=>item.id!==id)}, {assetId:moved.assetId,layerId:moved.layerId,x:moved.x,y:moved.y,footprint:moved.footprint}, map.placementRules);
         Object.assign(
           next.objects.find((item) => item.id === id),
           values,
@@ -858,15 +867,17 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
     },
     [player],
   );
+  const [measurePoints, setMeasurePoints] = useState([]);
+  const [terrainRuleId, setTerrainRuleId] = useState("");
   const placeAsset = (id, point) => {
     const map = projectRef.current;
     try {
-      const plan = planMapPlacement(map, {
+      const plan = checkPlacementRules(map, {
         assetId: id,
         layerId: activeLayer,
         x: point.x,
         y: point.y,
-      });
+      }, map.placementRules || {});
       const next = copy(map);
       if (plan.type === "tile") {
         const layer = next.layers.find((item) => item.id === activeLayer);
@@ -899,6 +910,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
     const footprint = object?.footprint || getAssetFootprint(asset),
       layerId = object?.layerId || activeLayer,
       layer = map.layers.find((item) => item.id === layerId);
+    let permitted=true;try{checkPlacementRules({...map,objects:map.objects.filter(o=>o.id!==objectId)},{assetId:id,layerId,x:point.x,y:point.y,footprint},map.placementRules||{});}catch{permitted=false;}
     return {
       assetId: id,
       objectId,
@@ -908,7 +920,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
       width: footprint.width,
       height: footprint.height,
       valid:
-        !!layer &&
+        permitted && !!layer &&
         !layer.locked &&
         point.x >= 0 &&
         point.y >= 0 &&
@@ -925,8 +937,8 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
       if (paintValue) blocked.add(cell);
       else blocked.delete(cell);
       draft.blocked = [...blocked];
-    } else if (mode === "erase") delete layer.cells[cell];
-    else layer.cells[cell] = assetId;
+    } else if (mode === "erase") { delete layer.cells[cell]; if(layer.terrainCells)delete layer.terrainCells[cell]; }
+    else { layer.cells[cell] = assetId; if(layer.terrainCells)delete layer.terrainCells[cell]; }
   };
   const strokeStamp = (draft, point, mode, paintValue) => {
     const footprint =
@@ -961,6 +973,14 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
     const point = pointerCell(),
       map = projectRef.current;
     if (!point || !inside(map, point.x, point.y)) return;
+    if (tool === "measure") { setMeasurePoints(old => old.length === 1 ? [...old, point] : [point]); return; }
+    if (tool === "connected") {
+      try { const rule = map.terrainRules?.find(r => r.id === terrainRuleId) || map.terrainRules?.[0];
+        const draft = terrainStroke(map, {layerId: activeLayer, points: [point], rule});
+        gesture.current = {mode: "terrain", before: copy(map), draft, points: [point], rule}; setDocument(draft);
+      } catch (e) { reportError(e); }
+      return;
+    }
     if (tool === "walk") {
       walkTo(point);
       return;
@@ -1057,6 +1077,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
   const pointerMove = () => {
     const current = gesture.current;
     if (!current) return;
+    if (current.mode === "terrain") { const point = pointerCell(); if (point && inside(projectRef.current, point.x, point.y)) { current.points.push(point); try { current.draft = terrainStroke(current.before, { layerId: activeLayer, points: current.points, rule: current.rule }); setDocument(current.draft); } catch (e) { reportError(e); } } return; }
     if (current.mode === "pan") {
       const p = stageRef.current.getPointerPosition(),
         next = {
@@ -1492,6 +1513,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
           <small>{t("subtitle")}</small>
         </div>
         <div className="map-top-actions">
+          <button data-testid="map-studio-tools" disabled={busy || saving} onClick={() => perform(async () => setDialog("workbench"))}>{locale === "zh-CN" ? "项目工具箱" : "Project toolbox"}</button>
           <button
             data-testid="map-new"
             onClick={() => openDialog("new")}
@@ -1729,6 +1751,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
               </button>
             </div>
             <div className="map-palette">
+              {(project.blocks || []).map(block => <button key={block.id} data-testid={'map-block-'+block.id} draggable onDragStart={e => { e.dataTransfer.setData('application/x-studio-map-block', block.id); draggingAsset.current = 'block:'+block.id; }} onDragEnd={() => {draggingAsset.current = null;setDropGhost(null);}}>{block.name}<small>{block.width} × {block.height} {locale === 'zh-CN'?'格地图块':'cell block'}</small></button>)}
               {visibleAssets.map((asset) => (
                 <button
                   key={asset.id}
@@ -1867,6 +1890,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
         </aside>
         <section className="map-canvas-section">
           <div className="map-tools">
+            {tool === "connected" && <select aria-label={locale === 'zh-CN'?'连接规则':'Connection rule'} value={terrainRuleId || project.terrainRules?.[0]?.id || ''} onChange={e=>setTerrainRuleId(e.target.value)}>{project.terrainRules?.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select>}
             {toolNames.map((item) => (
               <button
                 key={item}
@@ -1907,6 +1931,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
             data-origin-x={view.x}
             data-origin-y={view.y}
             data-scale={view.scale}
+            data-measure={measurePoints.length===2?JSON.stringify(measureMap(project,...measurePoints)):""}
             data-player-x={player?.x ?? ""}
             data-player-y={player?.y ?? ""}
             data-drop-x={placementGhost?.x ?? ""}
@@ -1920,7 +1945,9 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
               const id =
                 draggingAsset.current ||
                 event.dataTransfer.getData("application/x-studio-map-asset");
-              const ghost = ghostFor(id, pointerCell(event));
+              const point = pointerCell(event);let ghost;
+              if (id?.startsWith('block:')) { const block=projectRef.current.blocks?.find(b=>b.id===id.slice(6));if(block&&point){let valid=true;try{placeMapBlock(projectRef.current,block,point);}catch{valid=false;}ghost={x:point.x,y:point.y,width:block.width,height:block.height,valid};}}
+              else ghost = ghostFor(id, point);
               setDropGhost(ghost);
               event.dataTransfer.dropEffect = ghost?.valid ? "copy" : "none";
             }}
@@ -1930,6 +1957,8 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
             }}
             onDrop={(event) => {
               event.preventDefault();
+              const blockId = event.dataTransfer.getData('application/x-studio-map-block') || (draggingAsset.current?.startsWith('block:') ? draggingAsset.current.slice(6) : null);
+              if (blockId) { const point=pointerCell(event),block=projectRef.current.blocks?.find(b=>b.id===blockId);draggingAsset.current=null;setDropGhost(null);try{if(!point||!block||busy||failed.current)return;commit(placeMapBlock(projectRef.current,block,point));}catch(e){reportError(e);}return; }
               const id =
                   event.dataTransfer.getData(
                     "application/x-studio-map-asset",
@@ -1974,6 +2003,8 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
                   scaleX={view.scale}
                   scaleY={view.scale}
                 >
+                  {project.reference?.visible && images[project.assets.find(a => a.id === project.reference.assetId)?.src] && <KImage image={images[project.assets.find(a => a.id === project.reference.assetId)?.src]} x={project.reference.x} y={project.reference.y} width={project.reference.width} height={project.reference.height} opacity={project.reference.opacity} listening={false} />}
+                  {measurePoints.length > 0 && <Group listening={false}><Line points={measurePoints.flatMap(p => { const s=isoToScreen(p.x,p.y,project.grid); return [s.x,s.y]; })} stroke="#e5c475" strokeWidth={2}/>{measurePoints.map((p,i) => {const s=isoToScreen(p.x,p.y,project.grid);return <Circle key={i} x={s.x} y={s.y} radius={5} fill="#e5c475"/>;})}{measurePoints.length===2 && <Text x={isoToScreen(measurePoints[0].x,measurePoints[0].y,project.grid).x} y={isoToScreen(measurePoints[0].x,measurePoints[0].y,project.grid).y-24} text={String(measureMap(project,...measurePoints).gridManhattan)+(locale==='zh-CN'?' 格':' cells')} fill="#f4dfaa" fontSize={16}/>}</Group>}
                   <MapScene
                     project={project}
                     images={images}
@@ -2638,6 +2669,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
           </div>
         </Modal>
       )}
+      {dialog === "workbench" && <StudioToolbox locale={locale} kind="map" selection={selection} onClose={() => setDialog(null)} />}
       {dialog === "import" && (
         <Modal
           title={t("importTitle")}

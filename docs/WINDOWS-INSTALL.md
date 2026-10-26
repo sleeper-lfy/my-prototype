@@ -4,7 +4,7 @@
 
 ## 下载与使用
 
-1. 下载 [Game-UI-Studio-Setup-0.2.0-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.2.0/Game-UI-Studio-Setup-0.2.0-x64.exe)。[发行文件目录](../releases/v0.2.0/) 提供校验和及构建、验证记录。
+1. 下载 [Game-UI-Studio-Setup-0.3.0-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.3.0/Game-UI-Studio-Setup-0.3.0-x64.exe)。[发行文件目录](../releases/v0.3.0/) 提供校验和及构建、验证记录。
 2. 双击安装包。应用安装到当前 Windows 用户的目录，创建桌面和开始菜单入口，完成后打开默认浏览器中的编辑器。
 3. 以后双击桌面 **Game UI Studio** 即可使用。修改自动保存在本机；重复打开会复用同一实例。
 
@@ -19,7 +19,7 @@
 安装包尚未签名，Windows 可能显示“未知发布者”或 SmartScreen 提示。可以用发行目录中的 SHA-256 核对下载文件：
 
 ```powershell
-Get-FileHash "$HOME\Downloads\Game-UI-Studio-Setup-0.2.0-x64.exe" -Algorithm SHA256
+Get-FileHash "$HOME\Downloads\Game-UI-Studio-Setup-0.3.0-x64.exe" -Algorithm SHA256
 ```
 
 ## 数据、退出与卸载
@@ -39,9 +39,9 @@ Get-FileHash "$HOME\Downloads\Game-UI-Studio-Setup-0.2.0-x64.exe" -Algorithm SHA
 
 ## 地图与 Codex 生成任务
 
-安装 v0.2.0 后，顶部工作区栏提供 **UI 设计 / 2.5D 地图**。地图使用独立的 `data\map.json`，升级保留已有 UI、语言设置和导入素材。UI 工作区的 **Codex 生成任务** 导出可交给 Codex 的需求、模板、素材和校验器。
+安装 v0.3.0 后，顶部工作区栏提供 **UI 设计 / 2.5D 地图**。地图使用独立的 `data\map.json`，升级保留已有 UI、语言设置和导入素材。UI 工作区的 **Codex 生成任务** 导出可交给 Codex 的需求、模板、素材和校验器。
 
-参见 [地图操作](MAP-WORKSPACE.md)、[Codex 生成](CODEX-GENERATION.md) 和 [本版验证](VALIDATION-v0.2.0.md)。
+参见 [地图操作](MAP-WORKSPACE.md)、[Codex 生成](CODEX-GENERATION.md) 和 [本版验证](VALIDATION-v0.3.0.md)。
 
 ## Codex 与 Godot
 
@@ -61,6 +61,6 @@ npm run package:windows
 
 构建脚本先构建前端，再按锁文件安装最小运行依赖，下载固定版本的官方 Windows Node.js ZIP 并核对 SHA-256，最后编译 NSIS。临时文件使用系统临时目录；工作项目、个人资源、凭据和研究依赖不会进入安装包。
 
-可配置 `MAKENSIS_BIN` 指向 NSIS 编译器、`STUDIO_BUILD_DIR` 指向构建目录、`NODE_WINDOWS_ZIP` 指向已下载的固定版本 Node.js ZIP。即使使用本地 ZIP 也必须通过预定校验和。发行产物位于 `releases/v0.2.0/`。
+可配置 `MAKENSIS_BIN` 指向 NSIS 编译器、`STUDIO_BUILD_DIR` 指向构建目录、`NODE_WINDOWS_ZIP` 指向已下载的固定版本 Node.js ZIP。即使使用本地 ZIP 也必须通过预定校验和。发行产物位于 `releases/v0.3.0/`。
 
 原生 Windows 验收脚本为 `scripts/test-windows-install.ps1`，只允许在没有既有应用数据的干净测试用户中运行。GitHub Actions 的 Windows installer workflow 会执行安装、启动、保存、升级、卸载和数据保留检查。是否通过以实际报告为准，工作流存在不代表已经在 Windows 实机验收。

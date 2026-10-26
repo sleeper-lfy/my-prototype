@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "studio-map-patch",
+  "projectId": "village-gate",
+  "baseRevision": 16,
+  "summary": "Move reviewed pine; change one reviewed path tile",
+  "reviewIds": [
+    "map-review-1cef88bd-4a96-4d6d-b4c7-572b74996e67",
+    "map-review-e624f4fb-100c-4559-ae8e-308dc0369d61"
+  ],
+  "changes": [
+    {
+      "type": "object",
+      "objectId": "tree-01",
+      "set": {
+        "x": 3
+      }
+    },
+    {
+      "type": "cell",
+      "layerId": "ground",
+      "x": 1,
+      "y": 11,
+      "assetId": "water"
+    }
+  ]
+}

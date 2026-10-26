@@ -22,6 +22,8 @@ import { useLocale } from './useLocale.js';
 import { errorMessage, translateMessage } from './i18n.js';
 import ImportDialog from './ImportDialog.jsx';
 import MapWorkspace from './MapWorkspace.jsx';
+import StudioToolbox from './StudioToolbox.jsx';
+import { pruneUIReferences } from './studioFeatures.js';
 import GenerationDialog from './GenerationDialog.jsx';
 import PatchReviewDialog from './PatchReviewDialog.jsx';
 
@@ -309,7 +311,7 @@ function NineSlice({ image, width, height, margins }) {
     </>
   );
 }
-function DesignNode({
+export function DesignNode({
   t,
   node,
   rect,
@@ -920,6 +922,7 @@ export default function App() {
     edit((d) => {
       d.nodes = d.nodes.filter((n) => !ids.has(n.id));
       d.reviews = d.reviews.filter((r) => !ids.has(r.nodeId));
+      Object.assign(d, pruneUIReferences(d));
     });
     setSelected([]);
   };
@@ -1070,6 +1073,7 @@ export default function App() {
     const assets = new Set();
     for (const n of nodes) {
       if (n.assetId) assets.add(n.assetId);
+      if (n.disabledAssetId) assets.add(n.disabledAssetId);
       for (const id of Object.values(n.buttonAssets || {}))
         if (id) assets.add(id);
       if (!ids.has(n.parentId)) {
@@ -1132,6 +1136,7 @@ export default function App() {
         id: mapping.get(n.id),
         parentId: n.parentId ? mapping.get(n.parentId) : null,
         assetId: n.assetId ? assetMapping.get(n.assetId) || n.assetId : null,
+        ...(n.disabledAssetId ? { disabledAssetId: assetMapping.get(n.disabledAssetId) || n.disabledAssetId } : {}),
         buttonAssets: Object.fromEntries(
           Object.entries(n.buttonAssets || {}).map(([key, id]) => [
             key,
@@ -1356,6 +1361,7 @@ export default function App() {
           <button data-testid="workspace-map" aria-pressed={workspace === "map"} onClick={() => { setDialog(null); setMapVisited(true); setWorkspace("map"); }}>{t("workspace.map")}</button>
         </div>
         <span>{workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
+        {workspace === "ui" && <button className="button" data-testid="studio-tools" disabled={busy || pending > 0} onClick={() => action(async () => setDialog("studio"))}>{locale === "zh-CN" ? "项目工具箱" : "Project toolbox"}</button>}
         {workspace === "ui" && <button className="button generation-trigger" data-testid="generation-task" disabled={busy || pending > 0} onClick={() => setDialog("generation")}><Icon name="code" />{t("generation.open")}</button>}
       </nav>
       {mapVisited && <div className="map-workspace-host" style={{ display: workspace === "map" ? "flex" : "none" }}><MapWorkspace locale={locale} active={workspace === "map"} /></div>}
@@ -2650,6 +2656,7 @@ export default function App() {
       )}
       {preferenceError && <div className="preference-notice" role="status">{t("languageFailure")}</div>}
       {dialog === "import" && <ImportDialog t={t} locale={locale} busy={busy} externalError={error} onClearError={() => setError("")} onClose={() => setDialog(null)} onImport={importProject} downloadJson={downloadJson} />}
+      {dialog === "studio" && <StudioToolbox locale={locale} kind="ui" selection={selected} onClose={() => setDialog(null)} />}
       {dialog === "generation" && <GenerationDialog locale={locale} project={project} onClose={() => setDialog(null)} onExport={exportGeneration} />}
       {dialog === "patch" && <PatchReviewDialog t={t} locale={locale} initialText={jsonText} onClose={() => setDialog(null)} onPreview={previewPatch} onApply={patch} downloadJson={downloadJson} />}
       <input

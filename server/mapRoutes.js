@@ -75,5 +75,5 @@ export async function mountMapRoutes(app, { dataDir, mutate, archive, readAsset,
     files['ASSET-NOTICES.txt'] = strToU8('Original example map SVG artwork: MIT, see the source repository LICENSE and public/assets/map/ART-LICENSE.md. Imported artwork retains its original license.');
     res.json({ ...await archive('map-godot', files), warnings: result.warnings || JSON.parse(result.files['export-warnings.json'] || '[]') });
   });
-  return { getMap: () => clone(current) };
+  return { getMap: () => clone(current), setMap: project => persist({ ...project, revision: current.revision + 1 }) };
 }

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "platform": "Linux / real Chromium against production Node server",
+  "checks": [
+    {
+      "name": "Chinese default exposes distinct import UI and export project actions",
+      "status": "passed",
+      "seconds": 0.698,
+      "details": null
+    },
+    {
+      "name": "English covers assets, rules, properties, button states, review and changes without altering design",
+      "status": "passed",
+      "seconds": 0.986,
+      "details": null
+    },
+    {
+      "name": "wrong files, invalid JSON, component templates and patches are clearly rejected without changing project",
+      "status": "passed",
+      "seconds": 0.408,
+      "details": null
+    },
+    {
+      "name": "server-side missing asset failures remain visible in import dialog and preserve the active project",
+      "status": "passed",
+      "seconds": 0.899,
+      "details": null
+    },
+    {
+      "name": "native project file imports 37 independent nodes with an automatic matching backup",
+      "status": "passed",
+      "seconds": 0.427,
+      "details": {
+        "components": 37,
+        "backupMatchesPriorProject": true,
+        "stableId": "qa-imported-label"
+      }
+    },
+    {
+      "name": "imported nodes remain individually editable, draggable and persistent",
+      "status": "passed",
+      "seconds": 1.478,
+      "details": {
+        "editedAfterImport": true,
+        "reloadPreservesEdit": true,
+        "dragPersists": true
+      }
+    },
+    {
+      "name": "cancel is non-destructive and pasted project JSON can be checked and imported",
+      "status": "passed",
+      "seconds": 0.929,
+      "details": null
+    },
+    {
+      "name": "drag-and-drop imports the same editable project format",
+      "status": "passed",
+      "seconds": 0.788,
+      "details": null
+    },
+    {
+      "name": "language survives cleared browser storage and a server restart on a different port",
+      "status": "passed",
+      "seconds": 2.383,
+      "details": {
+        "persistedAcrossReload": true,
+        "persistedAcrossNewServerPort": true,
+        "designUnchanged": true
+      }
+    }
+  ],
+  "status": "passed",
+  "isolatedData": true,
+  "screenshotsGenerated": false,
+  "chromiumVersion": "154.0.8037.57",
+  "pageErrors": [],
+  "passed": 9,
+  "failed": 0
+}

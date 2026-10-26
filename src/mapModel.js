@@ -52,8 +52,21 @@ export function validateMap(map) {
   for (const asset of assets.values()) {
     if (!text(asset.name) || !['tile', 'object'].includes(asset.kind) || !num(asset.width, 1, 4096) || !num(asset.height, 1, 4096)) fail(`Invalid map asset ${asset.id}.`);
     if (typeof asset.src !== 'string' || !/^\/(assets|local-assets)\/[A-Za-z0-9_/-]+\.(svg|png|jpe?g|webp)$/i.test(asset.src) || asset.src.split('/').includes('..')) fail(`Invalid map asset path: ${asset.id}.`);
+    if (asset.directions !== undefined && (!record(asset.directions) || !Object.entries(asset.directions).every(([k,v]) => ['0','90','180','270','0m','90m','180m','270m'].includes(k) && assets.get(v)?.kind === 'object'))) fail('Invalid map directional artwork.');
     if (asset.footprint !== undefined && (!record(asset.footprint) || !integer(asset.footprint.width, 1, 128) || !integer(asset.footprint.height, 1, 128))) fail(`Invalid map asset footprint: ${asset.id}; use whole cells from 1 to 128.`);
     if (asset.atlas !== undefined && (!record(asset.atlas) || !integer(asset.atlas.x, 0, 32768) || !integer(asset.atlas.y, 0, 32768) || !integer(asset.atlas.width, 1, 32768) || !integer(asset.atlas.height, 1, 32768))) fail(`Invalid map atlas region: ${asset.id}.`);
+  }
+  if (map.reference != null) {
+    const r=map.reference;
+    if(!record(r)||!assets.has(r.assetId)||!num(r.x,-32768,32768)||!num(r.y,-32768,32768)||!num(r.width,1,16384)||!num(r.height,1,16384)||!num(r.opacity,0,1)||typeof r.visible!=='boolean'||r.locked!==true)fail('Invalid locked map reference.');
+  }
+  if(map.terrainRules!==undefined) {
+    const rules=records(map.terrainRules,'terrain rule',100);
+    for(const rule of rules.values())if(!text(rule.name)||!record(rule.variants)||!Object.entries(rule.variants).every(([mask,id])=>/^(?:[0-9]|1[0-5])$/.test(mask)&&assets.get(id)?.kind==='tile'))fail('Invalid terrain connection rule.');
+  }
+  if(map.placementRules!==undefined) {
+    if(!record(map.placementRules))fail('Invalid placement rules.');
+    for(const [assetId,policy]of Object.entries(map.placementRules))if(!assets.has(assetId)||!record(policy)||!Array.isArray(policy.allowedTiles)||!policy.allowedTiles.every(id=>assets.get(id)?.kind==='tile')||typeof policy.avoidOverlap!=='boolean')fail('Invalid asset placement rule.');
   }
   const layers = records(map.layers, 'layer', 16);
   if (!layers.size) fail('A map needs at least one layer.');

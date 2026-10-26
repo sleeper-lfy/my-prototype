@@ -91,3 +91,11 @@ node "<SKILL_DIR>/scripts/review.mjs" rollback --history-id "patch-actual-id" --
 需要 Godot 交付时，按 [游戏美术与布局](references/design-and-godot.md) 导出同一版本，检查 `export-warnings.json`，实际运行 Godot 并核对节点和截图。未安装 Godot或没有图形显示时，完成独立工作并明确未验证项；不能用 ZIP 存在、端口存活、纯 headless 输出或旧结果宣称渲染通过。
 
 汇报本轮修改的组件/字段、补丁与输出路径、通过/失败/未运行的检查，以及剩余具体限制。功能、导出保真与美术质量分别报告。
+
+## 项目工具箱与 Godot 更新
+
+v0.3.0 的项目、完整包、图集切分、地图块、主模板/实例、交互文案、连接和放置规则使用 `docs/PROJECT-TOOLBOX.md` 和 `src/studioFeatures.js`。项目库在用户数据目录的 `workbench.json`，运行中通过 `/api/workbench` 读取，通过带真实 library/UI/map revision 的 `/api/workbench/action` 原子操作；不要直接覆盖数据文件。
+
+完整 ZIP 含所有页面、地图、评论、模板和原始素材，导入创建独立项目。模板更新保留本地字段覆盖和锁定项；新增/删除或重组结构需新模板。方向变换是格子布局变换，不宣称生成方向性美术。
+
+Godot 增量包的 `sync.mjs` 先预览，再以 `--apply` 应用；仅管理 `studio_generated/`，冲突必须逐个用 `--accept <exact-path>` 明确接受。不要替用户自动接受冲突或把业务脚本放进生成目录。既有 `project.godot`、外部用户场景和脚本保持原样，旧生成文件留存 `.studio-backups/`。必须运行真实导出项目验证资源和截图，不能用更新器退出码代替引擎验收。
