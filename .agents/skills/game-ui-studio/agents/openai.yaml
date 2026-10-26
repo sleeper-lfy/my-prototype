@@ -1,4 +1,4 @@
 interface:
   display_name: "Game UI Studio"
-  short_description: "Review local game UI with scoped patches and Godot checks"
-  default_prompt: "使用 $game-ui-studio 读取本轮反馈包，保留受保护字段，生成并验证最小增量补丁，再展示差异与 Godot 验证结果。"
+  short_description: "Generate editable UI and review isometric maps with scoped patches"
+  default_prompt: "使用 $game-ui-studio 读取本轮 UI 生成任务包或 UI/地图反馈包，输出原生可编辑文档或最小增量补丁，验证格式、受保护字段和版本，再展示差异与实际完成的 Godot 验证结果。"

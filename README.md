@@ -4,23 +4,35 @@
 
 [Logo 透明 PNG 原图](previews/branding/game-ui-studio-logo.png)
 
-用于独立游戏 UI 原型的本地组件编辑与审阅实验。React + Konva 提供真实画布，Node 保存本地文件；角色详情页示例可以编辑、评论、导出反馈包、应用受约束的 JSON 补丁，以及导出 Godot 4 场景。不需要账户、付费 API 或在线 AI 服务。
+用于独立游戏 UI 原型与等距地图的本地编辑和审阅工具。React + Konva 提供真实画布，Node 保存本地文件；角色详情页示例可以编辑、评论、导出反馈包、应用受约束的 JSON 补丁，以及导出 Godot 4 场景。不需要账户、付费 API 或在线 AI 服务。
 
-**第一阶段范围**：固定尺寸游戏界面、标准 Control 节点、单人文件工作流。不是完整 Figma 替代品。Penpot 自托管和官方本地 MCP 已单独做可行性验证，具体证据、许可和选型成本见 [技术选型](docs/TECHNICAL-DECISION.md)。
+**当前范围**：固定尺寸游戏界面、等距二维地图、单人文件工作流。不是完整 Figma 替代品。Penpot 自托管和官方本地 MCP 已单独做可行性验证，具体证据、许可和选型成本见 [技术选型](docs/TECHNICAL-DECISION.md)。
 
-配套 Codex skill：[`$game-ui-studio`](.agents/skills/game-ui-studio/SKILL.md)。[安装与使用](docs/CODEX-SKILL.md)；[v0.1.2 Windows 安装包、源码与 skill](releases/v0.1.2/)。
+配套 Codex skill：[`$game-ui-studio`](.agents/skills/game-ui-studio/SKILL.md)。[安装与使用](docs/CODEX-SKILL.md)；[v0.2.0 Windows 安装包、源码与 skill](releases/v0.2.0/)。
 
 已有图片已集中保存在 [previews/](previews/README.md)：包含原始画布、编辑器、Godot、角色插图和反馈局部截图，并附路径、尺寸、文件大小及 SHA-256 清单，可直接在 GitHub 查看。
 
 ## Windows 一键安装
 
-下载 [Game-UI-Studio-Setup-0.1.2-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.1.2/Game-UI-Studio-Setup-0.1.2-x64.exe)，双击安装后从桌面打开。适用 Windows 10 / 11 x64，内置运行环境，无需安装 Node.js 或运行命令。项目数据独立保存，升级和卸载保留数据。安装包未签名。
+下载 [Game-UI-Studio-Setup-0.2.0-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.2.0/Game-UI-Studio-Setup-0.2.0-x64.exe)，双击安装后从桌面打开。适用 Windows 10 / 11 x64，内置运行环境，无需安装 Node.js 或运行命令。项目数据独立保存，升级和卸载保留数据。安装包未签名。
 
-[安装、退出、卸载与排障](docs/WINDOWS-INSTALL.md) · [发行文件与校验和](releases/v0.1.2/)
+[安装、退出、卸载与排障](docs/WINDOWS-INSTALL.md) · [发行文件与校验和](releases/v0.2.0/)
 
 顶部 **“导入 UI”** 可以选择、拖入或粘贴 Codex 生成的项目 JSON，先检查组件及资源数量，再备份并导入。**“导出项目”** 单独保存当前设计；增量补丁在“差异”中导入。右上角可切换 **简体中文 / English**，设置保存在本机，重新启动仍有效。项目中的文字、组件 ID 和审阅内容保持原样。
 
 [导入 UI 与语言切换图文说明](docs/IMPORT-AND-LANGUAGE.md)
+
+## v0.2.0：Codex 生成与 2.5D 地图
+
+工作区上方可切换 **UI 设计 / 2.5D 地图**，两份文档分别保存在本机。已有 UI 不会被地图覆盖。
+
+- **Codex 生成任务**：填写需求、尺寸和美术限制，选择角色、背包、商店、HUD、空白或当前设计模板，导出包含真实模型校验器与素材参考的 ZIP。让 Codex 返回 `result.project.json`，再点“导入 UI”。[操作指南](docs/CODEX-GENERATION.md)
+- **选择性接受修改**：UI 和地图补丁都先预览差异，再勾选接受；部分接受后意见保留待处理，重新导出反馈继续修改。过期版本、锁定和保护字段仍由服务端检查。
+- **吸附与辅助线**：UI 拖动时显示边缘和中心对齐线，支持吸附开关、多选对齐与等距分布，锁定及自动布局组件仍受约束。
+- **地图工作区**：等距网格、地砖笔刷/橡皮/矩形/填充、图层锁定和显隐、素材拖放拼接、整数格占地轮廓、图层前后顺序、物件吸附拖动与锚点、阻挡、出生点和出口、走动预览。支持原生地图 JSON、本地素材和图集裁切、物件及区域评论、局部反馈与回退。[地图操作指南](docs/MAP-WORKSPACE.md)
+- **Godot 地图导出**：面向 Godot 4.3+ 的 `TileMapLayer`、物件与稳定 ID 映射；实际测试方法及当前结果见 [本版验证](docs/VALIDATION-v0.2.0.md)。
+
+本版没有三维地形、可旋转镜头、自动地形拼接、多页面交互连线或内置 AI 聊天。内置村庄是可替换的原创矢量样例，美术效果需单独审阅。
 
 ## 源码安装和启动
 
@@ -59,13 +71,16 @@ Linux/macOS 使用相同 npm 命令，无需 `.cmd`。需要 Node >=22.12，推�
 | `examples/character.project.json` | 不可变的初始示例设计及两条待处理评论 |
 | `examples/recruit.patch.json` | 最小增量补丁示例（仅匹配初始 revision；UI 示例按钮使用当前 revision） |
 | `public/assets/` | 原创角色/背景/按钮/九宫格纹理和共用字体 |
+| `examples/village.map.json` | 初始 16×16 村庄入口地图 |
+| `data/map.json` | 独立保存的地图、区域评论与补丁历史 |
+| `data/preferences.json` | 中英文界面偏好 |
 | `data/project.json` | 当前工作设计、评论状态和补丁差异记录，自动持久化 |
 | `data/assets/` | 用户导入的本地资源 |
 | `data/exports/` | 反馈包及 Godot ZIP |
 | `artifacts/` | 本次实际验证结果和截图；详见验收报告 |
 | `research/penpot/` | 官方部署配置、复现脚本和独立探测结果 |
 
-`data/` 不加入 Git。每个数据目录当前只有一份活动项目，导入新项目会替换活动项目；切换前用“项目文件”导出设计，或备份整个目录以保留工作文档和导入资源。JSON 导出用于设计配置交换；跨机器迁移自定义资源时还需复制 `data/assets/`。不要用版本控制覆盖工作目录。当前不做多人冲突合并。
+`data/` 不加入 Git。每个数据目录保存一份活动 UI 和一份活动地图，导入替换对应工作区文档；切换项目之前用“导出项目”或“导出地图”保存设计，或备份整个目录以保留工作文档和导入资源。JSON 导出用于设计配置交换；跨机器迁移自定义资源时还需复制 `data/assets/`。不要用版本控制覆盖工作目录。当前不做多人冲突合并。
 
 共享组件：选中卡片/按钮组后用左侧“导出组件”保存子树 JSON，“导入组件”会重新分配稳定 ID。模板包含资源引用；跨机器共享时需一并携带资源文件。第一期没有组件实例联动。
 
@@ -76,6 +91,7 @@ npm.cmd test
 npm.cmd run build
 $env:GODOT_BIN = 'C:\Tools\Godot\Godot_v4.6.3-stable_win64_console.exe'
 npm.cmd run test:godot
+npm.cmd run test:map-godot
 ```
 
 Godot 可执行文件可放入 PATH，或用 `GODOT_BIN` 指定。截图需要图形显示；Windows 桌面直接运行，Linux CI 需 X11/虚拟显示和 OpenGL compatibility。纯 headless 引擎可以验证场景结构，但不能作为实际渲染截图成功的证据。测试脚本将导出示例到 `artifacts/godot-project/`，执行导入、节点验证和截图，并写入结果。结果文件不存在或脚本失败均不算通过。

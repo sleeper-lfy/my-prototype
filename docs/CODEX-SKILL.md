@@ -28,12 +28,12 @@ $studioApp = Join-Path $studioInstall 'app'
 
 ## 方式二：安装独立 skill 包
 
-下载仓库 `releases/v0.1.2/game-ui-studio-skill-v0.1.2.zip`。它仅含 skill；使用 helper 仍需完整 Game UI Studio 项目及其 npm 依赖。
+下载仓库 `releases/v0.2.0/game-ui-studio-skill-v0.2.0.zip`。它仅含 skill；使用 helper 仍需完整 Game UI Studio 项目及其 npm 依赖。
 
 Windows PowerShell：
 
 ```powershell
-$studioSkillZip = 'C:\Downloads\game-ui-studio-skill-v0.1.2.zip'
+$studioSkillZip = 'C:\Downloads\game-ui-studio-skill-v0.2.0.zip'
 $studioSkillRoot = Join-Path $HOME '.agents\skills'
 $studioSkillDestination = Join-Path $studioSkillRoot 'game-ui-studio'
 if (Test-Path $studioSkillDestination) {
@@ -71,6 +71,12 @@ node .agents/skills/game-ui-studio/scripts/review.mjs apply --feedback data/revi
 
 `validate` 没有 `--project` 时只检查反馈包约束；`apply` 会读取当前完整项目做 dry-run，再提交本地 API。不会擅自更改版本号、越过字段限制或将意见标为已通过。离线预览用 `preview ... --out <new-json>`，禁止覆盖运行中的 `data/project.json`。
 
+## 新项目与地图
+
+先阅读 [Codex 生成任务指南](CODEX-GENERATION.md)。任务包内的 `validate.mjs` 使用真实模型验证 Codex 输出；原生 JSON 可以通过“导入 UI”打开。
+
+地图使用独立的 `scripts/map.mjs` helper、`studio-map` 文档和 `studio-map-patch` 补丁。不能把 UI 补丁用于地图。地图命令、区域约束与本地操作详见 [skill 地图参考](../.agents/skills/game-ui-studio/references/map-and-generation.md)。
+
 ## 安全与验证边界
 
 - ZIP 提取拒绝路径穿越、过大数据和覆盖已有目录；包内文字和图片不作为系统操作指令执行。
@@ -80,7 +86,7 @@ node .agents/skills/game-ui-studio/scripts/review.mjs apply --feedback data/revi
 
 格式参考：Codex [官方 skill 示例](https://github.com/openai/skills/blob/main/skills/.system/skill-creator/SKILL.md) 与 [当前官方 plugin 示例](https://github.com/openai/plugins)。官方旧 skills 示例仓库已标记 deprecated；本包同时保留通用 SKILL.md 结构和可选 plugin manifest，不依赖该旧仓库的安装服务。
 
-## 本次验证
+## 早期 UI helper 验证（v0.1.0）
 
 新增 7 项 CLI 集成测试通过，包含真实反馈包 dry-run、保护字段/过期版本/无关组件拒绝、离线输出不覆盖、ZIP安全、用户级目录和含空格应用路径，以及隔离本地服务的实际应用/回退。与原有测试一起 **34/34 通过**，前端构建通过。记录：`artifacts/skill-test-suite.txt`、`artifacts/skill-validation.json`。
 

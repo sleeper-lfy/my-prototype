@@ -1,13 +1,13 @@
 {
   "name": "game-ui-studio",
-  "version": "0.1.2",
-  "description": "Local game UI component reviews, constrained JSON patches, and Godot 4 verification.",
+  "version": "0.2.0",
+  "description": "Local editable game UI and isometric maps, Codex task packages, scoped reviews, and Godot validation.",
   "repository": "https://github.com/sleeper-lfy/my-prototype",
   "license": "MIT",
   "skills": "./.agents/skills/",
   "interface": {
     "displayName": "Game UI Studio",
-    "shortDescription": "Review local game UI with scoped patches and Godot checks",
+    "shortDescription": "Design and review local game UI and isometric maps with Codex",
     "defaultPrompt": [
       "Use $game-ui-studio to inspect this feedback package and produce a validated incremental patch."
     ]

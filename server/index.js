@@ -7,6 +7,10 @@ import { createServer as createHttpServer } from 'node:http';
 import { zipSync, strToU8 } from 'fflate';
 import { validateProject, applyPatch, rollbackPatch, buildFeedback } from '../src/model.js';
 import { createGodotFiles } from './godot.js';
+import { previewSelectedPatch } from '../src/patchSelection.js';
+import { mountMapRoutes } from './mapRoutes.js';
+import { createMapGodotFiles } from './mapGodot.js';
+import { mountGenerationRoutes } from './generationRoutes.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ASSET_PREFIXES = ['/assets/', '/local-assets/'];
@@ -92,6 +96,8 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
     const patch = JSON.parse(await fs.readFile(path.join(ROOT, 'examples/recruit.patch.json'), 'utf8'));
     res.json({ ...patch, projectId: current.id, baseRevision: current.revision });
   });
+  app.post('/api/patch/preview', (req, res) => res.json(previewSelectedPatch(clone(current), req.body.patch, req.body.selectedIndices)));
+  app.post('/api/patch/selected', async (req, res) => res.json(await mutate(() => persist(previewSelectedPatch(current, req.body.patch, req.body.selectedIndices).project))));
   app.post('/api/patch', async (req, res) => res.json(await mutate(() => persist(applyPatch(current, req.body)))));
   app.post('/api/rollback', async (req, res) => res.json(await mutate(() => persist(rollbackPatch(current, req.body.historyId)))));
 
@@ -114,6 +120,8 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
     await fs.writeFile(path.join(exportDir, name), zipSync(files, { level: 6 }));
     return { path: `data/exports/${name}`, downloadUrl: `/api/files/${name}` };
   }
+  await mountMapRoutes(app, { dataDir, mutate, archive, readAsset, resolveAssetPath, createMapGodotFiles });
+  mountGenerationRoutes(app, { getProject: () => clone(current), archive, readAsset });
   app.post('/api/feedback', async (req, res) => {
     const project = clone(current);
     if (req.body.baseRevision !== project.revision) throw fail('The screenshot revision is out of date. Reload and export the feedback again.', 409);
@@ -172,7 +180,7 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
     res.json({ id, name: name.trim(), kind, src: `/local-assets/${filename}`, ...(kind === 'nineSlice' ? { margins: { left: 12, top: 12, right: 12, bottom: 12 } } : {}) });
   });
   app.get('/api/files/:name', async (req, res) => {
-    if (!/^(feedback|godot)-[0-9]+-[a-f0-9]+\.zip$/.test(req.params.name)) throw fail('Unknown export.', 404);
+    if (!/^(feedback|godot|map-feedback|map-godot|generation)-[0-9]+-[a-f0-9]+\.zip$/.test(req.params.name)) throw fail('Unknown export.', 404);
     res.download(path.join(exportDir, req.params.name));
   });
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Unknown API route.' }));

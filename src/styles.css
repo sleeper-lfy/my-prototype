@@ -125,6 +125,22 @@ code {
   flex-direction: column;
   overflow: hidden;
 }
+.workspace-switchbar { flex-shrink: 0; display: flex; align-items: center; gap: 18px; min-height: 48px; padding: 6px 20px; background: #17221c; border-bottom: 1px solid var(--line); }
+.workspace-switches { display: flex; gap: 4px; padding: 3px; border-radius: 6px; background: #101b15; border: 1px solid #334737; }
+.workspace-switches button { padding: 8px 18px; border-radius: 4px; color: #aab8a7; white-space: nowrap; }
+.workspace-switches button[aria-pressed="true"] { background: #354a32; color: #e3dfbf; box-shadow: inset 0 -2px #c9b37b; }
+.workspace-switchbar > span { color: #879a89; font-size: 11px; flex: 1; }
+.generation-trigger { border: 1px solid #726745; color: #e4d6ab; margin-left: auto; }
+.map-workspace-host { flex: 1; min-height: 0; flex-direction: column; }
+.patch-review-modal { width: min(760px, 94vw); max-height: 90vh; overflow: auto; }
+.patch-review-modal > textarea { min-height: 140px; height: 160px; width: 100%; margin: 12px 0; }
+.patch-review-list { margin-top: 14px; padding: 12px; background: #142119; border-radius: 5px; }
+.patch-review-list > p { color: #acbc9a; font-size: 11px; }
+.patch-choice { display: flex; gap: 12px; padding: 14px 0; align-items: flex-start; border-bottom: 1px solid #36492f; }
+.patch-choice > span { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 5px; overflow-wrap: anywhere; }
+.patch-choice del { color: #e2aa95; text-decoration: none; background: #603d2b44; padding: 5px; }
+.patch-choice ins { color: #b9d5a0; text-decoration: none; background: #38512b44; padding: 5px; }
+@media (max-width: 1200px) { .workspace-switchbar > span { display: none; } }
 .app-header {
   height: 70px;
   flex-shrink: 0;
@@ -520,6 +536,8 @@ code {
   align-items: center;
   gap: 3px;
 }
+.alignment-select { width: 104px; max-width: 120px; padding: 5px 6px; font-size: 10px; background: #1b241d; border: 1px solid #46543d; border-radius: 4px; color: #c3cfb2; }
+.canvas-toolbar .alignment-select:focus { border-color: #d6bd79; outline: 1px solid #d6bd79; }
 .tool {
   width: 29px;
   height: 29px;
@@ -1641,3 +1659,5 @@ html[lang="zh-CN"] .brand small, html[lang="zh-CN"] .section-title, html[lang="z
 .left-panel .panel-tabs { gap: 4px; padding: 0 10px; }
 .left-panel .panel-tabs > button { min-width: 0; font-size: 10px; gap: 4px; white-space: nowrap; }
 .import-modal > * { flex-shrink: 0; }
+
+.generation-modal > .import-paste, .generation-modal > div:has(> .import-paste) { margin-top: 12px; }

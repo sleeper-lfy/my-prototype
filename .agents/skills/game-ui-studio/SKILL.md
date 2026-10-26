@@ -1,11 +1,19 @@
 ---
 name: game-ui-studio
-description: Review and incrementally edit local Game UI Studio designs using stable component IDs, feedback ZIPs, protected-property JSON patches, diffs, rollback, and verified Godot 4 exports. Use for game UI component feedback, character/HUD layout revisions, 本地游戏 UI 审阅, Codex 反馈包, 增量修改, or Godot UI 导出验收 in this project.
+description: Create editable UI from local Codex task packages, and review UI or isometric 2.5D maps in Game UI Studio using stable IDs, feedback ZIPs, scoped JSON patches, diffs, rollback and Godot validation. Use for 游戏 UI 生成与审阅, 2.5D 等距地图, 区域评论, Codex 反馈包, 增量修改 or Godot 导出验收 in this project.
 ---
 
 # Game UI Studio
 
 以设计 JSON 和稳定组件 ID 为真源，完成“读取意见 → 最小补丁 → 校验 → 应用 → 差异 → 验证”。默认使用本地文件与本地服务，不引入付费 API 或云端聊天。
+
+## 先确定工作区与任务
+
+- **新建 UI**：读取工具导出的 Codex 生成任务包，以包内真实模板、素材清单和设计规范输出原生可编辑项目 JSON。不要用网页代码或一张整屏图片替代组件。先读 [地图与生成任务](references/map-and-generation.md)。
+- **修改现有 UI**：使用下面的 `review.mjs` 流程；维护 `project.json` 的组件 ID 与版本。
+- **等距地图**：使用独立 `studio-map` 文档、`studio-map-patch` 和 `scripts/map.mjs`；维护物件 ID、图层 ID 与格子坐标。完整规则和命令见 [地图与生成任务](references/map-and-generation.md)。地图与 UI 的文件、版本、接口和补丁不可混用。
+
+工具是本地文件交换与本地 API 工作流。云端 Codex 无法访问用户电脑的 `localhost`；云端任务读取用户提供的 ZIP/JSON 并返回文件。本地 Codex 才能对已启动的本地编辑器调用 API。
 
 ## 找到项目与工具
 

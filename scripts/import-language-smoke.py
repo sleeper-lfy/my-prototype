@@ -8,12 +8,14 @@ ROOT=pathlib.Path(__file__).resolve().parent.parent
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--chromium',default=shutil.which('chromium'))
 parser.add_argument('--screenshots',action='store_true')
+parser.add_argument('--out', default='artifacts/import-language-results.json')
+parser.add_argument('--preview-dir', default='previews/v0.1.2')
 args=parser.parse_args()
 report={'schemaVersion':1,'platform':platform.system()+' / real Chromium against production Node server','checks':[],'status':'running','isolatedData':True,'screenshotsGenerated':args.screenshots}
 server=None;browser=None;logs=[]
 workspace=pathlib.Path(tempfile.mkdtemp(prefix='studio-import-language-'))
-report_path=ROOT/'artifacts/import-language-results.json'
-report_path.parent.mkdir(exist_ok=True)
+report_path=ROOT/args.out
+report_path.parent.mkdir(parents=True,exist_ok=True)
 
 def wait(fn,why,timeout=15):
  end=time.monotonic()+timeout;last=None
@@ -57,7 +59,7 @@ def file(name,value):
 
 def screen(name):
  if args.screenshots:
-  folder=ROOT/'previews/v0.1.2';folder.mkdir(parents=True,exist_ok=True)
+  folder=ROOT/args.preview_dir;folder.mkdir(parents=True,exist_ok=True)
   page.screenshot(path=str(folder/name),full_page=True)
 
 def open_import():

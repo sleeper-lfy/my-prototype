@@ -80,6 +80,25 @@ test('local API rejects cross-site writes, unsafe assets, and bad project import
   assert.equal(project.data.id, 'ashfall');
 }));
 
+test('UI patch preview and selective acceptance are checked against the saved revision without premature writes', async () => withServer(async ({ request }) => {
+  const before = (await request('/api/project')).data;
+  const patch = (await request('/api/example-patch')).data;
+  patch.changes[0].set['style.color'] = '#eeeeee';
+  const preview = await request('/api/patch/preview', 'POST', { patch });
+  assert.equal(preview.status, 200);
+  assert.equal(preview.data.changes.length, 2);
+  assert.deepEqual((await request('/api/project')).data, before);
+  const accepted = await request('/api/patch/selected', 'POST', { patch, selectedIndices: [0] });
+  assert.equal(accepted.status, 200);
+  const node = accepted.data.nodes.find(n => n.id === 'recruit-button');
+  assert.equal(node.style.text, 'RECRUIT · 240');
+  assert.equal(node.style.color, before.nodes.find(n => n.id === node.id).style.color);
+  assert.equal(accepted.data.reviews.find(r => r.id === 'review-cta').status, 'pending');
+  const rejected = await request('/api/patch/selected', 'POST', { patch, selectedIndices: [1] });
+  assert.equal(rejected.status, 400);
+  assert.deepEqual((await request('/api/project')).data, accepted.data);
+}));
+
 test('stale feedback and missing imported assets cannot replace a valid working document', async () => withServer(async ({ request }) => {
   const original = (await request('/api/project')).data;
   const changed = structuredClone(original);

@@ -1,0 +1,676 @@
+{
+  "startedAt": "2026-10-26T06:09:10.358Z",
+  "passed": true,
+  "source": "../../tmp/studio-layer-placement-fixture.json",
+  "checks": [
+    {
+      "name": "actual editor MapScene rendered in Chromium",
+      "exitCode": 0,
+      "source": "src/MapWorkspace.jsx",
+      "overlays": "markers, selection and preview player hidden"
+    },
+    {
+      "name": "version",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "4.6.3.stable.official.7d41c59c4\n",
+      "stderr": ""
+    },
+    {
+      "name": "import",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (3 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Started Scanning actions... (6 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | grass.svg\u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | house.svg\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | path.svg\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | tree.svg\u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | wall.svg\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | water.svg\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1m_update_scan_actions\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (6 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing pre-reimport operations...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | grass.svg\u001b[39m\u001b[0m\n[  14% ] \u001b[90m\u001b[1mreimport\u001b[22m | house.svg\u001b[39m\u001b[0m\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | path.svg\u001b[39m\u001b[0m\n[  42% ] \u001b[90m\u001b[1mreimport\u001b[22m | tree.svg\u001b[39m\u001b[0m\n[  57% ] \u001b[90m\u001b[1mreimport\u001b[22m | wall.svg\u001b[39m\u001b[0m\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | water.svg\u001b[39m\u001b[0m\n[  85% ] \u001b[90m\u001b[1mreimport\u001b[22m | Finalizing Asset Import...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (6 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing post-reimport operations...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "name": "headless scene, navigation and physics",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org\n\nSTUDIO_MAP_VERIFY passed=true\n",
+      "stderr": ""
+    },
+    {
+      "name": "rendered map and movement",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org\nOpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)\n\nSTUDIO_MAP_VERIFY passed=true\n",
+      "stderr": "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)\n"
+    }
+  ],
+  "screenshot": {
+    "status": "passed",
+    "path": "artifacts/v0.2.0/godot-map/layer-placement-fixture/map.png",
+    "width": 1280,
+    "height": 800,
+    "sha256": "18e08812122a9f1591ff9f462b52d9c1d59e6759fb0b01152f8d28eca373aead",
+    "uniqueColors": 13320,
+    "mode": "map-only"
+  },
+  "comparison": {
+    "status": "measured",
+    "reference": "artifacts/v0.2.0/godot-map/layer-placement-fixture/editor-reference.png",
+    "referenceSha256": "8eecba338e78835b795285845fa9d3b3e48c5a6b10528d033d7e8135c929fd88",
+    "width": 1280,
+    "height": 800,
+    "meanAbsoluteError": 0.002781421058006536,
+    "changedPixelRatio": 0.2529833984375,
+    "over10PercentDifferenceRatio": 0.001564453125,
+    "pixelPerfect": false,
+    "note": "SVG rasterization and texture filtering can differ. Numeric fidelity is separate from art approval; manually supplied references must match the exported revision.",
+    "referenceSource": "actual-editor-MapScene"
+  },
+  "project": {
+    "id": "layer-placement-fixture",
+    "revision": 1,
+    "sourceSha256": "04f4bc82689a410fad3682bf0ead5f1bda65469787ebff606ee1e04c7b8ce7da",
+    "layerCount": 5,
+    "objectCount": 10,
+    "snapshot": "artifacts/v0.2.0/godot-map/layer-placement-fixture/source-map.json"
+  },
+  "assets": [
+    {
+      "src": "/assets/map/grass.svg",
+      "destination": "assets/grass.svg",
+      "sha256": "1e2f3ea682ecefa57e24bc1a1b3f1fc25a1b04504e724e15cd2bfa54f0d99411",
+      "bytes": 768
+    },
+    {
+      "src": "/assets/map/path.svg",
+      "destination": "assets/path.svg",
+      "sha256": "20b9d6b7ccf1c105dfa596c2ecbaefc804e133a0a7e0df9e98f129d863be0cc3",
+      "bytes": 816
+    },
+    {
+      "src": "/assets/map/water.svg",
+      "destination": "assets/water.svg",
+      "sha256": "86354ed4ebd6c3a0cc57de09e1dd498a88415773353d0684c4dfeadd51aa99ef",
+      "bytes": 769
+    },
+    {
+      "src": "/assets/map/tree.svg",
+      "destination": "assets/tree.svg",
+      "sha256": "e868afb5ebfb7543928023a809e011a065b9c620d8ffbe8d16756762603cb4c0",
+      "bytes": 1419
+    },
+    {
+      "src": "/assets/map/house.svg",
+      "destination": "assets/house.svg",
+      "sha256": "d1a5f1323230c9285f8d25f56e5af7c315639b8f79a5c356e90f3640ff89d3b3",
+      "bytes": 1981
+    },
+    {
+      "src": "/assets/map/wall.svg",
+      "destination": "assets/wall.svg",
+      "sha256": "a3054b961e98c6724cce5f6e14128c124df06008c974ebad826274a9b0f8b94a",
+      "bytes": 819
+    }
+  ],
+  "archive": {
+    "path": "artifacts/v0.2.0/godot-map/layer-placement-fixture/godot-map.zip",
+    "sha256": "4910da567e2c57121196cfbedb761101b8d28fd14714ee908560ecd5ef82a2a3",
+    "bytes": 19971
+  },
+  "godot": "4.6.3.stable.official.7d41c59c4",
+  "headless": {
+    "cellCount": 329,
+    "checks": [
+      {
+        "id": "ground",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "roads",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "water-layer",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "decoration",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "foreground",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "house-01",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "house-02",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-01",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-02",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-03",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-04",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "wall-01",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "wall-02",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-tree",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-house",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "house-01",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "house-02",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-01",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-02",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-03",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-04",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "wall-01",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "wall-02",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-tree",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-house",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "spawn-gate",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "exit-north",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "trigger-inn",
+        "kind": "marker",
+        "passed": true
+      }
+    ],
+    "display": "headless",
+    "errors": [],
+    "godot": "4.6.3-stable (official)",
+    "passed": true,
+    "physicsBlockedCells": 42,
+    "projectId": "layer-placement-fixture",
+    "revision": 1,
+    "screenshot": {
+      "requested": false,
+      "written": false
+    },
+    "walkabilityCells": 256,
+    "walkedSteps": 14,
+    "ySortEnabled": true
+  },
+  "render": {
+    "cellCount": 329,
+    "checks": [
+      {
+        "id": "ground",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "roads",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "water-layer",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "decoration",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "foreground",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "house-01",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "house-02",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-01",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-02",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-03",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "tree-04",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "wall-01",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "wall-02",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-tree",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-house",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "house-01",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "house-02",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-01",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-02",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-03",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "tree-04",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "wall-01",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "wall-02",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-tree",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "layer-fixture-house",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,10",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,11",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,12",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,13",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,14",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:12,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:13,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:14,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "blocked:15,15",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "spawn-gate",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "exit-north",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "trigger-inn",
+        "kind": "marker",
+        "passed": true
+      }
+    ],
+    "display": "X11",
+    "errors": [],
+    "godot": "4.6.3-stable (official)",
+    "passed": true,
+    "physicsBlockedCells": 42,
+    "projectId": "layer-placement-fixture",
+    "revision": 1,
+    "screenshot": {
+      "height": 800,
+      "requested": true,
+      "width": 1280,
+      "written": true
+    },
+    "walkabilityCells": 256,
+    "walkedSteps": 14,
+    "ySortEnabled": true
+  },
+  "finishedAt": "2026-10-26T06:09:40.024Z"
+}

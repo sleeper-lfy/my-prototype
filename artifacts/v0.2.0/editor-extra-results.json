@@ -1,0 +1,71 @@
+{
+  "testedAt": "2026-10-26T06:08:54.006725+00:00",
+  "scope": "Real Chromium UI checks on an isolated temporary project",
+  "checks": [
+    {
+      "name": "component-template-roundtrip",
+      "status": "passed",
+      "detail": {
+        "nodes": 5,
+        "newStableIds": true,
+        "assetMode": "local references"
+      }
+    },
+    {
+      "name": "insert-Label",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-Button",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-Panel",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-Control",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-TextureRect",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-HBoxContainer",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-VBoxContainer",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "insert-MarginContainer",
+      "status": "passed",
+      "detail": "Created through UI and persisted through local API"
+    },
+    {
+      "name": "local-font-import",
+      "status": "passed",
+      "detail": {
+        "persisted": true,
+        "fontFaceLoaded": true
+      }
+    },
+    {
+      "name": "browser-runtime",
+      "status": "passed",
+      "detail": "No uncaught page exceptions"
+    }
+  ],
+  "browserErrors": [],
+  "browserVersion": "154.0.8037.57",
+  "status": "passed"
+}

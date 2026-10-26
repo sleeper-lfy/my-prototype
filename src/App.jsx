@@ -17,9 +17,13 @@ import {
   Line,
 } from "react-konva";
 import { computeLayout, validateProject, makeId } from "./model.js";
+import { snapRectangle, movableSelection, descendantsOf, selectionBounds, alignmentUpdates } from './snapGuides.js';
 import { useLocale } from './useLocale.js';
 import { errorMessage, translateMessage } from './i18n.js';
 import ImportDialog from './ImportDialog.jsx';
+import MapWorkspace from './MapWorkspace.jsx';
+import GenerationDialog from './GenerationDialog.jsx';
+import PatchReviewDialog from './PatchReviewDialog.jsx';
 
 const clone = (value) => structuredClone(value);
 const containers = ["HBoxContainer", "VBoxContainer", "MarginContainer"];
@@ -313,6 +317,7 @@ function DesignNode({
   selected,
   onSelect,
   onMove,
+  onDragStart,
   onDragMove,
   onTransform,
   nodeRef,
@@ -339,6 +344,7 @@ function DesignNode({
       onDragStart={(event) => {
         event.cancelBubble = true;
         onSelect(event, true);
+        onDragStart(node, event);
       }}
       onDragMove={(event) => onDragMove(node, event)}
       onDragEnd={(event) => onMove(node, event)}
@@ -429,6 +435,8 @@ function Field({
 
 export default function App() {
   const { locale, setLocale, t, preferenceError, ready: localeReady } = useLocale();
+  const [workspace, setWorkspace] = useState("ui");
+  const [mapVisited, setMapVisited] = useState(false);
   const [project, setProject] = useState(null),
     projectRef = useRef(null),
     [selected, setSelected] = useState([]),
@@ -443,6 +451,11 @@ export default function App() {
   const [zoom, setZoom] = useState(0.8),
     [hand, setHand] = useState(false),
     [snap, setSnap] = useState(true),
+    [showGuides, setShowGuides] = useState(true),
+    [dragGuides, setDragGuides] = useState([]),
+    [dragActive, setDragActive] = useState(false),
+    [dragBounds, setDragBounds] = useState(null),
+    [alignmentMode, setAlignmentMode] = useState("left"),
     [showPins, setShowPins] = useState(true),
     [search, setSearch] = useState("");
   const [collapsed, setCollapsed] = useState(new Set()),
@@ -469,6 +482,7 @@ export default function App() {
     patchInput = useRef(null),
     assetInput = useRef(null),
     componentInput = useRef(null),
+    dragSessionRef = useRef(null),
     panRef = useRef(null);
   const notify = useCallback((text) => {
     setToast(text);
@@ -626,15 +640,14 @@ export default function App() {
   useEffect(() => {
     const tr = transformerRef.current;
     if (!tr || !project) return;
+    if (dragSessionRef.current) { tr.nodes([]); return; }
     tr.nodes(
-      selected
-        .map((id) => project.nodes.find((n) => n.id === id))
-        .filter((n) => n && !effectiveLocked(n) && !autoPosition(n))
+      movableSelection(project, selected)
         .map((n) => shapeRefs.current.get(n.id))
         .filter(Boolean),
     );
     tr.getLayer()?.batchDraw();
-  }, [selected, project, zoom, fontEpoch]);
+  }, [selected, project, zoom, fontEpoch, dragActive]);
   const fit = useCallback(() => {
     if (!projectRef.current || !canvasWrap.current) return;
     const { width, height } = canvasWrap.current.getBoundingClientRect(),
@@ -682,41 +695,56 @@ export default function App() {
         : [node.id],
     );
   };
-  const snapValue = (v) => (snap ? Math.round(v / 8) * 8 : Math.round(v));
-  const moveNode = (node, event) => {
-    const target = event.target,
-      old = layout.get(node.id);
-    let nx = snapValue(target.x()),
-      ny = snapValue(target.y());
-    const other = visibleNodes.filter(
-      (n) => n.id !== node.id && !selected.includes(n.id),
-    );
-    if (snap) {
-      for (const n of other) {
-        const r = layout.get(n.id);
-        for (const edge of [r.x, r.x + r.width, r.x + r.width / 2])
-          if (Math.abs(nx - edge) < 6 / zoom) nx = edge;
-        for (const edge of [r.y, r.y + r.height, r.y + r.height / 2])
-          if (Math.abs(ny - edge) < 6 / zoom) ny = edge;
-      }
+  const beginDrag = (node, event) => {
+    if (dragSessionRef.current) return;
+    const multi = event.evt?.shiftKey || event.evt?.ctrlKey || event.evt?.metaKey;
+    const ids = selected.includes(node.id) ? selected : multi ? [...selected, node.id] : [node.id];
+    const roots = movableSelection(project, ids);
+    if (!roots.length) return;
+    const rootIds = roots.map(item => item.id), movedIds = descendantsOf(project, rootIds);
+    const bounds = selectionBounds(roots.map(item => layout.get(item.id)));
+    // Konva's Transformer otherwise starts a separate drag for every selected
+    // shape. One owner translates the selection and descendants exactly once.
+    transformerRef.current?.nodes([]);
+    dragSessionRef.current = { ownerId: node.id, rootIds, movedIds, layout, bounds, dx: 0, dy: 0,
+      targets: visibleNodes.filter(item => !movedIds.has(item.id) && roots.some(root => root.parentId === item.parentId))
+        .map(item => ({ id: item.id, rect: layout.get(item.id) })) };
+    setDragActive(true);
+    setDragGuides([]);
+    setDragBounds(bounds);
+  };
+  const updateDrag = (node, event) => {
+    const session = dragSessionRef.current;
+    if (!session || session.ownerId !== node.id) return;
+    const original = session.layout.get(node.id);
+    const raw = { ...session.bounds, x: session.bounds.x + event.target.x() - original.x, y: session.bounds.y + event.target.y() - original.y };
+    const snapped = snapRectangle({ rect: raw, targets: session.targets, canvas: project.canvas, zoom, enabled: snap });
+    session.dx = snapped.x - session.bounds.x;
+    session.dy = snapped.y - session.bounds.y;
+    for (const id of session.movedIds) {
+      const element = shapeRefs.current.get(id), rect = session.layout.get(id);
+      if (element && rect) element.position({ x: rect.x + session.dx, y: rect.y + session.dy });
     }
-    const dx = nx - old.x,
-      dy = ny - old.y;
-    target.position({ x: old.x, y: old.y });
-    const ids = selected.includes(node.id) ? selected : [node.id];
-    edit((d) =>
-      d.nodes.forEach((n) => {
-        if (
-          ids.includes(n.id) &&
-          !effectiveLocked(n) &&
-          !autoPosition(n) &&
-          !ids.includes(n.parentId)
-        ) {
-          n.frame.x = Math.round(n.frame.x + dx);
-          n.frame.y = Math.round(n.frame.y + dy);
-        }
-      }),
-    );
+    setDragGuides(showGuides ? snapped.guides : []);
+    setDragBounds({ ...session.bounds, x: snapped.x, y: snapped.y });
+  };
+  const moveNode = (node, event) => {
+    const session = dragSessionRef.current;
+    if (!session || session.ownerId !== node.id) return;
+    updateDrag(node, event);
+    for (const id of session.movedIds) {
+      const element = shapeRefs.current.get(id), rect = session.layout.get(id);
+      if (element && rect) element.position({ x: rect.x, y: rect.y });
+    }
+    dragSessionRef.current = null;
+    setDragGuides([]); setDragBounds(null); setDragActive(false);
+    if (Math.abs(session.dx) < 0.00001 && Math.abs(session.dy) < 0.00001) return;
+    edit(draft => {
+      for (const item of draft.nodes) if (session.rootIds.includes(item.id)) {
+        item.frame.x = Math.round((item.frame.x + session.dx) * 1000) / 1000;
+        item.frame.y = Math.round((item.frame.y + session.dy) * 1000) / 1000;
+      }
+    });
   };
   const transformNode = (node, event) => {
     if (effectiveLocked(node) || autoPosition(node)) return;
@@ -825,27 +853,9 @@ export default function App() {
     setSelected(children.map((n) => n.id));
   };
   const align = (mode) => {
-    const nodes = project.nodes.filter(
-      (n) => selected.includes(n.id) && !effectiveLocked(n) && !autoPosition(n),
-    );
-    if (nodes.length < 2) return;
-    const bounds = nodes.map((n) => layout.get(n.id)),
-      left = Math.min(...bounds.map((r) => r.x)),
-      top = Math.min(...bounds.map((r) => r.y)),
-      right = Math.max(...bounds.map((r) => r.x + r.width)),
-      bottom = Math.max(...bounds.map((r) => r.y + r.height));
-    edit((d) => {
-      for (const n of d.nodes)
-        if (nodes.some((v) => v.id === n.id)) {
-          const p = layout.get(n.parentId) || { x: 0, y: 0 };
-          if (mode === "left") n.frame.x = left - p.x;
-          if (mode === "center")
-            n.frame.x = (left + right - n.frame.width) / 2 - p.x;
-          if (mode === "top") n.frame.y = top - p.y;
-          if (mode === "middle")
-            n.frame.y = (top + bottom - n.frame.height) / 2 - p.y;
-        }
-    });
+    const updates = alignmentUpdates(project, selected, mode);
+    if (!updates.length) return;
+    edit(draft => { for (const change of updates) Object.assign(draft.nodes.find(node => node.id === change.nodeId).frame, { x: change.x, y: change.y }); });
   };
   const addNode = (type = addType, asset) => {
     const id = makeId("node");
@@ -915,7 +925,7 @@ export default function App() {
   };
   useEffect(() => {
     const handler = (e) => {
-      if (busy) return;
+      if (busy || workspace !== "ui" || dialog || dragSessionRef.current) return;
       const mod = e.metaKey || e.ctrlKey;
       if (mod && e.key.toLowerCase() === "o") {
         e.preventDefault();
@@ -967,7 +977,7 @@ export default function App() {
       window.removeEventListener("keydown", handler);
       window.removeEventListener("keyup", up);
     };
-  }, [project, selected, doUndo, doRedo, duplicate, busy]);
+  }, [project, selected, doUndo, doRedo, duplicate, busy, workspace, dialog]);
   const exportFeedback = () =>
     action(async () => {
       await document.fonts.ready;
@@ -1035,33 +1045,15 @@ export default function App() {
       zoom,
       selected,
       canvas: projectRef.current?.canvas,
+      guides: showGuides ? dragGuides : [],
+      dragActive,
+      movingBounds: dragBounds,
     });
     return () => {
       delete window.__studioCapture;
       delete window.__studioState;
     };
-  }, [zoom, selected, project]);
-  const dragChildren = (node, event) => {
-    const old = layout.get(node.id),
-      dx = event.target.x() - old.x,
-      dy = event.target.y() - old.y;
-    const descendants = new Set([node.id]);
-    let grow = true;
-    while (grow) {
-      grow = false;
-      for (const n of project.nodes)
-        if (descendants.has(n.parentId) && !descendants.has(n.id)) {
-          descendants.add(n.id);
-          grow = true;
-        }
-    }
-    for (const id of descendants) {
-      if (id === node.id) continue;
-      const el = shapeRefs.current.get(id),
-        r = layout.get(id);
-      if (el && r) el.position({ x: r.x + dx, y: r.y + dy });
-    }
-  };
+  }, [zoom, selected, project, dragGuides, dragActive, dragBounds, showGuides]);
   const componentExport = () => {
     if (!selected.length) return;
     const ids = new Set(selected);
@@ -1176,15 +1168,23 @@ export default function App() {
         snapshotVisible(true);
       }
     });
-  const patch = (patchValue) =>
-    action(async () => {
-      const result = await api("/api/patch", patchValue);
-      accept(result);
-      undo.current = [];
-      redo.current = [];
-      setTab("history");
-      notify(t("notify.patch"));
-    });
+  const previewPatch = async (patchValue) => {
+    await queue.current;
+    return api("/api/patch/preview", { patch: patchValue });
+  };
+  const patch = async (patchValue, selectedIndices) => {
+    await queue.current;
+    const result = await api("/api/patch/selected", { patch: patchValue, selectedIndices });
+    accept(result);
+    undo.current = [];
+    redo.current = [];
+    setTab("history");
+    notify(t("notify.patch"));
+  };
+  const exportGeneration = async (payload) => {
+    await queue.current;
+    return api("/api/generation", { ...payload, baseRevision: projectRef.current.revision });
+  };
   const samplePatch = () =>
     action(async () => {
       const value = await api("/api/example-patch");
@@ -1305,7 +1305,7 @@ export default function App() {
             <small>{t("localLab")}</small>
           </div>
         </div>
-        <div className="project-breadcrumb">
+        <div className="project-breadcrumb" style={workspace === "map" ? { visibility: "hidden" } : undefined}>
           <Icon name="folder" />
           <span>{project.name.split("·")[0]}</span>
           <Icon name="chevron" size={12} />
@@ -1320,6 +1320,7 @@ export default function App() {
               <option value="en">English</option>
             </select>
           </label>
+          {workspace === "ui" && <>
           <span className={`save-status ${pending ? "saving" : ""}`}>
             <i />
             {pending ? t("saving") : t("saved")}
@@ -1346,8 +1347,19 @@ export default function App() {
             {t("exportFeedback")}
             <span className="button-count">{pendingReviews.length}</span>
           </button>
+          </>}
         </div>
       </header>
+      <nav className="workspace-switchbar" aria-label={t("workspace.label")}>
+        <div className="workspace-switches">
+          <button data-testid="workspace-ui" aria-pressed={workspace === "ui"} onClick={() => { setWorkspace("ui"); setTimeout(fit, 60); }}>{t("workspace.ui")}</button>
+          <button data-testid="workspace-map" aria-pressed={workspace === "map"} onClick={() => { setDialog(null); setMapVisited(true); setWorkspace("map"); }}>{t("workspace.map")}</button>
+        </div>
+        <span>{workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
+        {workspace === "ui" && <button className="button generation-trigger" data-testid="generation-task" disabled={busy || pending > 0} onClick={() => setDialog("generation")}><Icon name="code" />{t("generation.open")}</button>}
+      </nav>
+      {mapVisited && <div className="map-workspace-host" style={{ display: workspace === "map" ? "flex" : "none" }}><MapWorkspace locale={locale} active={workspace === "map"} /></div>}
+      <div className="ui-workspace-host" style={{ display: workspace === "ui" ? "contents" : "none" }}>
       <div className="workspace">
         <aside className="left-panel">
           <div className="panel-tabs">
@@ -1672,24 +1684,10 @@ export default function App() {
               />
             </div>
             <div className="toolbar-cluster">
-              <Tool
-                icon="align"
-                label={t("alignLeft")}
-                disabled={selected.length < 2}
-                onClick={() => align("left")}
-              />
-              <Tool
-                icon="columns"
-                label={t("alignCenter")}
-                disabled={selected.length < 2}
-                onClick={() => align("center")}
-              />
-              <Tool
-                icon="rows"
-                label={t("alignTop")}
-                disabled={selected.length < 2}
-                onClick={() => align("top")}
-              />
+              <select className="alignment-select" aria-label={t("alignment.action")} data-testid="ui-alignment-action" value={alignmentMode} onChange={event => setAlignmentMode(event.target.value)}>
+                {['left', 'center', 'right', 'top', 'middle', 'bottom', 'distributeX', 'distributeY'].map(mode => <option key={mode} value={mode}>{t(`alignment.${mode}`)}</option>)}
+              </select>
+              <Tool icon="align" label={t("alignment.apply")} data-testid="ui-alignment-apply" disabled={busy || movableSelection(project, selected).length < (alignmentMode.startsWith('distribute') ? 3 : 2)} onClick={() => align(alignmentMode)} />
               <Tool
                 icon="group"
                 label={t("group")}
@@ -1707,8 +1705,11 @@ export default function App() {
                 icon="snap"
                 label={t("snap")}
                 active={snap}
+                aria-pressed={snap}
+                data-testid="ui-snap-toggle"
                 onClick={() => setSnap(!snap)}
               />
+              <Tool icon="fit" label={t("guides.toggle")} active={showGuides} aria-pressed={showGuides} data-testid="ui-guides-toggle" onClick={() => { setShowGuides(!showGuides); setDragGuides([]); }} />
               <Tool
                 icon="comment"
                 label={t("pins")}
@@ -1722,7 +1723,7 @@ export default function App() {
                 label={t("zoomOut")}
                 onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}
               />
-              <button className="zoom-value" onClick={() => setZoom(1)}>
+              <button className="zoom-value" data-testid="ui-zoom-reset" onClick={() => setZoom(1)}>
                 {Math.round(zoom * 100)}%
               </button>
               <Tool
@@ -1736,7 +1737,7 @@ export default function App() {
           <div className="canvas-context">
             <span>
               <i className="live-dot" />
-              {t("canvasOverview")}
+              {dragActive ? t("guides.dragging") : t("canvasOverview")}
             </span>
             <span>
               {project.canvas.width} × {project.canvas.height}
@@ -1825,7 +1826,8 @@ export default function App() {
                       disabledDrag={autoPosition(node) || effectiveLocked(node)}
                       onSelect={(e, p) => selectNode(node, e, p)}
                       onMove={moveNode}
-                      onDragMove={dragChildren}
+                      onDragStart={beginDrag}
+                      onDragMove={updateDrag}
                       onTransform={transformNode}
                       showTip={notify}
                       nodeRef={(el) => {
@@ -1836,6 +1838,8 @@ export default function App() {
                   ))}
                 </Layer>
                 <Layer ref={overlayRef}>
+                  {dragActive && dragBounds && <Rect name="moving-selection-outline" x={dragBounds.x} y={dragBounds.y} width={dragBounds.width} height={dragBounds.height} stroke="#d6bd79" strokeWidth={1 / zoom} dash={[4 / zoom, 3 / zoom]} listening={false} />}
+                  {showGuides && dragGuides.map((guide, index) => <Line key={`${guide.axis}-${guide.value}-${index}`} name="smart-alignment-guide" points={guide.axis === 'x' ? [guide.value, guide.from, guide.value, guide.to] : [guide.from, guide.value, guide.to, guide.value]} stroke={guide.kind === 'center' ? '#63d4dc' : '#f0c96b'} strokeWidth={1.25 / zoom} dash={guide.kind === 'center' ? [5 / zoom, 3 / zoom] : undefined} listening={false} />)}
                   <Transformer
                     ref={transformerRef}
                     rotateEnabled={false}
@@ -2623,6 +2627,7 @@ export default function App() {
           <span>{t("phase")}</span>
         </div>
       </footer>
+      </div>
       {busy && (
         <div className="busy-shield" aria-label={t("working")} role="status">
           <span>{t("working")}</span>
@@ -2645,71 +2650,8 @@ export default function App() {
       )}
       {preferenceError && <div className="preference-notice" role="status">{t("languageFailure")}</div>}
       {dialog === "import" && <ImportDialog t={t} locale={locale} busy={busy} externalError={error} onClearError={() => setError("")} onClose={() => setDialog(null)} onImport={importProject} downloadJson={downloadJson} />}
-      {dialog === "patch" && (
-        <div
-          className="modal-backdrop"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setDialog(null);
-          }}
-        >
-          <section className="modal" role="dialog" aria-label={t("patchDialog")}>
-            <div className="modal-heading">
-              <div>
-                <span className="eyebrow">{t("fileExchange")}</span>
-                <h2>{t("patchDialogTitle")}</h2>
-              </div>
-              <Tool
-                icon="close"
-                label={t("closePatch")}
-                onClick={() => setDialog(null)}
-              />
-            </div>
-            <p>
-              {t("patchDialogHint")}
-            </p>
-            <textarea
-              aria-label={t("patchJSON")}
-              spellCheck={false}
-              value={jsonText}
-              onChange={(e) => setJsonText(e.target.value)}
-            />
-            <div className="modal-footer">
-              <button
-                className="button subtle"
-                onClick={() => {
-                  try {
-                    downloadJson(
-                      "incremental.patch.json",
-                      JSON.parse(jsonText),
-                    );
-                  } catch (e) {
-                    setError(e.message);
-                  }
-                }}
-              >
-                <Icon name="download" />
-                {t("savePatch")}
-              </button>
-              <button
-                className="button primary"
-                disabled={busy}
-                onClick={() => {
-                  try {
-                    const value = JSON.parse(jsonText);
-                    setDialog(null);
-                    patch(value);
-                  } catch (e) {
-                    setError(e.message);
-                  }
-                }}
-              >
-                <Icon name="check" />
-                {t("applyPatch")}
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
+      {dialog === "generation" && <GenerationDialog locale={locale} project={project} onClose={() => setDialog(null)} onExport={exportGeneration} />}
+      {dialog === "patch" && <PatchReviewDialog t={t} locale={locale} initialText={jsonText} onClose={() => setDialog(null)} onPreview={previewPatch} onApply={patch} downloadJson={downloadJson} />}
       <input
         data-testid="component-file"
         aria-label={t("componentFile")}

@@ -1,0 +1,254 @@
+{
+  "cellCount": 328.0,
+  "checks": [
+    {
+      "id": "ground",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "roads",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "water-layer",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "decoration",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "house-01",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "house-02",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "tree-01",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "tree-02",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "tree-03",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "tree-04",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "wall-01",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "wall-02",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "house-01",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "house-02",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "tree-01",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "tree-02",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "tree-03",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "tree-04",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "wall-01",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "wall-02",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:12,10",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:13,10",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:14,10",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:15,10",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:12,11",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:13,11",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:14,11",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:15,11",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:12,12",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:13,12",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:14,12",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:15,12",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:12,13",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:13,13",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:14,13",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:15,13",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:12,14",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:13,14",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:14,14",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:15,14",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:12,15",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:13,15",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:14,15",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "blocked:15,15",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "spawn-gate",
+      "kind": "marker",
+      "passed": true
+    },
+    {
+      "id": "exit-north",
+      "kind": "marker",
+      "passed": true
+    },
+    {
+      "id": "trigger-inn",
+      "kind": "marker",
+      "passed": true
+    }
+  ],
+  "display": "headless",
+  "errors": [],
+  "godot": "4.6.3-stable (official)",
+  "passed": true,
+  "physicsBlockedCells": 38,
+  "projectId": "village-gate",
+  "revision": 1.0,
+  "screenshot": {
+    "requested": false,
+    "written": false
+  },
+  "walkabilityCells": 256,
+  "walkedSteps": 14,
+  "ySortEnabled": true
+}

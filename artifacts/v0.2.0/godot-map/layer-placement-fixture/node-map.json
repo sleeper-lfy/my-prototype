@@ -1,0 +1,2718 @@
+{
+  "schemaVersion": 1,
+  "projectId": "layer-placement-fixture",
+  "revision": 1,
+  "minimumGodot": "4.3",
+  "layers": [
+    {
+      "id": "ground",
+      "path": "Map/Terrain/Layer_0",
+      "visible": true,
+      "zIndex": 0,
+      "cells": [
+        {
+          "x": 0,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 0,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 1,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 2,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 3,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 4,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 5,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 6,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 7,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 8,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 9,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 10,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 11,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 12,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 13,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 14,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 0,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 1,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 2,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 3,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 4,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 8,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 9,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 10,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 11,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 12,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 13,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 14,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        },
+        {
+          "x": 15,
+          "y": 15,
+          "assetId": "grass",
+          "sourceId": 0
+        }
+      ]
+    },
+    {
+      "id": "roads",
+      "path": "Map/Terrain/Layer_1",
+      "visible": true,
+      "zIndex": 2,
+      "cells": [
+        {
+          "x": 7,
+          "y": 0,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 0,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 1,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 1,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 3,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 4,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 4,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 5,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 10,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 11,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 12,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 3,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 4,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 5,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 10,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 11,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 12,
+          "y": 8,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 10,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 10,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 11,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 12,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 12,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 13,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 14,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 14,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "assetId": "path",
+          "sourceId": 1
+        },
+        {
+          "x": 8,
+          "y": 15,
+          "assetId": "path",
+          "sourceId": 1
+        }
+      ]
+    },
+    {
+      "id": "water-layer",
+      "path": "Map/Terrain/Layer_2",
+      "visible": true,
+      "zIndex": 4,
+      "cells": [
+        {
+          "x": 12,
+          "y": 10,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 13,
+          "y": 10,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 14,
+          "y": 10,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 15,
+          "y": 10,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 12,
+          "y": 11,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 13,
+          "y": 11,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 14,
+          "y": 11,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 15,
+          "y": 11,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 12,
+          "y": 12,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 13,
+          "y": 12,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 14,
+          "y": 12,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 15,
+          "y": 12,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 12,
+          "y": 13,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 13,
+          "y": 13,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 14,
+          "y": 13,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 15,
+          "y": 13,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 13,
+          "y": 14,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 14,
+          "y": 14,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 15,
+          "y": 14,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 12,
+          "y": 15,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 13,
+          "y": 15,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 14,
+          "y": 15,
+          "assetId": "water",
+          "sourceId": 2
+        },
+        {
+          "x": 15,
+          "y": 15,
+          "assetId": "water",
+          "sourceId": 2
+        }
+      ]
+    },
+    {
+      "id": "decoration",
+      "path": "Map/Terrain/Layer_3",
+      "visible": true,
+      "zIndex": 6,
+      "cells": []
+    },
+    {
+      "id": "foreground",
+      "path": "Map/Terrain/Layer_4",
+      "visible": true,
+      "zIndex": 8,
+      "cells": [
+        {
+          "x": 13,
+          "y": 7,
+          "assetId": "path",
+          "sourceId": 1
+        }
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "id": "house-01",
+      "path": "Map/Actors/Object_0",
+      "assetId": "house",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": 0,
+        "y": 96
+      },
+      "size": {
+        "x": 160,
+        "y": 160
+      },
+      "offset": {
+        "x": -80,
+        "y": -160
+      }
+    },
+    {
+      "id": "house-02",
+      "path": "Map/Actors/Object_1",
+      "assetId": "house",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": 192,
+        "y": 224
+      },
+      "size": {
+        "x": 160,
+        "y": 160
+      },
+      "offset": {
+        "x": -80,
+        "y": -160
+      }
+    },
+    {
+      "id": "tree-01",
+      "path": "Map/Actors/Object_2",
+      "assetId": "tree",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": -224,
+        "y": 272
+      },
+      "size": {
+        "x": 96,
+        "y": 128
+      },
+      "offset": {
+        "x": -48,
+        "y": -128
+      }
+    },
+    {
+      "id": "tree-02",
+      "path": "Map/Actors/Object_3",
+      "assetId": "tree",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": -32,
+        "y": 304
+      },
+      "size": {
+        "x": 96,
+        "y": 128
+      },
+      "offset": {
+        "x": -48,
+        "y": -128
+      }
+    },
+    {
+      "id": "tree-03",
+      "path": "Map/Actors/Object_4",
+      "assetId": "tree",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": -224,
+        "y": 176
+      },
+      "size": {
+        "x": 96,
+        "y": 128
+      },
+      "offset": {
+        "x": -48,
+        "y": -128
+      }
+    },
+    {
+      "id": "tree-04",
+      "path": "Map/Actors/Object_5",
+      "assetId": "tree",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": 320,
+        "y": 224
+      },
+      "size": {
+        "x": 96,
+        "y": 128
+      },
+      "offset": {
+        "x": -48,
+        "y": -128
+      }
+    },
+    {
+      "id": "wall-01",
+      "path": "Map/Actors/Object_6",
+      "assetId": "wall",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": -288,
+        "y": 304
+      },
+      "size": {
+        "x": 80,
+        "y": 64
+      },
+      "offset": {
+        "x": -40,
+        "y": -64
+      }
+    },
+    {
+      "id": "wall-02",
+      "path": "Map/Actors/Object_7",
+      "assetId": "wall",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": -128,
+        "y": 384
+      },
+      "size": {
+        "x": 80,
+        "y": 64
+      },
+      "offset": {
+        "x": -40,
+        "y": -64
+      }
+    },
+    {
+      "id": "layer-fixture-tree",
+      "path": "Map/Actors/Object_8",
+      "assetId": "tree",
+      "layerId": "decoration",
+      "visible": true,
+      "zIndex": 7,
+      "position": {
+        "x": 192,
+        "y": 320
+      },
+      "size": {
+        "x": 96,
+        "y": 128
+      },
+      "offset": {
+        "x": -48,
+        "y": -128
+      }
+    },
+    {
+      "id": "layer-fixture-house",
+      "path": "Map/Actors/Object_9",
+      "assetId": "house",
+      "layerId": "foreground",
+      "visible": true,
+      "zIndex": 9,
+      "position": {
+        "x": 192,
+        "y": 288
+      },
+      "size": {
+        "x": 160,
+        "y": 160
+      },
+      "offset": {
+        "x": -80,
+        "y": -160
+      }
+    }
+  ],
+  "markers": [
+    {
+      "id": "spawn-gate",
+      "path": "Map/Markers/Marker_0",
+      "type": "spawn"
+    },
+    {
+      "id": "exit-north",
+      "path": "Map/Markers/Marker_1",
+      "type": "exit"
+    },
+    {
+      "id": "trigger-inn",
+      "path": "Map/Markers/Marker_2",
+      "type": "trigger"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "house-01",
+      "path": "Map/Collisions/Collider_0"
+    },
+    {
+      "id": "house-02",
+      "path": "Map/Collisions/Collider_1"
+    },
+    {
+      "id": "tree-01",
+      "path": "Map/Collisions/Collider_2"
+    },
+    {
+      "id": "tree-02",
+      "path": "Map/Collisions/Collider_3"
+    },
+    {
+      "id": "tree-03",
+      "path": "Map/Collisions/Collider_4"
+    },
+    {
+      "id": "tree-04",
+      "path": "Map/Collisions/Collider_5"
+    },
+    {
+      "id": "wall-01",
+      "path": "Map/Collisions/Collider_6"
+    },
+    {
+      "id": "wall-02",
+      "path": "Map/Collisions/Collider_7"
+    },
+    {
+      "id": "layer-fixture-tree",
+      "path": "Map/Collisions/Collider_8"
+    },
+    {
+      "id": "layer-fixture-house",
+      "path": "Map/Collisions/Collider_9"
+    },
+    {
+      "id": "blocked:12,10",
+      "path": "Map/Collisions/Collider_10"
+    },
+    {
+      "id": "blocked:13,10",
+      "path": "Map/Collisions/Collider_11"
+    },
+    {
+      "id": "blocked:14,10",
+      "path": "Map/Collisions/Collider_12"
+    },
+    {
+      "id": "blocked:15,10",
+      "path": "Map/Collisions/Collider_13"
+    },
+    {
+      "id": "blocked:12,11",
+      "path": "Map/Collisions/Collider_14"
+    },
+    {
+      "id": "blocked:13,11",
+      "path": "Map/Collisions/Collider_15"
+    },
+    {
+      "id": "blocked:14,11",
+      "path": "Map/Collisions/Collider_16"
+    },
+    {
+      "id": "blocked:15,11",
+      "path": "Map/Collisions/Collider_17"
+    },
+    {
+      "id": "blocked:12,12",
+      "path": "Map/Collisions/Collider_18"
+    },
+    {
+      "id": "blocked:13,12",
+      "path": "Map/Collisions/Collider_19"
+    },
+    {
+      "id": "blocked:14,12",
+      "path": "Map/Collisions/Collider_20"
+    },
+    {
+      "id": "blocked:15,12",
+      "path": "Map/Collisions/Collider_21"
+    },
+    {
+      "id": "blocked:12,13",
+      "path": "Map/Collisions/Collider_22"
+    },
+    {
+      "id": "blocked:13,13",
+      "path": "Map/Collisions/Collider_23"
+    },
+    {
+      "id": "blocked:14,13",
+      "path": "Map/Collisions/Collider_24"
+    },
+    {
+      "id": "blocked:15,13",
+      "path": "Map/Collisions/Collider_25"
+    },
+    {
+      "id": "blocked:12,14",
+      "path": "Map/Collisions/Collider_26"
+    },
+    {
+      "id": "blocked:13,14",
+      "path": "Map/Collisions/Collider_27"
+    },
+    {
+      "id": "blocked:14,14",
+      "path": "Map/Collisions/Collider_28"
+    },
+    {
+      "id": "blocked:15,14",
+      "path": "Map/Collisions/Collider_29"
+    },
+    {
+      "id": "blocked:12,15",
+      "path": "Map/Collisions/Collider_30"
+    },
+    {
+      "id": "blocked:13,15",
+      "path": "Map/Collisions/Collider_31"
+    },
+    {
+      "id": "blocked:14,15",
+      "path": "Map/Collisions/Collider_32"
+    },
+    {
+      "id": "blocked:15,15",
+      "path": "Map/Collisions/Collider_33"
+    }
+  ],
+  "cellCount": 329,
+  "walkability": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "testPath": [
+    {
+      "x": 7,
+      "y": 14
+    },
+    {
+      "x": 7,
+      "y": 13
+    },
+    {
+      "x": 7,
+      "y": 12
+    },
+    {
+      "x": 7,
+      "y": 11
+    },
+    {
+      "x": 7,
+      "y": 10
+    },
+    {
+      "x": 7,
+      "y": 9
+    },
+    {
+      "x": 7,
+      "y": 8
+    },
+    {
+      "x": 7,
+      "y": 7
+    },
+    {
+      "x": 7,
+      "y": 6
+    },
+    {
+      "x": 7,
+      "y": 5
+    },
+    {
+      "x": 7,
+      "y": 4
+    },
+    {
+      "x": 7,
+      "y": 3
+    },
+    {
+      "x": 7,
+      "y": 2
+    },
+    {
+      "x": 7,
+      "y": 1
+    },
+    {
+      "x": 7,
+      "y": 0
+    }
+  ],
+  "actorLayerId": "foreground",
+  "actorZ": 9,
+  "actorVisible": true,
+  "viewport": {
+    "width": 1280,
+    "height": 800,
+    "background": "#0b1310"
+  },
+  "transform": {
+    "origin": {
+      "x": 640,
+      "y": 198.75
+    },
+    "zoom": 1.09375
+  },
+  "spawn": {
+    "x": 7,
+    "y": 14
+  }
+}

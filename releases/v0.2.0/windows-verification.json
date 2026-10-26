@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "host": "Debian 13 x86_64",
+    "windowsCompatibility": "Wine 10.0, Windows 10.0.19043 profile",
+    "nativeWindows": false,
+    "runtime": "Windows Node.js v24.19.0 x64",
+    "browser": "Linux Chromium accessing the installed Windows Node service"
+  },
+  "installer": {
+    "file": "Game-UI-Studio-Setup-0.2.0-x64.exe",
+    "sha256": "3a56c3dd4e9fa06ed2bd6c8b9c5fe23924d12a7151941792a38ec4a0ad2fb84a",
+    "bytes": 24359080
+  },
+  "installPath": "Z:\\tmp\\studio-v020-tools\\安装 测试\\Game UI Studio",
+  "checks": [
+    {
+      "name": "upgrade from running v0.1.2 preserves the existing project",
+      "status": "passed",
+      "seconds": 15.872,
+      "details": {
+        "fromVersion": "0.1.2",
+        "toVersion": "0.2.0",
+        "oldActiveProcessStopped": true,
+        "projectBytesPreserved": true
+      }
+    },
+    {
+      "name": "installer runs and preserves all payload hashes in Unicode/space path",
+      "status": "passed",
+      "seconds": 5.329,
+      "details": {
+        "exitCode": 0,
+        "payloadFilesVerified": 697,
+        "unicodeAndSpacesPath": true
+      }
+    },
+    {
+      "name": "HKCU uninstall registration and actual Shell shortcut targets",
+      "status": "passed",
+      "seconds": 0.318,
+      "details": {
+        "registryVersion": "0.2.0",
+        "desktopShortcut": true,
+        "startMenuShortcuts": 4,
+        "targetsAndArgumentsVerified": true,
+        "method": "Parsed actual .lnk binary; Wine WScript Shell shortcut enumeration unavailable"
+      }
+    },
+    {
+      "name": "installed wscript launch.vbs starts bundled Windows Node",
+      "status": "passed",
+      "seconds": 0.0,
+      "details": {
+        "pid": 660,
+        "dataOutsideInstallDirectory": true
+      }
+    },
+    {
+      "name": "second install directory is refused while original app remains intact",
+      "status": "passed",
+      "seconds": 0.835,
+      "details": {
+        "exitCode": 2,
+        "originalServiceStillRunning": true,
+        "registrationAndShortcutsUnchanged": true,
+        "newDirectoryCreated": false
+      }
+    },
+    {
+      "name": "local health, built frontend and bundled artwork are served",
+      "status": "passed",
+      "seconds": 0.018,
+      "details": {
+        "health": {
+          "ok": true,
+          "app": "Game UI Studio",
+          "schemaVersion": 1
+        },
+        "htmlBytes": 728,
+        "svgBytes": 6295
+      }
+    },
+    {
+      "name": "installed UI imports editable projects and switches Chinese/English with durable preference",
+      "status": "passed",
+      "seconds": 4.049,
+      "details": {
+        "canvasLayers": 2,
+        "nodes": 36,
+        "propertyEditAndReload": true,
+        "nativeProjectImportViaVisibleEntry": true,
+        "bothLanguages": true,
+        "languageSurvivesClearedBrowserStorage": true,
+        "smallViewportDialogFits": true,
+        "pageErrors": [],
+        "chromiumVersion": "154.0.8037.57",
+        "screenshotsGenerated": false
+      }
+    },
+    {
+      "name": "Windows API saves design, applies patch and imports existing artwork",
+      "status": "passed",
+      "seconds": 0.055,
+      "details": {
+        "revision": 6,
+        "incrementalPatch": true,
+        "savedToAppData": true,
+        "importedAssetSha256": "56fda67a311f0ba5f416c38d774ba38624f6ab629acfafcb4006082bd54e3ec3"
+      }
+    },
+    {
+      "name": "installed map workspace, Codex tasks and map Godot exports use bundled modules",
+      "status": "passed",
+      "seconds": 3.859,
+      "details": {
+        "separateMapPersistence": true,
+        "uiUnaffected": true,
+        "taskZipValidatorAndTemplate": true,
+        "nativeTileMapLayerArchive": true,
+        "installedMapCanvasAndTaskDialog": true
+      }
+    },
+    {
+      "name": "repeated launch reuses the existing Windows instance",
+      "status": "passed",
+      "seconds": 1.022,
+      "details": {
+        "reused": true,
+        "samePid": true,
+        "sameUrl": true
+      }
+    },
+    {
+      "name": "wscript stop wrapper shuts down owner and clears runtime state",
+      "status": "passed",
+      "seconds": 1.322,
+      "details": {
+        "wrapperExitCode": 0,
+        "stateRemoved": true
+      }
+    },
+    {
+      "name": "unrelated process occupying control port blocks unsafe second instance",
+      "status": "passed",
+      "seconds": 0.917,
+      "details": {
+        "exitCode": 1,
+        "unrelatedListenerPreserved": true,
+        "secondServerStarted": false
+      }
+    },
+    {
+      "name": "simultaneous Windows launches converge on one owner",
+      "status": "passed",
+      "seconds": 1.877,
+      "details": {
+        "processes": 2,
+        "oneOwner": true,
+        "oneReuse": true,
+        "bothExitZeroAfterStop": true
+      }
+    },
+    {
+      "name": "restart retains saved design and patch",
+      "status": "passed",
+      "seconds": 0.005,
+      "details": {
+        "savedName": "Windows installed persistence 验收",
+        "patchedText": "RECRUIT · 240"
+      }
+    },
+    {
+      "name": "running application upgrades safely and preserves all user data",
+      "status": "passed",
+      "seconds": 5.227,
+      "details": {
+        "activeProcessStopped": true,
+        "dataHashesPreserved": 6,
+        "payloadFilesVerified": 697
+      }
+    },
+    {
+      "name": "active uninstall removes program and shortcuts but keeps design/imports",
+      "status": "passed",
+      "seconds": 1.899,
+      "details": {
+        "activeProcessStopped": true,
+        "programFilesRemoved": true,
+        "registryRemoved": true,
+        "shortcutsRemoved": true,
+        "dataHashesPreserved": 6
+      }
+    }
+  ],
+  "status": "passed",
+  "limitations": [
+    "This is Wine compatibility testing, not a native Windows machine.",
+    "Default Windows browser association and SmartScreen were not exercised. No screenshots were generated."
+  ],
+  "passed": 16,
+  "failed": 0,
+  "verifiedAtUtc": "2026-10-26T06:11:59.936997+00:00",
+  "testHarnessSha256": "e05f09133945a9497d0ee1c2482eecc5663ab91d270fa57811e71346d2747055"
+}

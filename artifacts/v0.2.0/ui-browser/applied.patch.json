@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "projectId": "ashfall",
+  "baseRevision": 9,
+  "summary": "Expose the recruitment cost without rebuilding the screen",
+  "reviewIds": [
+    "review-cta"
+  ],
+  "changes": [
+    {
+      "nodeId": "recruit-button",
+      "set": {
+        "style.text": "RECRUIT · 240"
+      }
+    }
+  ]
+}

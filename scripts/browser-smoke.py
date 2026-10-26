@@ -69,6 +69,7 @@ def main():
     parser.add_argument("--port", type=int, default=4381)
     parser.add_argument("--chromium", default=shutil.which("chromium") or shutil.which("google-chrome"))
     parser.add_argument("--headed", action="store_true")
+    parser.add_argument("--skip-build", action="store_true", help="Use an already built production bundle")
     parser.add_argument("--development", action="store_true", help="Use Vite dev middleware instead of building and serving production")
     parser.add_argument("--out", type=Path, default=ARTIFACTS, help="Directory for this run; use a versioned path to retain earlier evidence")
     args = parser.parse_args()
@@ -115,7 +116,7 @@ def main():
         return wait_until(condition, description)
 
     try:
-        if not args.development:
+        if not args.development and not args.skip_build:
             def build():
                 npm = shutil.which("npm.cmd" if os.name == "nt" else "npm")
                 assert_true(npm is not None, "npm is required")
@@ -327,7 +328,8 @@ def run_editor_checks(page, base, temporary, check, project, saved, results):
         page.get_by_test_id("patch-file").set_input_files(patch_path)
         expect(page.get_by_role("dialog", name="Review patch")).to_be_visible()
         assert_true(json.loads(page.get_by_label("Patch JSON").input_value())["baseRevision"] == before_patch["revision"], "Import preview revision differs")
-        page.get_by_role("button", name="Apply incremental patch", exact=True).click()
+        page.get_by_test_id("preview-ui-patch").click()
+        page.get_by_test_id("apply-ui-patch").click()
         value = saved(lambda p: node(p, "recruit-button")["style"]["text"] == expected_text, "patch applied through UI")
         expect(page.locator(".diff-row ins").filter(has_text=expected_text)).to_be_visible()
         expect(page.locator(".diff-row del").filter(has_text=node(before_patch, "recruit-button")["style"]["text"])).to_be_visible()

@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "runner": "Python Playwright / real Chromium",
+  "isolatedData": true,
+  "mode": "production",
+  "checks": [
+    {
+      "name": "UI patch preview supports selective acceptance, persistence and rollback",
+      "status": "passed",
+      "seconds": 1.054,
+      "details": {
+        "previewReadOnly": true,
+        "acceptedFields": 1,
+        "omittedFields": 1,
+        "reviewStatus": "pending",
+        "rollback": true
+      }
+    },
+    {
+      "name": "Codex task ZIP contains editable inventory, exact context, original assets and a working validator",
+      "status": "passed",
+      "seconds": 1.134,
+      "details": {
+        "files": 23,
+        "components": 45,
+        "assetCopies": 12,
+        "standaloneValidatorPassed": true,
+        "currentProjectUnchanged": true
+      }
+    },
+    {
+      "name": "Task result imports as native editable UI with backup and component editing",
+      "status": "passed",
+      "seconds": 0.633,
+      "details": {
+        "projectId": "generated-ui",
+        "editedNodeId": "page-title",
+        "componentCount": 45,
+        "backupVerified": true
+      }
+    },
+    {
+      "name": "isometric village opens with layers, native tiles, objects and bilingual controls",
+      "status": "passed",
+      "seconds": 0.88,
+      "details": {
+        "grid": {
+          "width": 16,
+          "height": 16,
+          "tileWidth": 64,
+          "tileHeight": 32
+        },
+        "layers": 4,
+        "objects": 8,
+        "render": "real Konva canvas with original SVG assets"
+      }
+    },
+    {
+      "name": "mouse brush, eraser, rectangle and flood fill persist with undo/redo",
+      "status": "passed",
+      "seconds": 2.008,
+      "details": {
+        "brush": true,
+        "erase": true,
+        "rectangleCells": 4,
+        "fillCells": ">200",
+        "undoRedo": true
+      }
+    },
+    {
+      "name": "locked layers reject real canvas painting",
+      "status": "passed",
+      "seconds": 0.781,
+      "details": {
+        "lockedPaintRejected": true,
+        "documentUnchanged": true
+      }
+    },
+    {
+      "name": "native objects drag with grid snapping and keep stable IDs after reload",
+      "status": "passed",
+      "seconds": 1.386,
+      "details": {
+        "objectId": "tree-01",
+        "from": [
+          5,
+          12
+        ],
+        "to": [
+          4,
+          12
+        ],
+        "reloadPreserves": true
+      }
+    },
+    {
+      "name": "object and region reviews retain stable targets and protected properties",
+      "status": "passed",
+      "seconds": 2.139,
+      "details": {
+        "objectReviewId": "map-review-098aafbe-231e-4b26-900e-be429e98ecd3",
+        "objectId": "tree-01",
+        "region": {
+          "type": "region",
+          "layerId": "ground",
+          "x": 1,
+          "y": 11,
+          "width": 2,
+          "height": 2
+        },
+        "protectedFields": [
+          "width",
+          "height",
+          "blocked"
+        ]
+      }
+    },
+    {
+      "name": "feedback exports reviewed local regions, original assets and matching patch contract",
+      "status": "passed",
+      "seconds": 0.593,
+      "details": {
+        "pendingReviews": 2,
+        "approvedReviewsExcluded": 1,
+        "localCrops": {
+          "map-review-098aafbe-231e-4b26-900e-be429e98ecd3": [
+            176,
+            208
+          ],
+          "map-review-f9919770-fcf0-4750-a26e-cf32f88767bf": [
+            224,
+            260
+          ]
+        },
+        "archiveFiles": 8
+      }
+    },
+    {
+      "name": "map patch preview rejects unsafe edits and supports selective acceptance, reload and rollback",
+      "status": "passed",
+      "seconds": 1.096,
+      "details": {
+        "rejected": [
+          "outside review scope",
+          "protected width",
+          "stale revision"
+        ],
+        "previewReadOnly": true,
+        "accepted": 1,
+        "omitted": 1,
+        "reviewFollowsObject": true,
+        "rollback": true
+      }
+    },
+    {
+      "name": "real click-to-walk preview moves through free cells and refuses blocked water",
+      "status": "passed",
+      "seconds": 1.059,
+      "details": {
+        "reachableDestination": [
+          7,
+          12
+        ],
+        "blockedWater": [
+          13,
+          13
+        ],
+        "collisionPrevented": true
+      }
+    },
+    {
+      "name": "local asset import preserves original bytes, crops atlas tiles, paints and persists",
+      "status": "passed",
+      "seconds": 1.268,
+      "details": {
+        "assetId": "asset-5a62c440-2f56-4b1f-b48f-0b9f6d7e17cb",
+        "crop": {
+          "x": 16,
+          "y": 8,
+          "width": 32,
+          "height": 16
+        },
+        "originalBytesPreserved": true,
+        "paintedAndUndone": true,
+        "reloadPreserves": true
+      }
+    },
+    {
+      "name": "map export/import preserves full editable data and backs up the prior map",
+      "status": "passed",
+      "seconds": 0.343,
+      "details": {
+        "backupMatchesPriorMap": true,
+        "importedId": "qa-imported-village",
+        "uiDocumentUnchanged": true
+      }
+    },
+    {
+      "name": "Chinese map controls and import dialog remain usable at 1366×768",
+      "status": "passed",
+      "seconds": 0.688,
+      "details": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "canvasPixels": [
+          862,
+          525
+        ],
+        "dialogFits": true
+      }
+    },
+    {
+      "name": "current map exports a runnable-format Godot archive with assets and ID mapping",
+      "status": "passed",
+      "seconds": 0.138,
+      "details": {
+        "archiveFiles": 17,
+        "runtimeEvidence": "Separate scripts/test-map-godot.js engine validation; this check verifies download contents only."
+      }
+    },
+    {
+      "name": "blank maps support asset placement, duplicate/delete, game markers and painted collision",
+      "status": "passed",
+      "seconds": 3.616,
+      "details": {
+        "grid": [
+          8,
+          8
+        ],
+        "paintedTiles": 64,
+        "placedObjects": 1,
+        "duplicateHasNewId": true,
+        "markers": [
+          "spawn",
+          "exit",
+          "trigger"
+        ],
+        "paintedCollisionBlocksKeyboard": true,
+        "priorMapBackedUp": true
+      }
+    },
+    {
+      "name": "native tile palette drag drops 1×1 cells or N×M stamps and rejects invalid targets atomically",
+      "status": "passed",
+      "seconds": 1.906,
+      "details": {
+        "nativeHTMLDrag": true,
+        "singleTileCells": 1,
+        "stampFootprint": [
+          2,
+          3
+        ],
+        "stampCells": 6,
+        "displayTileSize": [
+          64,
+          32
+        ],
+        "outOfBoundsAtomicRejection": true,
+        "lockedLayerRejection": true
+      }
+    },
+    {
+      "name": "house footprint ghosts, instance occupancy and explicit layer moves preserve art and collision",
+      "status": "passed",
+      "seconds": 2.14,
+      "details": {
+        "nativeHTMLDrag": true,
+        "assetFootprint": [
+          2,
+          2
+        ],
+        "instanceFootprint": [
+          3,
+          2
+        ],
+        "artworkPixels": [
+          160,
+          160
+        ],
+        "stableId": "map-object-757efb2d-b0ea-4efb-9ff6-160847cc647b",
+        "layerMovesPreserveId": true,
+        "hiddenLayerStillBlocksMovement": true
+      }
+    },
+    {
+      "name": "UI document is preserved while the map is edited",
+      "status": "passed",
+      "seconds": 0.002
+    },
+    {
+      "name": "no uncaught browser errors",
+      "status": "passed",
+      "seconds": 0.0
+    }
+  ],
+  "status": "passed",
+  "startedAt": "2026-10-26T06:09:19Z",
+  "browserVersion": "154.0.8037.57",
+  "pageErrors": [],
+  "completedAt": "2026-10-26T06:09:45Z",
+  "passed": 20,
+  "failed": 0
+}

@@ -1,5 +1,27 @@
 // Editor chrome only. Project content and schema identifiers are never translated.
 export const messages = {
+  "alignment.action": {"zh-CN": "对齐与分布方式", "en": "Alignment and spacing"},
+  "alignment.apply": {"zh-CN": "对齐选中组件", "en": "Apply alignment"},
+  "alignment.left": {"zh-CN": "左对齐", "en": "Align left"},
+  "alignment.center": {"zh-CN": "水平居中", "en": "Horizontal center"},
+  "alignment.right": {"zh-CN": "右对齐", "en": "Align right"},
+  "alignment.top": {"zh-CN": "顶部对齐", "en": "Align top"},
+  "alignment.middle": {"zh-CN": "垂直居中", "en": "Vertical center"},
+  "alignment.bottom": {"zh-CN": "底部对齐", "en": "Align bottom"},
+  "alignment.distributeX": {"zh-CN": "水平等间距", "en": "Equal horizontal gaps"},
+  "alignment.distributeY": {"zh-CN": "垂直等间距", "en": "Equal vertical gaps"},
+  "guides.toggle": {"zh-CN": "显示吸附辅助线（边缘金色，中心青色）", "en": "Show snap guides (gold edges, cyan centers)"},
+  "guides.dragging": {"zh-CN": "拖动对齐 · 金色为边缘，青色为中心", "en": "Align while dragging · Gold edges, cyan centers"},
+  "workspace.label": {"zh-CN": "工作区", "en": "Workspace"},
+  "workspace.ui": {"zh-CN": "UI 设计", "en": "UI design"},
+  "workspace.map": {"zh-CN": "2.5D 地图", "en": "2.5D map"},
+  "workspace.uiHint": {"zh-CN": "组件设计 · 本地文件协作", "en": "Component design · Local file exchange"},
+  "workspace.mapHint": {"zh-CN": "等距场景 · 地形与物件 · 区域审阅", "en": "Isometric scenes · Terrain and objects · Region review"},
+  "generation.open": {"zh-CN": "Codex 生成任务", "en": "Codex generation task"},
+  "patch.previewHint": {"zh-CN": "先预览组件属性的前后差异，再勾选要接受的修改。预览不会保存项目。", "en": "Preview before-and-after component properties, then select changes to accept. Preview does not save the project."},
+  "patch.preview": {"zh-CN": "预览修改", "en": "Preview changes"},
+  "patch.selectionHint": {"zh-CN": "未勾选的修改不会应用。部分接受后，意见保留为待处理，请重新导出反馈再继续修改。", "en": "Unchecked changes will not be applied. Partial acceptance keeps reviews pending; export fresh feedback before continuing."},
+
   "retry": {
     "zh-CN": "重试",
     "en": "Retry"

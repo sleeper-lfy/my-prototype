@@ -47,6 +47,7 @@ export function errorMessage(locale, error) {
     'The screenshot revision is out of date. Reload and export the feedback again.': '反馈截图版本已过期，请刷新后重新导出反馈。',
     'There are no pending reviews to export.': '没有可导出的待处理意见。',
     'Patch does not belong to this project/schema.': '补丁不属于当前项目，或补丁格式版本不支持。',
+    'Select at least one valid change.': '请至少选择一项有效修改。',
     'Patch makes no changes.': '此补丁没有产生任何修改。',
     'Patch is missing or has already been rolled back.': '找不到此修改记录，或该修改已经回退。',
     'Invalid asset path.': '素材路径无效。',

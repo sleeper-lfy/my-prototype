@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "runner": "Python Playwright / real Chromium UI interactions",
+  "startedAt": "2026-10-26T06:08:52Z",
+  "baseUrl": "http://127.0.0.1:4381",
+  "isolatedData": true,
+  "mode": "production",
+  "checks": [
+    {
+      "name": "isolated local server starts",
+      "status": "passed",
+      "seconds": 0.22,
+      "details": true
+    },
+    {
+      "name": "editor loads real Konva scene",
+      "status": "passed",
+      "seconds": 1.128,
+      "details": {
+        "components": 36,
+        "reviews": 2
+      }
+    },
+    {
+      "name": "export original canvas PNG at native 960x600",
+      "status": "passed",
+      "seconds": 0.509,
+      "details": {
+        "path": "artifacts/v0.2.0/ui-browser/canvas.png",
+        "width": 960,
+        "height": 600,
+        "projectId": "ashfall",
+        "revision": 1,
+        "selectionOverlays": false
+      }
+    },
+    {
+      "name": "select stable-ID component through layer tree",
+      "status": "passed",
+      "seconds": 0.227,
+      "details": {
+        "nodeId": "details-button"
+      }
+    },
+    {
+      "name": "free component drag persists coordinates",
+      "status": "passed",
+      "seconds": 0.512,
+      "details": {
+        "before": {
+          "x": 753,
+          "y": 477,
+          "width": 160,
+          "height": 50
+        },
+        "after": {
+          "x": 737,
+          "y": 452,
+          "width": 160,
+          "height": 50
+        },
+        "input": "real mouse drag"
+      }
+    },
+    {
+      "name": "dimension edit, undo and redo persist",
+      "status": "passed",
+      "seconds": 0.29,
+      "details": {
+        "width": 176,
+        "undo": "passed",
+        "redo": "passed"
+      }
+    },
+    {
+      "name": "component lock disables size editing",
+      "status": "passed",
+      "seconds": 0.222
+    },
+    {
+      "name": "component review saves and survives browser reload",
+      "status": "passed",
+      "seconds": 1.237,
+      "details": {
+        "reviewId": "review-03f9cb1b-dc20-45c3-b4a0-1bebc871bc72",
+        "nodeId": "character-card",
+        "survivesMove": true,
+        "survivesReload": true
+      }
+    },
+    {
+      "name": "feedback export contains pending reviews, restrictions and local PNGs",
+      "status": "passed",
+      "seconds": 0.307,
+      "details": {
+        "pendingReviewCount": 3,
+        "screenshots": [
+          "recruit-button",
+          "character-card"
+        ],
+        "baseRevision": 9,
+        "zipEntries": 10
+      }
+    },
+    {
+      "name": "import local patch, apply incrementally and display exact diff",
+      "status": "passed",
+      "seconds": 1.636,
+      "details": {
+        "historyId": "patch-563def83-338d-4381-8295-20fb9bd87d6d",
+        "changes": [
+          {
+            "nodeId": "recruit-button",
+            "path": "style.text",
+            "before": "RECRUIT HERO",
+            "beforeExists": true,
+            "after": "RECRUIT · 240"
+          }
+        ],
+        "reviewStatus": "modified",
+        "diffAndStatusSurviveReload": true
+      }
+    },
+    {
+      "name": "safe rollback restores reviewed change and preserves unrelated edits",
+      "status": "passed",
+      "seconds": 0.068,
+      "details": {
+        "restoredText": "RECRUIT HERO",
+        "unrelatedEditsPreserved": true
+      }
+    },
+    {
+      "name": "Godot project downloads through UI with native scene, assets and ID map",
+      "status": "passed",
+      "seconds": 0.251,
+      "details": {
+        "zipEntries": 18,
+        "componentIdMapping": true,
+        "runtimeValidation": "Separate scripts/test-godot.js must run real Godot; ZIP inspection alone is not runtime validation."
+      }
+    },
+    {
+      "name": "Container children explain and enforce automatic position",
+      "status": "passed",
+      "seconds": 0.117,
+      "details": {
+        "nodeId": "stat-vitality",
+        "parentId": "stats-row",
+        "positionInputs": "disabled",
+        "sizeInputs": "enabled"
+      }
+    },
+    {
+      "name": "create native Button, edit, duplicate, group and round-trip component template",
+      "status": "passed",
+      "seconds": 0.545,
+      "details": {
+        "createdType": "Button",
+        "editableText": "TEST ACTION",
+        "groupType": "Control",
+        "templateNodes": 3,
+        "importedFreshIds": [
+          "node-2d19e730-237b-43d4-9759-0377f72b0b50",
+          "node-a86d82b7-9ca9-4e92-8d95-0bff936dbad9",
+          "node-750170ab-8c33-4459-b47b-0d5ea3629580"
+        ]
+      }
+    },
+    {
+      "name": "no uncaught browser errors",
+      "status": "passed",
+      "seconds": 0.0
+    }
+  ],
+  "status": "passed",
+  "browserVersion": "154.0.8037.57",
+  "sample": {
+    "projectId": "ashfall",
+    "revision": 1,
+    "canvas": {
+      "width": 960,
+      "height": 600,
+      "background": "#111b18"
+    }
+  },
+  "canvasScreenshot": {
+    "path": "artifacts/v0.2.0/ui-browser/canvas.png",
+    "width": 960,
+    "height": 600,
+    "projectId": "ashfall",
+    "revision": 1,
+    "selectionOverlays": false
+  },
+  "pageErrors": [],
+  "completedAt": "2026-10-26T06:09:00Z",
+  "passed": 15,
+  "failed": 0
+}
