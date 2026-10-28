@@ -1,0 +1,23 @@
+{
+  "version": "0.4.0",
+  "status": "passed",
+  "unitTests": 110,
+  "browserFlows": 8,
+  "godot": {
+    "version": "4.6.3",
+    "frames": 88,
+    "events": 12,
+    "screenshot": {
+      "width": 256,
+      "height": 416,
+      "sampledOpaquePixels": 1658,
+      "mismatchedPixels": 0
+    }
+  },
+  "windows": {
+    "checks": 18,
+    "nativeWindows": false,
+    "installerSha256": "f1b5ded10bf534e2307b9f88a0d8932d4be5742031dd69f80fc143c421c9b7b1"
+  },
+  "artApproval": "pending independent visual review"
+}

@@ -12,6 +12,7 @@ import { mountMapRoutes } from './mapRoutes.js';
 import { createMapGodotFiles } from './mapGodot.js';
 import { mountWorkbench } from './workbench.js';
 import { mountGenerationRoutes } from './generationRoutes.js';
+import { mountAnimationRoutes } from './animationRoutes.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ASSET_PREFIXES = ['/assets/', '/local-assets/'];
@@ -126,6 +127,7 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
   const mapWorkspace = await mountMapRoutes(app, { dataDir, mutate, archive, readAsset, resolveAssetPath, createMapGodotFiles });
   await mountWorkbench(app, { dataDir, mutate, getUI: () => clone(current), setUI: project => persist({ ...project, revision: current.revision + 1 }), ...mapWorkspace, archive, readAsset });
   mountGenerationRoutes(app, { getProject: () => clone(current), archive, readAsset });
+  await mountAnimationRoutes(app, { dataDir, mutate, archive });
   app.post('/api/feedback', async (req, res) => {
     const project = clone(current);
     if (req.body.baseRevision !== project.revision) throw fail('The screenshot revision is out of date. Reload and export the feedback again.', 409);
@@ -184,7 +186,7 @@ export async function createStudioServer({ dataDir = process.env.STUDIO_DATA_DIR
     res.json({ id, name: name.trim(), kind, src: `/local-assets/${filename}`, ...(kind === 'nineSlice' ? { margins: { left: 12, top: 12, right: 12, bottom: 12 } } : {}) });
   });
   app.get('/api/files/:name', async (req, res) => {
-    if (!/^(feedback|godot|map-feedback|map-godot|generation|workspace|godot-update)-[0-9]+-[a-f0-9]+\.zip$/.test(req.params.name)) throw fail('Unknown export.', 404);
+    if (!/^(feedback|godot|map-feedback|map-godot|generation|workspace|godot-update|animation-feedback|animation-godot)-[0-9]+-[a-f0-9]+\.zip$/.test(req.params.name)) throw fail('Unknown export.', 404);
     res.download(path.join(exportDir, req.params.name));
   });
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Unknown API route.' }));

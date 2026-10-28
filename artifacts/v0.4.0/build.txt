@@ -1,0 +1,38 @@
+
+> game-ui-studio@0.4.0 package:windows
+> node scripts/package-windows.mjs
+
+Building Game UI Studio 0.4.0; temporary files: /tmp/game-ui-studio-windows-build/build-BqXAkg
+
+> game-ui-studio@0.4.0 build
+> vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 107 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.72 kB │ gzip:   0.47 kB
+dist/assets/index-N8-6etz7.css   43.09 kB │ gzip:  10.26 kB
+dist/assets/index-EPsVFAOE.js   807.90 kB │ gzip: 251.80 kB
+
+✓ built in 394ms
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+added 66 packages in 3s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+{
+  "installer": "releases/v0.4.0/Game-UI-Studio-Setup-0.4.0-x64.exe",
+  "bytes": 24402062,
+  "sha256": "f1b5ded10bf534e2307b9f88a0d8932d4be5742031dd69f80fc143c421c9b7b1",
+  "payload": "/tmp/game-ui-studio-windows-build/build-BqXAkg/payload",
+  "manifest": "releases/v0.4.0/windows-manifest.json"
+}

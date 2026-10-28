@@ -71,6 +71,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Alignment and snap-guide acceptance failed' }
           python scripts/studio-features-smoke.py
           if ($LASTEXITCODE -ne 0) { throw 'Project toolbox acceptance failed' }
+          python scripts/animation-smoke.py
+          if ($LASTEXITCODE -ne 0) { throw 'Pixel animation acceptance failed' }
       - name: Build the self-contained Windows installer
         run: |
           npm run package:windows
@@ -96,3 +98,5 @@ jobs:
             artifacts/v0.3.0/alignment/
             artifacts/v0.3.0/godot-update/
             previews/v0.3.0/*.png
+            artifacts/v0.4.0/
+            previews/v0.4.0/

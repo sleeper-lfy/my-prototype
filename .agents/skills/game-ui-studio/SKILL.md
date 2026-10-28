@@ -9,6 +9,7 @@ description: Create editable UI from local Codex task packages, and review UI or
 
 ## 先确定工作区与任务
 
+- **像素角色动画**：默认 64×96，使用独立动画文档与 `studio-animation-patch`，按 [像素动画协议](references/pixel-animation.md) 读取动作骨架、帧 ID、评论限制与局部 PNG，修改姿势和时长后执行确定性生成与检查。动画数据与 UI／地图补丁不可混用。
 - **新建 UI**：读取工具导出的 Codex 生成任务包，以包内真实模板、素材清单和设计规范输出原生可编辑项目 JSON。不要用网页代码或一张整屏图片替代组件。先读 [地图与生成任务](references/map-and-generation.md)。
 - **修改现有 UI**：使用下面的 `review.mjs` 流程；维护 `project.json` 的组件 ID 与版本。
 - **等距地图**：使用独立 `studio-map` 文档、`studio-map-patch` 和 `scripts/map.mjs`；维护物件 ID、图层 ID 与格子坐标。完整规则和命令见 [地图与生成任务](references/map-and-generation.md)。地图与 UI 的文件、版本、接口和补丁不可混用。

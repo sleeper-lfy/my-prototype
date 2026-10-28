@@ -1,0 +1,1 @@
+Game UI Studio is running locally on port 33747. Data: /tmp/studio-animation-browser-3z3qghw0/data

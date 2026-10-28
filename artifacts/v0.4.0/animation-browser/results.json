@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "64x96 editable character workspace opens with twelve directional action presets",
+      "status": "passed",
+      "details": {
+        "canvas": {
+          "width": 64,
+          "height": 96
+        },
+        "clips": 12,
+        "actualCanvas": true
+      }
+    },
+    {
+      "name": "actual playback advances frames and stepping, onion skin and direction switching work",
+      "status": "passed",
+      "details": {
+        "timedPlayback": true,
+        "pauseStable": true,
+        "nextPrevious": true,
+        "onionAndGrid": true
+      }
+    },
+    {
+      "name": "bone pose and frame timing survive a reload without changing the UI document",
+      "status": "passed",
+      "details": {
+        "durationPersisted": true,
+        "posePersisted": true,
+        "uiDocumentUnchanged": true,
+        "attackOverlayVisible": true,
+        "hitboxPayloadPreserved": true
+      }
+    },
+    {
+      "name": "frame review exports a scoped feedback ZIP with a decodable original-size frame",
+      "status": "passed",
+      "details": {
+        "stableFrameReview": true,
+        "pendingOnly": true,
+        "pngDecoded": [
+          64,
+          96
+        ],
+        "modelValidatorIncluded": true
+      }
+    },
+    {
+      "name": "patch preview, application, review transition and guarded rollback work through visible controls",
+      "status": "passed",
+      "details": {
+        "previewDoesNotMutate": true,
+        "scopedPatch": true,
+        "reviewModified": true,
+        "rollback": true,
+        "stalePatchRefused": true
+      }
+    },
+    {
+      "name": "Godot archive contains all native sprite frames, timing metadata and event adapter",
+      "status": "passed",
+      "details": {
+        "allClipTexturesPresent": true,
+        "nativeSpriteFrames": true,
+        "eventAdapter": true,
+        "engineVerificationSeparate": true
+      }
+    },
+    {
+      "name": "sprite sheet import and project round-trip preserve pixels, frame IDs and review associations",
+      "status": "passed",
+      "details": {
+        "syntheticFixtureOnly": true,
+        "sourcePixelsPreserved": true,
+        "frameIdsPreserved": true,
+        "regenerationPreservesOverridesAndReviews": true,
+        "completeJsonRoundTrip": true
+      }
+    },
+    {
+      "name": "animation checks and Chinese workspace are usable at 1366x768",
+      "status": "passed",
+      "details": {
+        "checksVisible": true,
+        "ChineseWorkspace": true,
+        "smallViewportNoHorizontalOverflow": true
+      }
+    }
+  ],
+  "errors": [],
+  "isolatedData": true
+}

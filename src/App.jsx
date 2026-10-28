@@ -22,6 +22,7 @@ import { useLocale } from './useLocale.js';
 import { errorMessage, translateMessage } from './i18n.js';
 import ImportDialog from './ImportDialog.jsx';
 import MapWorkspace from './MapWorkspace.jsx';
+import AnimationWorkspace from './AnimationWorkspace.jsx';
 import StudioToolbox from './StudioToolbox.jsx';
 import { pruneUIReferences } from './studioFeatures.js';
 import GenerationDialog from './GenerationDialog.jsx';
@@ -439,6 +440,7 @@ export default function App() {
   const { locale, setLocale, t, preferenceError, ready: localeReady } = useLocale();
   const [workspace, setWorkspace] = useState("ui");
   const [mapVisited, setMapVisited] = useState(false);
+  const [animationVisited, setAnimationVisited] = useState(false);
   const [project, setProject] = useState(null),
     projectRef = useRef(null),
     [selected, setSelected] = useState([]),
@@ -1359,12 +1361,14 @@ export default function App() {
         <div className="workspace-switches">
           <button data-testid="workspace-ui" aria-pressed={workspace === "ui"} onClick={() => { setWorkspace("ui"); setTimeout(fit, 60); }}>{t("workspace.ui")}</button>
           <button data-testid="workspace-map" aria-pressed={workspace === "map"} onClick={() => { setDialog(null); setMapVisited(true); setWorkspace("map"); }}>{t("workspace.map")}</button>
+          <button data-testid="workspace-animation" aria-pressed={workspace === "animation"} onClick={() => { setDialog(null); setAnimationVisited(true); setWorkspace("animation"); }}>{locale === "zh-CN" ? "像素动画" : "Pixel animation"}</button>
         </div>
-        <span>{workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
+        <span>{workspace === "animation" ? (locale === "zh-CN" ? "64×96 · 动作骨架、逐帧评审与验证" : "64×96 · Motion rigs, frame review and validation") : workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
         {workspace === "ui" && <button className="button" data-testid="studio-tools" disabled={busy || pending > 0} onClick={() => action(async () => setDialog("studio"))}>{locale === "zh-CN" ? "项目工具箱" : "Project toolbox"}</button>}
         {workspace === "ui" && <button className="button generation-trigger" data-testid="generation-task" disabled={busy || pending > 0} onClick={() => setDialog("generation")}><Icon name="code" />{t("generation.open")}</button>}
       </nav>
       {mapVisited && <div className="map-workspace-host" style={{ display: workspace === "map" ? "flex" : "none" }}><MapWorkspace locale={locale} active={workspace === "map"} /></div>}
+      {animationVisited && <div className="animation-workspace-host" style={{ display: workspace === "animation" ? "flex" : "none", flex: 1, minHeight: 0 }}><AnimationWorkspace locale={locale} active={workspace === "animation"} /></div>}
       <div className="ui-workspace-host" style={{ display: workspace === "ui" ? "contents" : "none" }}>
       <div className="workspace">
         <aside className="left-panel">

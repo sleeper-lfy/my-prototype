@@ -1,6 +1,6 @@
 {
   "name": "game-ui-studio",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Local editable game UI and isometric maps, Codex task packages, scoped reviews, and Godot validation.",
   "repository": "https://github.com/sleeper-lfy/my-prototype",
   "license": "MIT",
