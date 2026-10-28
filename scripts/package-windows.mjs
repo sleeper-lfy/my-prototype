@@ -105,10 +105,11 @@ try {
     'server', 'src/model.js', 'src/animationModel.js', 'src/motionPresets.js', 'src/poseCalibration.js', 'src/patchSelection.js', 'src/mapModel.js', 'src/generationModel.js', 'src/studioFeatures.js', 'src/projectImport.js', 'scripts/desktop-launcher.mjs',
     'examples/village.map.json', 'research/animation-sources', 'scripts/convert-motion-presets.mjs', 'docs/PROJECT-TOOLBOX.md', 'docs/PIXEL-ANIMATION.md', 'docs/MOTION-SOURCES.md', 'docs/ALIGNMENT-AND-GRID.md', 'docs/MAP-WORKSPACE.md', 'docs/CODEX-GENERATION.md', 'docs/map-contract.md',
     '.agents/skills/game-ui-studio', 'LICENSE',
-    'docs/TECHNICAL-DECISION.md', 'docs/CODEX-SKILL.md', 'docs/WINDOWS-INSTALL.md',
+    'docs/TECHNICAL-DECISION.md', 'docs/CODEX-SKILL.md', 'docs/WINDOWS-INSTALL.md', 'docs/BRANDING.md',
   ]) await copyTree(path.join(root, name), path.join(appDir, name));
   await copyTree(path.join(root, 'packaging/windows/AGENTS.md'), path.join(appDir, 'AGENTS.md'));
   await copyTree(path.join(root, 'packaging/windows/launch.vbs'), path.join(payload, 'launch.vbs'));
+  await copyTree(path.join(root, 'packaging/windows/game-ui-studio.ico'), path.join(payload, 'game-ui-studio.ico'));
 
   const locked = runtimeLock(JSON.parse(await readSource('package-lock.json')));
   await fs.writeFile(path.join(appDir, 'package.json'), `${JSON.stringify(locked.package, null, 2)}\n`);

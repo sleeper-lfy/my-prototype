@@ -1,0 +1,32 @@
+{
+  "sourceUnchanged": true,
+  "originalSha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd",
+  "icoSizes": [
+    16,
+    24,
+    32,
+    48,
+    64,
+    128,
+    256
+  ],
+  "method": "ImageMagick format conversion; no artwork regeneration",
+  "files": {
+    "previews/branding/game-ui-studio-logo.png": {
+      "bytes": 962818,
+      "sha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd"
+    },
+    "public/assets/game-ui-studio-logo.png": {
+      "bytes": 962818,
+      "sha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd"
+    },
+    "packaging/windows/game-ui-studio.ico": {
+      "bytes": 148627,
+      "sha256": "57feba81cca1276a46319e4d211bbd9ec287be76c615299f1e35e2efdba3c0a2"
+    },
+    "public/assets/game-ui-studio.ico": {
+      "bytes": 148627,
+      "sha256": "57feba81cca1276a46319e4d211bbd9ec287be76c615299f1e35e2efdba3c0a2"
+    }
+  }
+}

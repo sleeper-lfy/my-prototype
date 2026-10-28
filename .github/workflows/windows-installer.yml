@@ -73,6 +73,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Project toolbox acceptance failed' }
           python scripts/animation-smoke.py
           if ($LASTEXITCODE -ne 0) { throw 'Pixel animation acceptance failed' }
+          python scripts/branding-smoke.py
+          if ($LASTEXITCODE -ne 0) { throw 'Branding acceptance failed' }
       - name: Build the self-contained Windows installer
         run: |
           npm run package:windows
@@ -102,3 +104,5 @@ jobs:
             previews/v0.4.0/
             artifacts/v0.4.1/
             previews/v0.4.1/
+            artifacts/v0.4.2/
+            previews/v0.4.2/

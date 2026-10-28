@@ -1,0 +1,24 @@
+{
+  "version": "0.4.2",
+  "status": "passed",
+  "unitTests": 122,
+  "brandingBrowserChecks": 4,
+  "originalLogoSha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd",
+  "originalLogoUnchanged": true,
+  "icoSizes": [
+    16,
+    24,
+    32,
+    48,
+    64,
+    128,
+    256
+  ],
+  "windows": {
+    "checks": 19,
+    "nativeWindows": false,
+    "installerSha256": "51301723349d55606a8bf00397983de16e4a1fd916f5367d35333208b830e6f2",
+    "actualInstallerAndUninstallerPEResourcesVerified": true,
+    "actualShortcutAndDisplayIconVerified": true
+  }
+}

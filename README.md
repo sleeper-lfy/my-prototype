@@ -8,19 +8,23 @@
 
 **当前范围**：固定尺寸游戏界面、等距二维地图、单人文件工作流。不是完整 Figma 替代品。Penpot 自托管和官方本地 MCP 已单独做可行性验证，具体证据、许可和选型成本见 [技术选型](docs/TECHNICAL-DECISION.md)。
 
-配套 Codex skill：[`$game-ui-studio`](.agents/skills/game-ui-studio/SKILL.md)。[安装与使用](docs/CODEX-SKILL.md)；[v0.4.1 Windows 安装包、源码与 skill](releases/v0.4.1/)。
+配套 Codex skill：[`$game-ui-studio`](.agents/skills/game-ui-studio/SKILL.md)。[安装与使用](docs/CODEX-SKILL.md)；[v0.4.2 Windows 安装包、源码与 skill](releases/v0.4.2/)。
 
 已有图片已集中保存在 [previews/](previews/README.md)：包含原始画布、编辑器、Godot、角色插图和反馈局部截图，并附路径、尺寸、文件大小及 SHA-256 清单，可直接在 GitHub 查看。
 
 ## Windows 一键安装
 
-下载 [Game-UI-Studio-Setup-0.4.1-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.4.1/Game-UI-Studio-Setup-0.4.1-x64.exe)，双击安装后从桌面打开。适用 Windows 10 / 11 x64，内置运行环境，无需安装 Node.js 或运行命令。项目数据独立保存，升级和卸载保留数据。安装包未签名。
+下载 [Game-UI-Studio-Setup-0.4.2-x64.exe](https://github.com/sleeper-lfy/my-prototype/raw/refs/heads/main/releases/v0.4.2/Game-UI-Studio-Setup-0.4.2-x64.exe)，双击安装后从桌面打开。适用 Windows 10 / 11 x64，内置运行环境，无需安装 Node.js 或运行命令。项目数据独立保存，升级和卸载保留数据。安装包未签名。
 
-[安装、退出、卸载与排障](docs/WINDOWS-INSTALL.md) · [发行文件与校验和](releases/v0.4.1/)
+[安装、退出、卸载与排障](docs/WINDOWS-INSTALL.md) · [发行文件与校验和](releases/v0.4.2/)
 
 顶部 **“导入 UI”** 可以选择、拖入或粘贴 Codex 生成的项目 JSON，先检查组件及资源数量，再备份并导入。**“导出项目”** 单独保存当前设计；增量补丁在“差异”中导入。右上角可切换 **简体中文 / English**，设置保存在本机，重新启动仍有效。项目中的文字、组件 ID 和审阅内容保持原样。
 
 [导入 UI 与语言切换图文说明](docs/IMPORT-AND-LANGUAGE.md)
+
+## v0.4.2：安装版品牌图标
+
+已有 Logo 已应用到安装程序、卸载程序、桌面和开始菜单快捷方式、Windows 应用列表、工具页头与浏览器标签。原始 PNG 内容保留，Windows ICO 包含16至256像素的多尺寸图标。[打包与校验说明](docs/BRANDING.md)。
 
 ## v0.4.1：像素角色动画、动作来源与骨架标定
 

@@ -1291,7 +1291,7 @@ export default function App() {
     return (
       <div className="loading">
         <div className="brand-mark">
-          <Icon name="diamond" size={24} />
+          <img src="/assets/game-ui-studio-logo.png" alt="Game UI Studio" />
         </div>
         <h2>Game UI Studio</h2>
         <p>{error ? errorMessage(locale, error) : t("loading")}</p>
@@ -1303,7 +1303,7 @@ export default function App() {
       <header className="app-header">
         <div className="brand">
           <div className="brand-mark">
-            <Icon name="diamond" size={21} />
+            <img data-testid="app-logo" src="/assets/game-ui-studio-logo.png" alt="Game UI Studio" />
           </div>
           <div>
             <strong>

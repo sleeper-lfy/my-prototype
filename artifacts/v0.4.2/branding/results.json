@@ -1,0 +1,156 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "original logo bytes remain unchanged in archive, public assets and HTTP response",
+      "status": "passed",
+      "details": {
+        "sha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd",
+        "bytes": 962818,
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "publicCopyAndHTTPResponseByteIdentical": true
+      }
+    },
+    {
+      "name": "loading state decodes and displays the original logo",
+      "status": "passed",
+      "details": {
+        "originalLogoInLoadingState": true,
+        "decoded": true
+      }
+    },
+    {
+      "name": "custom seven-size ICO favicon is served intact and decoded by Chromium",
+      "status": "passed",
+      "details": {
+        "url": "/assets/game-ui-studio.ico",
+        "sizes": [
+          [
+            256,
+            256
+          ],
+          [
+            128,
+            128
+          ],
+          [
+            64,
+            64
+          ],
+          [
+            48,
+            48
+          ],
+          [
+            32,
+            32
+          ],
+          [
+            24,
+            24
+          ],
+          [
+            16,
+            16
+          ]
+        ],
+        "browserDecoded": [
+          256,
+          256
+        ],
+        "sha256": "57feba81cca1276a46319e4d211bbd9ec287be76c615299f1e35e2efdba3c0a2"
+      }
+    },
+    {
+      "name": "UI, map and animation use the same original header logo in Chinese and English",
+      "status": "passed",
+      "details": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "observations": [
+          {
+            "workspace": "ui",
+            "locale": "en",
+            "decodedDimensions": [
+              1254,
+              1254
+            ],
+            "displayDimensions": [
+              38,
+              38
+            ]
+          },
+          {
+            "workspace": "map",
+            "locale": "en",
+            "decodedDimensions": [
+              1254,
+              1254
+            ],
+            "displayDimensions": [
+              38,
+              38
+            ]
+          },
+          {
+            "workspace": "animation",
+            "locale": "en",
+            "decodedDimensions": [
+              1254,
+              1254
+            ],
+            "displayDimensions": [
+              38,
+              38
+            ]
+          },
+          {
+            "workspace": "ui",
+            "locale": "zh-CN",
+            "decodedDimensions": [
+              1254,
+              1254
+            ],
+            "displayDimensions": [
+              38,
+              38
+            ]
+          },
+          {
+            "workspace": "map",
+            "locale": "zh-CN",
+            "decodedDimensions": [
+              1254,
+              1254
+            ],
+            "displayDimensions": [
+              38,
+              38
+            ]
+          },
+          {
+            "workspace": "animation",
+            "locale": "zh-CN",
+            "decodedDimensions": [
+              1254,
+              1254
+            ],
+            "displayDimensions": [
+              38,
+              38
+            ]
+          }
+        ],
+        "transparentHeaderImage": true
+      }
+    }
+  ],
+  "errors": [],
+  "isolatedData": true,
+  "originalLogoSha256": "40077c80c8fcdcdea37311aa75273f5c92affff4caeb3490dbf49944af5f0ecd"
+}
