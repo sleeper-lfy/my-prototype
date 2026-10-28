@@ -16,8 +16,8 @@ import zipfile
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / 'artifacts/v0.4.0/animation-browser'
-PRE = ROOT / 'previews/v0.4.0'
+OUT = ROOT / 'artifacts/v0.4.1/animation-browser'
+PRE = ROOT / 'previews/v0.4.1'
 OUT.mkdir(parents=True, exist_ok=True)
 PRE.mkdir(parents=True, exist_ok=True)
 report = {'status': 'running', 'checks': [], 'errors': [], 'isolatedData': True}
@@ -73,14 +73,25 @@ def run(page, work, req):
         assert len(p['clips']) == 12
         assert {c['direction'] for c in p['clips']} == {'up', 'down', 'left', 'right'}
         assert {c['action'] for c in p['clips']} == {'idle', 'walk', 'attack'}
-        expect(stage.locator('canvas')).to_have_attribute('width', '256')
+        library_box = workspace.locator('.anim-library').bounding_box()
+        for key in ['anim-sheet-width','anim-sheet-height','anim-sheet-x','anim-sheet-y']:
+            box = page.get_by_test_id(key).bounding_box()
+            assert box['x'] >= library_box['x'] and box['x'] + box['width'] <= library_box['x'] + library_box['width']
+        expect(page.get_by_test_id('anim-body-size')).to_contain_text('64')
+        expect(page.get_by_test_id('anim-output-size')).to_contain_text('×')
+        assert int(stage.locator('canvas').get_attribute('width')) >= 256
+        assert int(stage.locator('canvas').get_attribute('height')) >= 384
+        assert (int(stage.locator('canvas').get_attribute('width')) > 256 or int(stage.locator('canvas').get_attribute('height')) > 384)
         page.screenshot(path=str(PRE / 'animation-editor-en.png'), full_page=True)
-        return {'canvas': p['canvas'], 'clips': len(p['clips']), 'actualCanvas': True}
-    check('64x96 editable character workspace opens with twelve directional action presets', defaults)
+        return {'bodyReference': p['canvas'], 'clips': len(p['clips']), 'enlargedOutputCanvas': True}
+    check('64x96 body reference opens with enlarged animation canvas and twelve directional action presets', defaults)
     def playback():
         first = stage.get_attribute('data-frame-id')
+        render_attrs = ['width', 'height', 'data-render-x', 'data-render-y']
+        bounds = [stage.locator('canvas').get_attribute(a) for a in render_attrs]
         page.get_by_test_id('anim-play').click()
         wait(lambda: stage.get_attribute('data-frame-id') != first)
+        assert [stage.locator('canvas').get_attribute(a) for a in render_attrs] == bounds
         page.get_by_test_id('anim-play').click()
         stopped = stage.get_attribute('data-frame-id')
         page.wait_for_timeout(300)
@@ -93,9 +104,10 @@ def run(page, work, req):
         workspace.get_by_label('Pixel grid', exact=True).check()
         page.get_by_test_id('anim-clip-walk-right').click()
         page.get_by_test_id('anim-frame-2').click()
+        assert [stage.locator('canvas').get_attribute(a) for a in render_attrs] == bounds
         page.screenshot(path=str(PRE / 'animation-onion-en.png'), full_page=True)
         page.get_by_test_id('anim-clip-idle-down').click()
-        return {'timedPlayback': True, 'pauseStable': True, 'nextPrevious': True, 'onionAndGrid': True}
+        return {'timedPlayback': True, 'pauseStable': True, 'nextPrevious': True, 'onionAndGrid': True, 'sharedBoundsAndOriginStable': True}
     check('actual playback advances frames and stepping, onion skin and direction switching work', playback)
     def editing():
         page.get_by_test_id('anim-bone').select_option('leftUpperArm')
@@ -145,7 +157,7 @@ def run(page, work, req):
                 const image = await createImageBitmap(new Blob([bytes], {type:'image/png'}));
                 const size = [image.width,image.height]; image.close(); return size;
             }""", base64.b64encode(z.read(pngs[0])).decode())
-            assert dimensions == [64, 96]
+            assert dimensions == [feedback['renderBounds']['width'], feedback['renderBounds']['height']]
             assert 'animationModel.mjs' in z.namelist() and 'validate.mjs' in z.namelist()
         page.screenshot(path=str(PRE / 'animation-review-en.png'), full_page=True)
         return {'stableFrameReview': True, 'pendingOnly': True, 'pngDecoded': dimensions, 'modelValidatorIncluded': True}
@@ -183,26 +195,88 @@ def run(page, work, req):
             assert b'animation_event' in z.read('animation_player.gd')
             assert all(f['texture'] in z.namelist() for c in mapping['clips'] for f in c['frames'])
             assert mapping['canvas'] == {'width':64, 'height':96}
-        return {'allClipTexturesPresent': True, 'nativeSpriteFrames': True, 'eventAdapter': True, 'engineVerificationSeparate': True}
+            bounds = mapping['renderBounds']
+            assert mapping['origin'] == {'x':-bounds['x'],'y':-bounds['y']}
+            assert all(list(__import__('struct').unpack('>II', z.read(f['texture'])[16:24])) == [bounds['width'],bounds['height']] for c in mapping['clips'] for f in c['frames'])
+            attack_images = [base64.b64encode(z.read(f['texture'])).decode() for c in mapping['clips'] if c['action']=='attack' for f in c['frames']]
+            outside = page.evaluate("""async ({images,bounds}) => {
+                let count=0;
+                for(const encoded of images){
+                    const bytes=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));
+                    const bitmap=await createImageBitmap(new Blob([bytes],{type:'image/png'}));
+                    const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;
+                    const ctx=canvas.getContext('2d');ctx.drawImage(bitmap,0,0);bitmap.close();
+                    const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+                    for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++){
+                        const wx=x+bounds.x,wy=y+bounds.y;
+                        if(data[(y*canvas.width+x)*4+3] && (wx<0||wx>=64||wy<0||wy>=96))count++;
+                    }
+                }
+                return count;
+            }""", {'images':attack_images,'bounds':bounds})
+            assert outside > 0
+        return {'allClipTexturesPresent': True, 'sharedRenderBounds':bounds, 'attackPixelsBeyondBody':outside, 'nativeSpriteFrames': True, 'eventAdapter': True, 'engineVerificationSeparate': True}
     check('Godot archive contains all native sprite frames, timing metadata and event adapter', godot_export)
+    def sourced_motion():
+        before = project()
+        clip_before = before['clips'][0]
+        page.get_by_test_id('anim-motion-preset').select_option('quaternius-walking')
+        expect(page.get_by_test_id('anim-motion-library')).to_contain_text('Quaternius')
+        expect(page.get_by_test_id('anim-motion-library')).to_contain_text('CC0')
+        page.get_by_test_id('anim-motion-apply').click()
+        wait(lambda: project()['revision'] > before['revision'])
+        after = project()
+        clip_after = after['clips'][0]
+        assert [f['id'] for f in clip_after['frames']] == [f['id'] for f in clip_before['frames']]
+        assert after['reviews'] == before['reviews']
+        assert any(a['pose'] != b['pose'] for a,b in zip(clip_before['frames'],clip_after['frames']))
+        source = clip_after['motionSource']
+        assert source['presetId'] == 'quaternius-walking'
+        assert 'quaternius' in source['author'].lower() and source['license'] == 'CC0-1.0'
+        assert len(source['sha256']) == 64 and source['url'].startswith('https://')
+        expect(page.get_by_test_id('anim-motion-provenance')).to_contain_text(source['clip'])
+        archive = download('anim-feedback-export', 'sourced-motion-feedback.zip')
+        with zipfile.ZipFile(archive) as z:
+            feedback = json.loads(z.read('feedback.json'))
+            assert feedback['clips'][0]['motionSource'] == source
+        tab('Pose')
+        page.screenshot(path=str(PRE / 'animation-motion-reference-en.png'), full_page=True)
+        tab('Rig fit')
+        revision = project()['revision']
+        page.get_by_test_id('anim-rig-landmarks').click()
+        expect(page.get_by_test_id('anim-landmark-select')).to_be_visible()
+        page.screenshot(path=str(PRE / 'animation-rig-draft-en.png'), full_page=True)
+        page.get_by_test_id('anim-landmarks-cancel').click()
+        assert project()['revision'] == revision
+        return {'sourceAuthor':source['author'],'sourceLicense':source['license'],'sourceClip':source['clip'],
+                'sourceSha256':source['sha256'],'actualPosesChanged':True,'stableFrameIds':True,
+                'reviewsPreserved':True,'feedbackIncludesProvenance':True}
+    check('verified external motion preset applies real poses and retains author, license and source in feedback', sourced_motion)
     def imports():
         tab('Pose')
         count = len(project()['clips'][0]['frames'])
         png = page.evaluate("""count => {
-            const c=document.createElement('canvas');c.width=64*count;c.height=96;
+            const c=document.createElement('canvas');c.width=128*count;c.height=128;
             const ctx=c.getContext('2d');
-            for(let i=0;i<count;i++){ctx.fillStyle=i%2?'#d7bb78':'#3c665d';ctx.fillRect(i*64+20,30,24,48);}
+            for(let i=0;i<count;i++){ctx.fillStyle=i%2?'#d7bb78':'#3c665d';ctx.fillRect(i*128+20,30,24,48);ctx.fillRect(i*128,0,2,2);}
             return c.toDataURL('image/png').split(',')[1];
         }""", count)
         sheet = work/'synthetic-import-fixture.png';sheet.write_bytes(base64.b64decode(png))
         ids = [f['id'] for f in project()['clips'][0]['frames']]
+        page.get_by_test_id('anim-sheet-width').fill('128')
+        page.get_by_test_id('anim-sheet-height').fill('128')
+        page.get_by_test_id('anim-sheet-x').fill('-32')
+        page.get_by_test_id('anim-sheet-y').fill('-16')
         page.get_by_test_id('anim-sheet-import').set_input_files(sheet)
         wait(lambda: bool(project()['clips'][0]['frames'][0].get('image')))
         assert [f['id'] for f in project()['clips'][0]['frames']] == ids
         first = project()['clips'][0]['frames'][0]['image']
-        assert first['pixels'][(30*64+20)*4:(30*64+20)*4+4] == [60,102,93,255]
+        assert first['width'] == 128 and first['height'] == 128
+        assert first['offset'] == {'x': -32, 'y': -16}
+        assert first['pixels'][(30*128+20)*4:(30*128+20)*4+4] == [60,102,93,255]
+        previous_revision = project()['revision']
         page.get_by_test_id('anim-regenerate').click()
-        wait(lambda: current_frame()['durationMs'] != 180)
+        wait(lambda: project()['revision'] > previous_revision)
         assert project()['clips'][0]['frames'][0]['image'] == first
         assert project()['reviews'][0]['frameIds'] == [ids[0]]
         exported = download('anim-json-export', 'complete-animation.json')
@@ -211,14 +285,54 @@ def run(page, work, req):
         revision = project()['revision']
         page.get_by_test_id('anim-json-import').set_input_files(exported)
         wait(lambda: project()['revision'] > revision)
-        return {'syntheticFixtureOnly': True, 'sourcePixelsPreserved': True, 'frameIdsPreserved': True, 'regenerationPreservesOverridesAndReviews': True, 'completeJsonRoundTrip': True}
+        return {'syntheticFixtureOnly': True, 'sourcePixelsPreserved': True, 'larger128x128Cell': True, 'bodyOffsetPreserved': [-32,-16], 'frameIdsPreserved': True, 'regenerationPreservesOverridesAndReviews': True, 'completeJsonRoundTrip': True}
     check('sprite sheet import and project round-trip preserve pixels, frame IDs and review associations', imports)
+    def calibration():
+        tab('Rig fit')
+        before = project()
+        page.get_by_test_id('anim-image-landmarks').click()
+        expect(page.get_by_test_id('anim-landmarks-source')).to_be_visible()
+        assert project() == before
+        page.get_by_test_id('anim-landmark-select').select_option('head')
+        x = float(page.get_by_test_id('anim-landmark-x').input_value())
+        y = float(page.get_by_test_id('anim-landmark-y').input_value())
+        page.get_by_test_id('anim-landmark-x').fill(str(x + 3))
+        page.get_by_test_id('anim-landmark-y').fill(str(y + 2))
+        assert project() == before
+        exported = download('anim-landmarks-export', 'landmark-draft.json')
+        draft = json.loads(exported.read_text())
+        assert draft['kind'] == 'studio-pose-landmarks' and len(draft['points']) == 17
+        draft['source'] = {'kind':'ai','label':'Synthetic external JSON import fixture','model':'No AI model was invoked'}
+        draft['status'] = 'confirmed'
+        exported.write_text(json.dumps(draft))
+        page.get_by_test_id('anim-landmarks-import').set_input_files(exported)
+        expect(page.get_by_test_id('anim-landmarks-source')).to_contain_text('Synthetic external JSON')
+        assert project() == before
+        normalized = json.loads(download('anim-landmarks-export','imported-draft.json').read_text())
+        assert normalized['status'] == 'suggested'
+        assert normalized['source']['clipId'] == before['clips'][0]['id']
+        page.get_by_test_id('anim-landmarks-confirm').click()
+        wait(lambda: project()['revision'] > before['revision'])
+        after = project()
+        assert after['bones'] != before['bones'] and after.get('rigCalibration')
+        assert after['reviews'] == before['reviews']
+        assert after['clips'][0]['frames'][0]['image'] == before['clips'][0]['frames'][0]['image']
+        page.reload(); page.get_by_test_id('workspace-animation').click()
+        tab('Rig fit')
+        expect(page.get_by_test_id('anim-rig-confirmed')).to_be_visible()
+        assert project()['rigCalibration'] == after['rigCalibration']
+        page.screenshot(path=str(PRE / 'animation-rig-calibration-en.png'), full_page=True)
+        return {'localAlphaSuggestion':True,'draftDoesNotMutateProject':True,'manualCoordinateAdjustment':True,
+                'explicitConfirmationRequired':True,'boneCalibrationPersisted':True,'pixelsAndReviewsPreserved':True,
+                'draftJsonExport':True,'externalAIJsonImportedAsUnconfirmedDraft':True,'semanticAIInvoked':False}
+    check('joint suggestions remain drafts until manual adjustment and explicit confirmation persist the rig', calibration)
     def checks_languages():
         tab('Checks');page.get_by_test_id('anim-run-checks').click()
         expect(page.get_by_test_id('anim-check-count')).to_be_visible()
         page.set_viewport_size({'width':1366,'height':768})
         page.get_by_test_id('language-select').select_option('zh-CN')
-        expect(workspace.get_by_role('heading',name='像素角色动画 64 × 96')).to_be_visible()
+        expect(workspace.get_by_role('heading',name='像素角色动画', exact=False)).to_be_visible()
+        expect(page.get_by_test_id('anim-body-size')).to_contain_text('64')
         page.get_by_test_id('anim-clip-walk-right').click()
         page.screenshot(path=str(PRE / 'animation-editor-zh.png'), full_page=True)
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')

@@ -1,0 +1,134 @@
+{
+  "source": {
+    "id": "robot-expressive",
+    "author": "Tomás Laulhé / Quaternius",
+    "modifications": "Don McCurdy: FBX2glTF conversion, facial morph targets and material cleanup",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "url": "https://github.com/mrdoob/three.js/blob/68a2712f9d130e8e9813488228dfef3509920fb2/examples/models/gltf/RobotExpressive/README.md",
+    "assetUrl": "https://github.com/mrdoob/three.js/blob/68a2712f9d130e8e9813488228dfef3509920fb2/examples/models/gltf/RobotExpressive/RobotExpressive.glb",
+    "upstreamCommit": "68a2712f9d130e8e9813488228dfef3509920fb2",
+    "sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319",
+    "sourceFormat": "glTF 2.0",
+    "conversion": "glTF local quaternion SLERP + translation interpolation → global skeletal segment positions → XY / ZY orthographic projection → 13-bone pixel rig. Original body translation is scaled to a 64-pixel standing skeleton height; no contact IK or gameplay events are inferred. Depth and foreshortening are lost."
+  },
+  "bytes": 463988,
+  "pixelScale": 15.756789914118551,
+  "segments": {
+    "torso": {
+      "fromNode": 8,
+      "from": "Hips",
+      "toNode": 11,
+      "to": "Neck",
+      "targetRestAngle": -90
+    },
+    "head": {
+      "fromNode": 11,
+      "from": "Neck",
+      "toNode": 14,
+      "to": "Head_end",
+      "targetRestAngle": -90
+    },
+    "leftUpperArm": {
+      "fromNode": 17,
+      "from": "UpperArm.L",
+      "toNode": 19,
+      "to": "LowerArm.L",
+      "targetRestAngle": 106
+    },
+    "leftForearm": {
+      "fromNode": 19,
+      "from": "LowerArm.L",
+      "toNode": 20,
+      "to": "Palm2.L",
+      "targetRestAngle": 85
+    },
+    "rightUpperArm": {
+      "fromNode": 37,
+      "from": "UpperArm.R",
+      "toNode": 39,
+      "to": "LowerArm.R",
+      "targetRestAngle": 74
+    },
+    "rightForearm": {
+      "fromNode": 39,
+      "from": "LowerArm.R",
+      "toNode": 40,
+      "to": "Palm2.R",
+      "targetRestAngle": 95
+    },
+    "leftThigh": {
+      "fromNode": 55,
+      "from": "UpperLeg.L",
+      "toNode": 57,
+      "to": "LowerLeg.L",
+      "targetRestAngle": 90
+    },
+    "leftShin": {
+      "fromNode": 57,
+      "from": "LowerLeg.L",
+      "toNode": 59,
+      "to": "LowerLeg.L_end",
+      "targetRestAngle": 90
+    },
+    "leftFoot": {
+      "fromNode": 3,
+      "from": "Foot.L",
+      "toNode": 5,
+      "to": "Foot.L_end",
+      "targetRestAngle": 0
+    },
+    "rightThigh": {
+      "fromNode": 60,
+      "from": "UpperLeg.R",
+      "toNode": 62,
+      "to": "LowerLeg.R",
+      "targetRestAngle": 90
+    },
+    "rightShin": {
+      "fromNode": 62,
+      "from": "LowerLeg.R",
+      "toNode": 64,
+      "to": "LowerLeg.R_end",
+      "targetRestAngle": 90
+    },
+    "rightFoot": {
+      "fromNode": 67,
+      "from": "Foot.R",
+      "toNode": 69,
+      "to": "Foot.R_end",
+      "targetRestAngle": 0
+    }
+  },
+  "presets": [
+    {
+      "id": "quaternius-idle",
+      "clip": "Idle",
+      "durationMs": 3333.333,
+      "trackCount": 6,
+      "sampleCount": 81
+    },
+    {
+      "id": "quaternius-walking",
+      "clip": "Walking",
+      "durationMs": 958.333,
+      "trackCount": 19,
+      "sampleCount": 24
+    },
+    {
+      "id": "quaternius-running",
+      "clip": "Running",
+      "durationMs": 958.333,
+      "trackCount": 17,
+      "sampleCount": 24
+    },
+    {
+      "id": "quaternius-punch",
+      "clip": "Punch",
+      "durationMs": 833.333,
+      "trackCount": 14,
+      "sampleCount": 21
+    }
+  ],
+  "outputSha256": "54d7a2a52592e5c05b4aab9297914c65341cde28a2c2a01c7a520c4a0ca0216c"
+}

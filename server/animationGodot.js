@@ -1,25 +1,30 @@
-import { validateAnimationProject, renderAnimationFrame } from '../src/animationModel.js';
+import { validateAnimationProject, renderAnimationFrame, getAnimationRenderBounds } from '../src/animationModel.js';
 import { encodeAnimationPng } from './animationPng.js';
+import { MOTION_SOURCE, MOTION_LICENSE_NOTICE } from '../src/motionPresets.js';
 
 const quote = value => JSON.stringify(String(value));
 /** Exports immutable rendered pixels with an executable event adapter and verifier. */
 export function createAnimationGodotFiles(project) {
   validateAnimationProject(project);
-  const files={},resources=[],animations=[],mapping={schemaVersion:1,projectId:project.id,revision:project.revision,canvas:project.canvas,clips:[]};
+  const renderBounds = getAnimationRenderBounds(project);
+  const origin = {x: -renderBounds.x, y: -renderBounds.y};
+  const files={},resources=[],animations=[],mapping={schemaVersion:1,projectId:project.id,revision:project.revision,canvas:project.canvas,renderBounds,origin,clips:[]};
   let resourceIndex=1;
   for(const clip of project.clips){
     const records=[],frames=[];
     for(const frame of clip.frames){
       const id=String(resourceIndex++),texture=`frames/${clip.id}/${frame.id}.png`;
-      files[texture]=encodeAnimationPng(renderAnimationFrame(project,clip.id,frame.id));
+      files[texture]=encodeAnimationPng(renderAnimationFrame(project,clip.id,frame.id,renderBounds));
       resources.push(`[ext_resource type="Texture2D" path=${quote('res://'+texture)} id=${quote(id)}]`);
       frames.push(`{\n"duration": ${frame.durationMs/1000},\n"texture": ExtResource(${quote(id)})\n}`);
       records.push({id:frame.id,durationMs:frame.durationMs,texture,events:frame.events||[],contacts:frame.contacts||[]});
     }
     animations.push(`{\n"frames": [${frames.join(',\n')}],\n"loop": ${!!clip.loop},\n"name": &${quote(clip.id)},\n"speed": 1.0\n}`);
-    mapping.clips.push({id:clip.id,name:clip.name,action:clip.action,direction:clip.direction,loop:!!clip.loop,frames:records});
+    mapping.clips.push({id:clip.id,name:clip.name,action:clip.action,direction:clip.direction,loop:!!clip.loop,...(clip.motionSource ? {motionSource:structuredClone(clip.motionSource)} : {}),frames:records});
   }
   const initial=project.clips[0].id;
+  files['MOTION-SOURCE.json']=JSON.stringify({availableSource:MOTION_SOURCE,usedClips:mapping.clips.filter(c=>c.motionSource).map(c=>({clipId:c.id,...c.motionSource}))},null,2)+'\n';
+  files['MOTION-LICENSE.txt']=MOTION_LICENSE_NOTICE;
   files['character.tres']=`[gd_resource type="SpriteFrames" load_steps=${resources.length+1} format=3]\n${resources.join('\n')}\n[resource]\nanimations = [${animations.join(',\n')}]\n`;
   files['animation-map.json']=JSON.stringify(mapping,null,2)+'\n';
   files['animation_player.gd']=`extends AnimatedSprite2D
@@ -51,8 +56,8 @@ func set_clip(clip_id: String):
     if sprite_frames.has_animation(clip_id):
         play(clip_id)
 `;
-  files['main.tscn']=`[gd_scene load_steps=4 format=3]\n[ext_resource type="SpriteFrames" path="res://character.tres" id="1"]\n[ext_resource type="Script" path="res://animation_player.gd" id="2"]\n[ext_resource type="Script" path="res://preview.gd" id="3"]\n[node name="AnimationPreview" type="Node2D"]\nscript = ExtResource("3")\n[node name="Character" type="AnimatedSprite2D" parent="."]\nposition = Vector2(${project.canvas.width * 2}, ${project.canvas.height * 2})\nscale = Vector2(4, 4)\ntexture_filter = 1\nsprite_frames = ExtResource("1")\nanimation = &${quote(initial)}\nscript = ExtResource("2")\nmetadata/studio_id = ${quote(project.id)}\n[node name="Instructions" type="Label" parent="."]\noffset_left = 12.0\noffset_top = 8.0\ntext = "Arrow keys: change clip"\n`;
-  files['project.godot']=`config_version=5\n[application]\nconfig/name=${quote(project.name+' — pixel animation')}\nrun/main_scene="res://main.tscn"\n[display]\nwindow/size/viewport_width=${project.canvas.width * 4}\nwindow/size/viewport_height=${project.canvas.height * 4 + 32}\n[rendering]\nrenderer/rendering_method="gl_compatibility"\ntextures/default_filters/use_nearest_mipmap_filter=false\nenvironment/defaults/default_clear_color=Color(0.055, 0.075, 0.09, 1)\n`;
+  files['main.tscn']=`[gd_scene load_steps=4 format=3]\n[ext_resource type="SpriteFrames" path="res://character.tres" id="1"]\n[ext_resource type="Script" path="res://animation_player.gd" id="2"]\n[ext_resource type="Script" path="res://preview.gd" id="3"]\n[node name="AnimationPreview" type="Node2D"]\nscript = ExtResource("3")\n[node name="Character" type="AnimatedSprite2D" parent="."]\nposition = Vector2(${16 - renderBounds.x * 4}, ${48 - renderBounds.y * 4})\ncentered = false\noffset = Vector2(${renderBounds.x}, ${renderBounds.y})\nscale = Vector2(4, 4)\ntexture_filter = 1\nsprite_frames = ExtResource("1")\nanimation = &${quote(initial)}\nscript = ExtResource("2")\nmetadata/studio_id = ${quote(project.id)}\n[node name="Instructions" type="Label" parent="."]\noffset_left = 12.0\noffset_top = 8.0\ntext = "Arrow keys: change clip"\n`;
+  files['project.godot']=`config_version=5\n[application]\nconfig/name=${quote(project.name+' — pixel animation')}\nrun/main_scene="res://main.tscn"\n[display]\nwindow/size/viewport_width=${renderBounds.width * 4 + 32}\nwindow/size/viewport_height=${renderBounds.height * 4 + 64}\n[rendering]\nrenderer/rendering_method="gl_compatibility"\ntextures/default_filters/use_nearest_mipmap_filter=false\nenvironment/defaults/default_clear_color=Color(0.055, 0.075, 0.09, 1)\n`;
   files['preview.gd']=`extends Node2D
 var selected: int = 0
 func _ready():
@@ -72,10 +77,17 @@ func _unhandled_key_input(event):
 func verify():
     var result_path: String = ""
     var screenshot_path: String = ""
+    var capture_clip: String = ""
+    var capture_frame: int = 0
     for arg in OS.get_cmdline_user_args():
         if arg.begins_with("--studio-result="): result_path = arg.trim_prefix("--studio-result=")
         if arg.begins_with("--studio-screenshot="): screenshot_path = arg.trim_prefix("--studio-screenshot=")
+        if arg.begins_with("--studio-capture-clip="): capture_clip = arg.trim_prefix("--studio-capture-clip=")
+        if arg.begins_with("--studio-capture-frame="): capture_frame = int(arg.trim_prefix("--studio-capture-frame="))
     var failures: Array = []
+    if $Character.centered: failures.append("sprite centered unexpectedly")
+    var expected_offset: Vector2 = Vector2($Character.studio_data.renderBounds.x, $Character.studio_data.renderBounds.y)
+    if $Character.offset != expected_offset: failures.append("body origin changed")
     var checked_frames: int = 0
     var expected_events: int = 0
     $Character.stop()
@@ -89,7 +101,7 @@ func verify():
         for index in range(clip.frames.size()):
             var frame: Dictionary = clip.frames[index]
             var texture: Texture2D = $Character.sprite_frames.get_frame_texture(clip.id, index)
-            if texture.get_width() != int($Character.studio_data.canvas.width) or texture.get_height() != int($Character.studio_data.canvas.height): failures.append("texture dimensions " + frame.id)
+            if texture.get_width() != int($Character.studio_data.renderBounds.width) or texture.get_height() != int($Character.studio_data.renderBounds.height): failures.append("texture dimensions " + frame.id)
             var seconds: float = $Character.sprite_frames.get_frame_duration(clip.id, index) / $Character.sprite_frames.get_animation_speed(clip.id)
             if abs(seconds - float(frame.durationMs)/1000.0) > 0.00001: failures.append("duration " + frame.id)
             $Character.emitted_events.clear()
@@ -123,22 +135,27 @@ func verify():
     $Character.animation = $Character.studio_data.clips[0].id
     $Character.set_frame_and_progress(0, 0.0)
     $Character.play()
-    var first_frame: int = $Character.frame
-    await get_tree().create_timer(0.35).timeout
-    var playback_advanced: bool = $Character.frame != first_frame
+    var changes: Array = [0]
+    var count_change = func(): changes[0] += 1
+    $Character.frame_changed.connect(count_change)
+    var first_duration: float = $Character.sprite_frames.get_frame_duration($Character.animation, 0) / $Character.sprite_frames.get_animation_speed($Character.animation)
+    await get_tree().create_timer(first_duration + 0.1).timeout
+    $Character.frame_changed.disconnect(count_change)
+    var playback_advanced: bool = changes[0] > 0
     if not playback_advanced: failures.append("playback did not advance")
     $Character.stop()
-    $Character.set_frame_and_progress(0, 0.0)
+    if capture_clip != "": $Character.animation = capture_clip
+    $Character.set_frame_and_progress(capture_frame, 0.0)
     await RenderingServer.frame_post_draw
     if screenshot_path != "": get_viewport().get_texture().get_image().save_png(screenshot_path)
-    var report: Dictionary = {"passed": failures.is_empty(), "failures": failures, "checkedFrames": checked_frames, "checkedEvents": expected_events, "playbackAdvanced": playback_advanced, "projectId": $Character.studio_data.projectId, "revision": $Character.studio_data.revision}
+    var report: Dictionary = {"passed": failures.is_empty(), "failures": failures, "checkedFrames": checked_frames, "checkedEvents": expected_events, "playbackAdvanced": playback_advanced, "projectId": $Character.studio_data.projectId, "revision": $Character.studio_data.revision, "renderBounds": $Character.studio_data.renderBounds, "origin": $Character.studio_data.origin, "fixedOrigin": not $Character.centered and $Character.offset == expected_offset}
     if result_path != "":
         var file = FileAccess.open(result_path, FileAccess.WRITE)
         file.store_string(JSON.stringify(report, "  "))
     print(JSON.stringify(report))
     get_tree().quit(0 if failures.is_empty() else 1)
 `;
-  files['README.md']='# Pixel animation export\n\nOpen project.godot in Godot 4.3+. Arrow keys cycle animations. AnimatedSprite2D uses lossless original-size textures with nearest filtering and variable frame duration. Connect animation_event to game logic; frames retain stable IDs in animation-map.json. Events are data and do not execute supplied code. Imported art retains its original license.\n\nTest with: godot --headless --editor --path . --import, then godot --path . -- --studio-verify --studio-result=/absolute/result.json --studio-screenshot=/absolute/frame.png. A graphical display is required for screenshots.\n';
+  files['README.md']='# Pixel animation export\n\nOpen project.godot in Godot 4.3+. Arrow keys cycle animations. The 64×96 body reference does not clip frame contents. All frames share one union render rectangle and a fixed body origin; AnimatedSprite2D centered=false and offset preserve body coordinates across actions. AnimatedSprite2D uses lossless original-size textures with nearest filtering and variable frame duration. Connect animation_event to game logic; frames retain stable IDs in animation-map.json. Events are data and do not execute supplied code. Imported art retains its original license.\n\nTest with: godot --headless --editor --path . --import, then godot --path . -- --studio-verify --studio-result=/absolute/result.json --studio-screenshot=/absolute/frame.png. A graphical display is required for screenshots.\n';
   files['export-warnings.json']=JSON.stringify(['Rendered sprite frames are exported; editable rig and IK remain in the Studio project JSON.','Contact markers are metadata; collision geometry and gameplay logic must be integrated separately.'],null,2);
   return {files,warnings:JSON.parse(files['export-warnings.json'])};
 }

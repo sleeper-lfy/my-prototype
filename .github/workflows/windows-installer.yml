@@ -100,3 +100,5 @@ jobs:
             previews/v0.3.0/*.png
             artifacts/v0.4.0/
             previews/v0.4.0/
+            artifacts/v0.4.1/
+            previews/v0.4.1/

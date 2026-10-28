@@ -3,11 +3,12 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { createAnimationProject, renderAnimationFrame } from '../src/animationModel.js';
+import { createAnimationProject, renderAnimationFrame, getAnimationRenderBounds, applyMotionPreset } from '../src/animationModel.js';
+import { MOTION_PRESETS } from '../src/motionPresets.js';
 import { createAnimationGodotFiles } from '../server/animationGodot.js';
 import { decodePng } from './compare-png.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts/v0.4.0/animation-godot');
+const out=path.join(root,'artifacts/v0.4.1/animation-godot');
 const game=await fs.mkdtemp(path.join(os.tmpdir(),'studio-animation-godot-'));
 const report={passed:false,nativeWindows:false,checks:[],artApproval:'pending independent visual review'};
 const resultFile=path.join(out,'runtime.json'),screenshotFile=path.join(out,'animation.png');
@@ -19,9 +20,15 @@ const run=(label,args)=>{
  if(r.status!==0||/SCRIPT ERROR|Parse Error|^ERROR:/m.test(r.stderr||''))throw Error(label+': '+(r.stderr||r.error));
 };
 try{
- const p=createAnimationProject();
+ const initial=createAnimationProject();
+ const p=applyMotionPreset(initial,MOTION_PRESETS[0].id,initial.clips[0].id);
+ report.motionSource=p.clips[0].motionSource;
  // Verify duration is genuinely variable, rather than implicitly fixed FPS.
  p.clips[0].frames[1].durationMs=175;
+ const attack=p.clips.find(c=>c.id==='attack-right')||p.clips.find(c=>c.action==='attack');
+ attack.frames[3].root.x += 80; attack.frames[3].root.y -= 70;
+ const bounds=getAnimationRenderBounds(p);
+ if(bounds.x>=0&&bounds.y>=0||bounds.x+bounds.width<=64)throw Error('Test must extend outside body reference');
  const generated=createAnimationGodotFiles(p);
  for(const [name,bytes]of Object.entries(generated.files)){
   const dest=path.join(game,name);await fs.mkdir(path.dirname(dest),{recursive:true});await fs.writeFile(dest,bytes);
@@ -32,18 +39,31 @@ try{
  run('play and capture exported scene',['--path',game,'--audio-driver','Dummy','--rendering-method','gl_compatibility','--','--studio-verify','--studio-result='+resultFile,'--studio-screenshot='+screenshotFile]);
  report.runtime=JSON.parse(await fs.readFile(resultFile,'utf8'));
  if(!report.runtime.passed)throw Error('Runtime verification failed');
- const screenshot=decodePng(await fs.readFile(screenshotFile));
- if(screenshot.width!==256||screenshot.height!==416)throw Error('Unexpected viewport dimensions');
- const first=p.clips[0],frame=renderAnimationFrame(p,first.id,first.frames[0].id);
- let sampled=0,mismatched=0;
- for(let y=10;y<frame.height;y++)for(let x=0;x<frame.width;x++){
-  const source=(y*frame.width+x)*4;if(frame.pixels[source+3]!==255)continue;
-  const target=((y*4+2)*screenshot.width+x*4+2)*4;
-  sampled++;if([0,1,2].some(c=>Math.abs(frame.pixels[source+c]-screenshot.rgba[target+c])>1))mismatched++;
- }
- report.screenshot={width:screenshot.width,height:screenshot.height,sampledOpaquePixels:sampled,mismatchedPixels:mismatched};
- if(sampled<50||mismatched!==0)throw Error('Rendered pixels do not match the model frame');
+ const checkScreenshot=async(file,clip,index)=>{
+  const screenshot=decodePng(await fs.readFile(file));
+  if(screenshot.width!==bounds.width*4+32||screenshot.height!==bounds.height*4+64)throw Error('Unexpected expanded viewport dimensions');
+  const frame=renderAnimationFrame(p,clip.id,clip.frames[index].id,bounds);
+  let sampled=0,mismatched=0,outsideBodyPixels=0;
+  for(let y=0;y<frame.height;y++)for(let x=0;x<frame.width;x++){
+   const source=(y*frame.width+x)*4;if(frame.pixels[source+3]!==255)continue;
+   const target=((48+y*4+2)*screenshot.width+16+x*4+2)*4;
+   sampled++;if([0,1,2].some(c=>Math.abs(frame.pixels[source+c]-screenshot.rgba[target+c])>1))mismatched++;
+   const worldX=x+bounds.x,worldY=y+bounds.y;
+   if(worldX<0||worldX>=64||worldY<0||worldY>=96)outsideBodyPixels++;
+  }
+  if(sampled<50||mismatched!==0)throw Error('Rendered pixels do not match the expanded model frame');
+  return {width:screenshot.width,height:screenshot.height,sampledOpaquePixels:sampled,mismatchedPixels:mismatched,outsideBodyPixels,origin:frame.origin};
+ };
+ report.screenshot=await checkScreenshot(screenshotFile,p.clips[0],0);
+ const attackScreenshot=path.join(out,'attack-outside-body.png');
+ const attackResult=path.join(out,'attack-runtime.json');
+ await Promise.all([attackScreenshot,attackResult].map(f=>fs.rm(f,{force:true})));
+ run('capture attack beyond body reference',['--path',game,'--audio-driver','Dummy','--rendering-method','gl_compatibility','--','--studio-verify','--studio-result='+attackResult,'--studio-screenshot='+attackScreenshot,'--studio-capture-clip='+attack.id,'--studio-capture-frame=3']);
+ report.attackScreenshot=await checkScreenshot(attackScreenshot,attack,3);
+ if(report.attackScreenshot.outsideBodyPixels===0)throw Error('Attack pixels outside body were not preserved');
+ if(JSON.stringify(report.attackScreenshot.origin)!==JSON.stringify(report.screenshot.origin))throw Error('Origin changed between idle and attack');
+ report.bodyReference=p.canvas;report.renderBounds=bounds;
  report.passed=true;
- console.log('Animation Godot verified: actual playback, all frame durations, events, textures and pixel-matched screenshot.');
+ console.log('Animation Godot verified: actual playback, all frame durations, events, shared origin, expanded attack bounds and pixel-matched screenshots.');
 }catch(error){report.error=error.message;process.exitCode=1;console.error(error.message);}
 finally{await fs.writeFile(path.join(out,'results.json'),JSON.stringify(report,null,2)+'\n');await fs.rm(game,{recursive:true,force:true});}

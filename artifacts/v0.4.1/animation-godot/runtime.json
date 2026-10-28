@@ -1,0 +1,20 @@
+{
+  "checkedEvents": 12,
+  "checkedFrames": 88,
+  "failures": [],
+  "fixedOrigin": true,
+  "origin": {
+    "x": 0.0,
+    "y": 56.0
+  },
+  "passed": true,
+  "playbackAdvanced": true,
+  "projectId": "pixel-ranger",
+  "renderBounds": {
+    "height": 152.0,
+    "width": 149.0,
+    "x": 0.0,
+    "y": -56.0
+  },
+  "revision": 0.0
+}

@@ -7,6 +7,11 @@ import express from 'express';
 import { zipSync, unzipSync, strFromU8 } from 'fflate';
 import { mountAnimationRoutes } from '../server/animationRoutes.js';
 import { decodePng } from '../scripts/compare-png.js';
+import { getAnimationRenderBounds, applyMotionPreset } from '../src/animationModel.js';
+import { MOTION_PRESETS } from '../src/motionPresets.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+const exec = promisify(execFile);
 
 async function setup(run) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'studio-animation-api-'));
@@ -52,7 +57,7 @@ test('animation saves are serialized, persist independently, and reject stale ro
   assert.equal((await fs.readdir(dir)).length, 1);
 }));
 
-test('animation feedback contains only pending targets and actual rendered PNGs; scoped patches preserve review restrictions and can roll back', () => setup(async ({ req, archives }) => {
+test('animation feedback contains only pending targets and actual rendered PNGs; scoped patches preserve review restrictions and can roll back', () => setup(async ({ req, archives, dir }) => {
   const project = (await req()).data;
   const clip = project.clips.find(c => c.id === 'walk-down');
   const frame = clip.frames[0];
@@ -70,8 +75,22 @@ test('animation feedback contains only pending targets and actual rendered PNGs;
   assert.ok(files['animationModel.mjs']); assert.ok(files['validate.mjs']);
   const png = Buffer.from(files[`frames/${clip.id}/${frame.id}.png`]);
   assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
-  assert.equal(png.readUInt32BE(16), 64); assert.equal(png.readUInt32BE(20), 96);
+  const bounds = getAnimationRenderBounds(p);
+  assert.equal(png.readUInt32BE(16), bounds.width); assert.equal(png.readUInt32BE(20), bounds.height);
+  assert.deepEqual(model.canvas, { width: 64, height: 96 });
+  assert.deepEqual(model.renderBounds, bounds);
+  assert.deepEqual(model.origin, { x: 0 - bounds.x, y: 0 - bounds.y });
   const patch = { schemaVersion: 1, kind: 'studio-animation-patch', projectId: p.id, baseRevision: p.revision, summary: 'Hold stance', reviewIds: ['review-foot'], operations: [{ clipId: clip.id, frameId: frame.id, path: 'durationMs', value: frame.durationMs + 50 }] };
+  // Exercise the actual offline package outside the repository: dependencies must be included.
+  const offline = path.join(dir, 'offline'); await fs.mkdir(offline);
+  for (const name of ['animationModel.mjs', 'motionPresets.js', 'validate.mjs', 'package.json']) {
+    assert.ok(files[name], `Missing feedback dependency: ${name}`);
+    await fs.writeFile(path.join(offline, name), files[name]);
+  }
+  await fs.writeFile(path.join(offline, 'project.json'), JSON.stringify(p));
+  await fs.writeFile(path.join(offline, 'patch.json'), JSON.stringify(patch));
+  const validated = await exec(process.execPath, ['validate.mjs', 'project.json', 'patch.json'], { cwd: offline });
+  assert.ok(JSON.parse(validated.stdout).some(change => change.frameId === frame.id));
   const bad = structuredClone(patch); bad.operations[0].path = 'root.x'; bad.operations[0].value = 31;
   assert.equal((await req('/patch', { patch: bad })).status, 400);
   const preview = await req('/patch/preview', { patch }); assert.equal(preview.status, 200, preview.data.error);
@@ -86,8 +105,12 @@ test('animation feedback contains only pending targets and actual rendered PNGs;
   assert.equal(rolled.data.clips.find(c => c.id === clip.id).frames[0].durationMs, frame.durationMs);
 }));
 
-test('animation Godot ZIP exports native SpriteFrames, original dimensions and stable IDs', () => setup(async ({ req, archives }) => {
-  const p = (await req()).data;
+test('animation Godot ZIP exports native SpriteFrames, shared render bounds and stable IDs', () => setup(async ({ req, archives }) => {
+  const initial = (await req()).data;
+  const sourced = applyMotionPreset(initial, MOTION_PRESETS[0].id, initial.clips[0].id);
+  const saved = await req('', {project: sourced, baseRevision: initial.revision}, 'PUT');
+  assert.equal(saved.status, 200, saved.data.error);
+  const p = saved.data;
   const result = await req('/godot', { baseRevision: p.revision });
   assert.equal(result.status, 200, result.data.error);
   const files = unzipSync(archives.get(result.data.downloadUrl));
@@ -96,15 +119,28 @@ test('animation Godot ZIP exports native SpriteFrames, original dimensions and s
   assert.match(texts, /AnimatedSprite2D/); assert.match(texts, /SpriteFrames/);
   assert.ok(texts.includes(p.clips[0].frames[0].id));
   const png = Buffer.from(Object.entries(files).find(([name]) => name.endsWith('.png'))[1]);
-  assert.equal(png.readUInt32BE(16), 64); assert.equal(png.readUInt32BE(20), 96);
+  const bounds = getAnimationRenderBounds(p);
+  assert.equal(png.readUInt32BE(16), bounds.width); assert.equal(png.readUInt32BE(20), bounds.height);
+  const map = JSON.parse(strFromU8(files['animation-map.json']));
+  assert.deepEqual(map.canvas, { width: 64, height: 96 });
+  assert.deepEqual(map.renderBounds, bounds);
+  assert.deepEqual(map.origin, { x: 0 - bounds.x, y: 0 - bounds.y });
+  assert.deepEqual(map.clips[0].motionSource, p.clips[0].motionSource);
+  assert.match(map.clips[0].motionSource.sha256, /^[a-f0-9]{64}$/);
+  assert.ok(files['MOTION-SOURCE.json']);
+  assert.match(strFromU8(files['MOTION-LICENSE.txt']), /CC0/);
+  const scene = strFromU8(files['main.tscn']);
+  assert.match(scene, /centered = false/);
+  assert.ok(scene.includes(`offset = Vector2(${bounds.x}, ${bounds.y})`));
 }));
 
 test('imported frame pixels survive persistence, feedback rendering and Godot export without resampling', () => setup(async ({ req, archives }) => {
   const p = (await req()).data;
   p.clips = [p.clips[0]]; p.clips[0].frames = [p.clips[0].frames[0]];
   const clip = p.clips[0], frame = clip.frames[0];
-  const pixels = Array.from({ length: 64 * 96 * 4 }, (_, i) => i % 4 === 3 ? 255 : (i * 17) % 256);
-  frame.image = { width: 64, height: 96, pixels };
+  const imageWidth = 80, imageHeight = 112, offset = { x: -8, y: -8 };
+  const pixels = Array.from({ length: imageWidth * imageHeight * 4 }, (_, i) => i % 4 === 3 ? 255 : (i * 17) % 256);
+  frame.image = { width: imageWidth, height: imageHeight, offset, pixels };
   p.reviews = [{ id: 'import-review', clipId: clip.id, frameIds: [frame.id], partId: 'head', target: 'Check imported outline', expected: 'Preserve exact source pixels', protectedProperties: ['image'], priority: 'high', status: 'pending' }];
   const saved = await req('', { project: p, baseRevision: p.revision }, 'PUT');
   assert.equal(saved.status, 200, saved.data.error);
@@ -114,6 +150,43 @@ test('imported frame pixels survive persistence, feedback rendering and Godot ex
     assert.equal(response.status, 200, response.data.error);
     const zip = unzipSync(archives.get(response.data.downloadUrl));
     const name = `frames/${clip.id}/${frame.id}.png`;
-    assert.deepEqual([...decodePng(Buffer.from(zip[name])).rgba], pixels);
+    const decoded = decodePng(Buffer.from(zip[name]));
+    const bounds = getAnimationRenderBounds(saved.data);
+    assert.equal(decoded.width, bounds.width); assert.equal(decoded.height, bounds.height);
+    const actual = [];
+    for (let y = 0; y < imageHeight; y++) {
+      const at = ((y + offset.y - bounds.y) * decoded.width + offset.x - bounds.x) * 4;
+      actual.push(...decoded.rgba.subarray(at, at + imageWidth * 4));
+    }
+    assert.deepEqual(actual, pixels);
+  }
+}));
+
+test('idle and outstretched attack frames share one origin while artwork outside the body survives both archives', () => setup(async ({ req, archives }) => {
+  const p = (await req()).data;
+  const idle = p.clips.find(c => c.id === 'idle-down'), attack = p.clips.find(c => c.id === 'attack-down');
+  p.clips = [idle, attack]; idle.frames = [idle.frames[0]]; attack.frames = [attack.frames[0]];
+  const image = (width, x, red) => {
+    const pixels = Array(width * 100 * 4).fill(0);
+    const pos = (45 * width + x) * 4;
+    pixels.splice(pos, 4, red, 80, 20, 255);
+    return { width, height: 100, offset: { x: -12, y: -2 }, pixels };
+  };
+  idle.frames[0].image = image(90, 40, 100);
+  attack.frames[0].image = image(110, 105, 230);
+  p.reviews = p.clips.map((c, index) => ({ id: `bounds-${index}`, clipId: c.id, frameIds: [c.frames[0].id], partId: 'all', target: 'Check full weapon extent', expected: 'Keep outside-body pixels', protectedProperties: [], priority: 'high', status: 'pending' }));
+  const saved = await req('', { project: p, baseRevision: p.revision }, 'PUT'); assert.equal(saved.status, 200, saved.data.error);
+  const bounds = getAnimationRenderBounds(saved.data);
+  assert.ok(bounds.x <= -12 && bounds.x + bounds.width >= 98);
+  for (const route of ['/feedback', '/godot']) {
+    const response = await req(route, { baseRevision: saved.data.revision }); assert.equal(response.status, 200, response.data.error);
+    const zip = unzipSync(archives.get(response.data.downloadUrl));
+    for (const c of p.clips) {
+      const decoded = decodePng(Buffer.from(zip[`frames/${c.id}/${c.frames[0].id}.png`]));
+      assert.equal(decoded.width, bounds.width); assert.equal(decoded.height, bounds.height);
+      const worldX = c.id === attack.id ? 93 : 28, worldY = 43;
+      const at = ((worldY - bounds.y) * bounds.width + worldX - bounds.x) * 4;
+      assert.deepEqual([...decoded.rgba.subarray(at, at + 4)], [c.id === attack.id ? 230 : 100, 80, 20, 255]);
+    }
   }
 }));

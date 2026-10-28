@@ -1,4 +1,5 @@
-/** Deterministic, dependency-free pixel animation model shared by editor and exporter. */
+/** Deterministic pixel animation model shared by editor and exporter. */
+import { MOTION_PRESETS } from "./motionPresets.js";
 const copy = value => structuredClone(value);
 const radians = value => value * Math.PI / 180;
 const DIRECTIONS = ['down', 'up', 'left', 'right'];
@@ -29,7 +30,7 @@ export function createAnimationProject() {
 }
 function presetFrame(project, action, direction, i, count, id) {
   const phase = i / count * Math.PI * 2, side = direction === 'left' ? -1 : 1;
-  const pose = {}, root = { x: Math.round(project.canvas.width / 2), y: Math.round(project.canvas.height * 0.552) };
+  const pose = {}, root = copy(project.rigCalibration?.points?.pelvis || { x: Math.round(project.canvas.width / 2), y: Math.round(project.canvas.height * 0.552) });
   let contacts = ['leftFoot', 'rightFoot'], events = [];
   if (action === 'idle') { pose.torso = Math.sin(phase) * 2; pose.head = -pose.torso; pose.leftForearm = Math.sin(phase) * 4; }
   if (action === 'walk') {
@@ -50,9 +51,32 @@ function presetFrame(project, action, direction, i, count, id) {
   }
   return { id, durationMs: action === 'idle' ? 160 : action === 'attack' && i === 3 ? 60 : 100, pose, root, contacts, events };
 }
+/** Explicitly retarget verified source motion; frame identity and reviewer associations survive. */
+export function applyMotionPreset(project, presetId, clipId) {
+  const preset = MOTION_PRESETS.find(p => p.id === presetId);
+  if (!preset) fail('Unknown sourced motion preset');
+  const next=copy(project),clip=next.clips.find(c=>c.id===clipId);
+  if (!clip) fail('Unknown animation clip');
+  const samples=preset.framesByDirection[clip.direction];
+  if (!samples?.length) fail('Motion preset has no frames for this direction');
+  const base=copy(project.rigCalibration?.points?.pelvis || {x:Math.round(project.canvas.width/2),y:Math.round(project.canvas.height*.552)});
+  const interpolate=(a,b,t)=>a+(b-a)*t;
+  const angle=(a,b,t)=> {let delta=((b-a+540)%360)-180; let v=a+delta*t;return Number((((v+540)%360)-180).toFixed(4));};
+  clip.action=preset.action;clip.loop=preset.loop;
+  clip.frames=clip.frames.map((frame,i)=>{
+    const phase=clip.loop?i/clip.frames.length:(clip.frames.length===1?0:i/(clip.frames.length-1));
+    let upper=samples.findIndex(s=>s.time>=phase);if(upper<0)upper=samples.length-1;
+    const b=samples[upper],a=samples[Math.max(0,upper-1)],t=b.time===a.time?0:Math.max(0,Math.min(1,(phase-a.time)/(b.time-a.time)));
+    const pose={};for(const bone of project.bones)pose[bone.id]=angle(a.pose[bone.id]||0,b.pose[bone.id]||0,t);
+    return {...frame,pose,root:{x:base.x+interpolate(a.root?.x||0,b.root?.x||0,t),y:base.y+interpolate(a.root?.y||0,b.root?.y||0,t)},contacts:copy((t<.5?a:b).contacts||[]),durationMs:Math.max(10,preset.durationMs/clip.frames.length)};
+  });
+  clip.motionSource={...copy(preset.source),presetId:preset.id};
+  validateAnimationProject(next);return next;
+}
 export function regenerateAnimation(project, clipId) {
   const next = copy(project), clip = next.clips.find(c => c.id === clipId);
   if (!clip) fail('Unknown animation clip');
+  if (clip.motionSource) { const preset=MOTION_PRESETS.find(p=>p.id===clip.motionSource.presetId); if(!preset || preset.source.sha256!==clip.motionSource.sha256) fail('Source motion version is unavailable; select a verified preset explicitly'); return applyMotionPreset(project,preset.id,clipId); }
   clip.frames = clip.frames.map((f, i) => ({ ...f, ...presetFrame(next, clip.action, clip.direction, i, clip.frames.length, f.id), ...(f.image ? { image: f.image } : {}) }));
   validateAnimationProject(next); return next;
 }
@@ -66,6 +90,12 @@ export function validateAnimationProject(p) {
   const id = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$/.test(value);
   if (!id(p.id) || typeof p.name !== 'string' || p.name.length > 200) fail('Invalid animation identity');
   if (!p.canvas || ![p.canvas.width, p.canvas.height].every(v => Number.isInteger(v) && v >= 16 && v <= 256)) fail('Canvas must be 16..256 pixels');
+  if(p.rigCalibration) {
+    const rig=p.rigCalibration,keys=['pelvis','neck','head','leftShoulder','leftElbow','leftWrist','rightShoulder','rightElbow','rightWrist','leftHip','leftKnee','leftAnkle','leftToe','rightHip','rightKnee','rightAnkle','rightToe'];
+    const point=v=>v&&finite(v.x,-1024,2048)&&finite(v.y,-1024,2048);
+    if(rig.schemaVersion!==1||rig.status!=='confirmed'||!rig.points||Object.keys(rig.points).length!==17||!keys.every(k=>point(rig.points[k]))||!rig.contacts||!point(rig.contacts.leftFoot)||!point(rig.contacts.rightFoot)) fail('Invalid confirmed rig calibration');
+    if(!rig.source||!['rig','silhouette','ai','manual','import'].includes(rig.source.kind)||typeof rig.source.label!=='string'||rig.source.label.length>500) fail('Invalid rig calibration source');
+  }
   if (!Array.isArray(p.palette) || p.palette.length < 1 || p.palette.length > 256 || p.palette.some(c => !/^#[0-9a-f]{6}$/i.test(c))) fail('Invalid animation palette');
   if (!Array.isArray(p.bones) || !p.bones.length || p.bones.length > 64) fail('Invalid bone count');
   const bones = new Set();
@@ -84,6 +114,7 @@ export function validateAnimationProject(p) {
   for (const c of p.clips) {
     if (!id(c.id) || clipIds.has(c.id) || typeof c.name !== 'string' || c.name.length > 200 || !ACTIONS.includes(c.action) || !DIRECTIONS.includes(c.direction) || typeof c.loop !== 'boolean') fail('Invalid animation clip');
     clipIds.add(c.id);
+    if(c.motionSource && (typeof c.motionSource!=='object'||typeof c.motionSource.presetId!=='string'||typeof c.motionSource.id!=='string'||typeof c.motionSource.clip!=='string'||typeof c.motionSource.license!=='string'||typeof c.motionSource.url!=='string'||!/^https:\/\//.test(c.motionSource.url)||!/^([a-f0-9]{64})$/.test(c.motionSource.sha256)||typeof c.motionSource.conversion!=='string')) fail('Invalid motion source provenance');
     if (!Array.isArray(c.frames) || !c.frames.length || c.frames.length > 120) fail('Each clip must have 1..120 frames');
     total += c.frames.length;
     for (const f of c.frames) {
@@ -93,7 +124,7 @@ export function validateAnimationProject(p) {
       if (!Array.isArray(f.contacts) || f.contacts.some(b => !bones.has(b))) fail('Invalid foot contacts');
       if (!Array.isArray(f.events) || f.events.length > 32 || f.events.some(e => !e || typeof e.name !== 'string' || !e.name.length || e.name.length > 100)) fail('Invalid animation events');
       for (const e of f.events) if (e.hitbox && !['x', 'y', 'width', 'height'].every(k => finite(e.hitbox[k], k === 'width' || k === 'height' ? 1 : -256, 512))) fail('Invalid animation hitbox');
-      if (f.image) { pixelImage(f.image); if (f.image.width !== p.canvas.width || f.image.height !== p.canvas.height) fail('Frame image must match canvas'); }
+      if (f.image) { pixelImage(f.image, 1024, 1024); if (f.image.offset && (!Number.isInteger(f.image.offset.x) || !Number.isInteger(f.image.offset.y) || Math.abs(f.image.offset.x)>1024 || Math.abs(f.image.offset.y)>1024)) fail('Invalid frame image offset'); }
     }
   }
   if (total > 1440 || total * p.canvas.width * p.canvas.height > 16_777_216 || total * p.canvas.width * p.canvas.height * Math.max(1, p.parts.length) > 67_108_864) fail('Animation rendering budget exceeded');
@@ -107,12 +138,14 @@ export function validateAnimationProject(p) {
     if (r.partId && !bones.has(r.partId) && !partIds.has(r.partId) && r.partId !== 'all') fail('Unknown review body part');
     reviews.add(r.id);
   }
+  // Validate the measured output before accepting a document; no saved project may crash the renderer by exceeding its resource budget.
+  getAnimationRenderBounds(p);
   return p;
 }
 function skeleton(project, clip, frame) {
   const found = new Map(), result = [], sideView = clip.direction === 'left' || clip.direction === 'right';
   for (const b of project.bones) {
-    const parent = found.get(b.parent), ox = b.offset.x * (sideView ? .48 : 1);
+    const parent = found.get(b.parent), ox = b.offset.x * (sideView && !project.rigCalibration ? .48 : 1);
     const sx = (parent?.x ?? frame.root.x) + ox, sy = (parent?.y ?? frame.root.y) + b.offset.y;
     const angle = radians(b.angle + (frame.pose[b.id] || 0));
     const joint = { id: b.id, parentX: sx, parentY: sy, x: sx + Math.cos(angle) * b.length, y: sy + Math.sin(angle) * b.length, angle };
@@ -124,30 +157,32 @@ function skeleton(project, clip, frame) {
     const thigh = found.get(`${side}Thigh`), shin = found.get(`${side}Shin`), foot = found.get(`${side}Foot`);
     if (!thigh || !shin || !foot) continue;
     const l1 = project.bones.find(b => b.id === thigh.id).length, l2 = project.bones.find(b => b.id === shin.id).length;
-    const target = { x: project.canvas.width / 2 + (side === 'left' ? -5 : 5) * (sideView ? .48 : 1), y: Math.round(project.canvas.height * .854) };
+    const target = project.rigCalibration?.contacts?.[`${side}Foot`] || { x: project.canvas.width / 2 + (side === 'left' ? -5 : 5) * (sideView ? .48 : 1), y: Math.round(project.canvas.height * .854) };
     const dx = target.x - thigh.parentX, dy = target.y - thigh.parentY, raw = Math.hypot(dx, dy), d = Math.max(.001, Math.min(raw, l1 + l2 - .001));
     const a = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - a * a));
     const nx = raw ? dx / raw : 0, ny = raw ? dy / raw : 1, bend = clip.direction === 'left' ? -1 : 1;
     thigh.x = thigh.parentX + nx * a + ny * h * bend; thigh.y = thigh.parentY + ny * a - nx * h * bend;
     shin.parentX = thigh.x; shin.parentY = thigh.y; shin.x = thigh.parentX + nx * d; shin.y = thigh.parentY + ny * d;
-    foot.parentX = shin.x; foot.parentY = shin.y; foot.x = shin.x + (clip.direction === 'left' ? -3 : 3); foot.y = shin.y;
+    foot.parentX = shin.x; foot.parentY = shin.y;
+    if(project.rigCalibration) {const footBone=project.bones.find(b=>b.id===foot.id),angle=radians(footBone.angle+(frame.pose[foot.id]||0));foot.x=shin.x+Math.cos(angle)*footBone.length;foot.y=shin.y+Math.sin(angle)*footBone.length;}
+    else {foot.x = shin.x + (clip.direction === 'left' ? -3 : 3); foot.y = shin.y;}
     for (const joint of [thigh, shin, foot]) joint.angle = Math.atan2(joint.y - joint.parentY, joint.x - joint.parentX);
   }
   return result;
 }
-export function renderAnimationFrame(project, clipId, frameId) {
+function rasterAnimationFrame(project, clipId, frameId, bounds, measure = false) {
   const clip = project.clips.find(c => c.id === clipId), frame = clip?.frames.find(f => f.id === frameId);
   if (!frame) fail('Unknown animation frame');
-  const { width, height } = project.canvas, pixels = new Uint8Array(width * height * 4), bones = skeleton(project, clip, frame), byId = new Map(bones.map(b => [b.id, b]));
-  let clippedPixels = 0;
+  const { width, height } = bounds, pixels = measure ? null : new Uint8Array(width * height * 4), bones = skeleton(project, clip, frame), byId = new Map(bones.map(b => [b.id, b]));
+  let clippedPixels = 0, minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
   const colors = project.palette.map(c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16), 255]);
-  const put = (x, y, c) => { x = Math.round(x); y = Math.round(y); if (!c[3]) return; if (x < 0 || y < 0 || x >= width || y >= height) { clippedPixels++; return; } pixels.set(c, (y * width + x) * 4); };
+  const put = (x, y, c, preserveTransparent = false) => { x = Math.round(x); y = Math.round(y); if (!c[3] && !preserveTransparent) return; if(measure) { minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);return; } x-=bounds.x; y-=bounds.y; if (x < 0 || y < 0 || x >= width || y >= height) { clippedPixels++; return; } pixels.set(c, (y * width + x) * 4); };
   const rect = (x, y, w, h, c) => { for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) put(x + xx, y + yy, colors[c % colors.length]); };
   const line = (a, b, thickness, color) => { const steps = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y))); for (let i = 0; i <= steps; i++) rect(a.x + (b.x - a.x) * i / steps - thickness / 2, a.y + (b.y - a.y) * i / steps - thickness / 2, thickness, thickness, color); };
   const activeParts = project.parts.filter(part => !part.direction || part.direction === clip.direction);
   const replaced = new Set(activeParts.map(part => part.boneId));
   const segment = (name, thickness, color) => { if (replaced.has(name)) return; const b = byId.get(name); if (b) { line({ x: b.parentX, y: b.parentY }, b, thickness + 2, 0); line({ x: b.parentX, y: b.parentY }, b, thickness, color); } };
-  if (frame.image) pixels.set(frame.image.pixels);
+  if (frame.image) { const image=frame.image, offset=image.offset || {x:0,y:0}; for(let y=0;y<image.height;y++) for(let x=0;x<image.width;x++) put(x+offset.x,y+offset.y,image.pixels.slice((y*image.width+x)*4,(y*image.width+x)*4+4),true); }
   else {
     for (const s of ['left', 'right']) { segment(`${s}Thigh`, 7, 1); segment(`${s}Shin`, 6, 2); segment(`${s}Foot`, 5, 0); }
     segment('leftUpperArm', 7, 2); segment('leftForearm', 6, 6);
@@ -165,30 +200,51 @@ export function renderAnimationFrame(project, clipId, frameId) {
     }
     segment('rightUpperArm', 7, 2); segment('rightForearm', 6, 6);
     const hand = byId.get('rightForearm');
-    if (hand && !replaced.has('rightForearm')) { const angle = radians(-90 + (frame.pose.rightForearm || 0) * .5), end = { x: hand.x + Math.cos(angle) * 16, y: hand.y + Math.sin(angle) * 16 }; line(hand, end, 4, 0); line(hand, end, 2, 8); rect(hand.x - 3, hand.y - 2, 6, 3, 4); }
+    if (hand && !replaced.has('rightForearm')) { const angle = hand.angle - Math.PI / 2, end = { x: hand.x + Math.cos(angle) * 16, y: hand.y + Math.sin(angle) * 16 }; line(hand, end, 4, 0); line(hand, end, 2, 8); rect(hand.x - 3, hand.y - 2, 6, 3, 4); }
     // Imported parts override their corresponding body area after deterministic nearest-pixel rotation.
     for (const part of activeParts) {
       const b = byId.get(part.boneId); if (!b) continue;
       const angle = b.angle - radians(project.bones.find(bone => bone.id === part.boneId).angle), cos = Math.cos(angle), sin = Math.sin(angle);
-      for (let sy=0;sy<part.height;sy++) for(let sx=0;sx<part.width;sx++) { if(!part.pixels[(sy*part.width+sx)*4+3]) continue; const dx=Math.round(b.parentX+(sx-part.pivot.x)*cos-(sy-part.pivot.y)*sin), dy=Math.round(b.parentY+(sx-part.pivot.x)*sin+(sy-part.pivot.y)*cos); if(dx<0||dy<0||dx>=width||dy>=height) clippedPixels++; }
-      // Inverse-map destination pixels to avoid forward-rotation holes.
-      const radius = Math.ceil(Math.hypot(part.width + Math.abs(part.pivot.x), part.height + Math.abs(part.pivot.y)));
-      for (let dy = Math.max(-radius, -Math.round(b.parentY)); dy <= Math.min(radius, height - 1 - Math.round(b.parentY)); dy++) for (let dx = Math.max(-radius, -Math.round(b.parentX)); dx <= Math.min(radius, width - 1 - Math.round(b.parentX)); dx++) {
+      // Inverse-map a rotated part rectangle; never intersect with the body reference box.
+      const corners=[[0,0],[part.width-1,0],[0,part.height-1],[part.width-1,part.height-1]].map(([x,y])=>({x:(x-part.pivot.x)*cos-(y-part.pivot.y)*sin,y:(x-part.pivot.x)*sin+(y-part.pivot.y)*cos}));
+      const left=Math.floor(Math.min(...corners.map(c=>c.x)))-1,right=Math.ceil(Math.max(...corners.map(c=>c.x)))+1,top=Math.floor(Math.min(...corners.map(c=>c.y)))-1,bottom=Math.ceil(Math.max(...corners.map(c=>c.y)))+1;
+      for (let dy = top; dy <= bottom; dy++) for (let dx = left; dx <= right; dx++) {
         const sx = Math.round(dx * cos + dy * sin + part.pivot.x), sy = Math.round(-dx * sin + dy * cos + part.pivot.y);
         if (sx >= 0 && sy >= 0 && sx < part.width && sy < part.height) put(b.parentX + dx, b.parentY + dy, part.pixels.slice((sy * part.width + sx) * 4, (sy * part.width + sx) * 4 + 4));
       }
     }
   }
-  return { width, height, pixels, bones, contacts: frame.contacts.map(id => { const b = byId.get(id); return { boneId: id, x: b.x, y: b.y }; }), clippedPixels };
+  return { width, height, pixels, bounds: {...bounds}, origin:{x:0-bounds.x,y:0-bounds.y}, measured:{minX,minY,maxX,maxY}, bones, contacts: frame.contacts.map(id => { const b = byId.get(id); return { boneId: id, x: b.x, y: b.y }; }), clippedPixels };
+}
+/** canvas is the body reference box, not a clipping rectangle. All frames share this union. */
+export function getAnimationRenderBounds(project) {
+  let x=0,y=0,right=project.canvas.width,bottom=project.canvas.height;
+  for(const clip of project.clips) for(const frame of clip.frames) {
+    const m=rasterAnimationFrame(project,clip.id,frame.id,{x:0,y:0,width:0,height:0},true).measured;
+    if(Number.isFinite(m.minX)) {x=Math.min(x,m.minX);y=Math.min(y,m.minY);right=Math.max(right,m.maxX+1);bottom=Math.max(bottom,m.maxY+1);}
+    for(const event of frame.events) if(event.hitbox) {x=Math.min(x,Math.floor(event.hitbox.x));y=Math.min(y,Math.floor(event.hitbox.y));right=Math.max(right,Math.ceil(event.hitbox.x+event.hitbox.width));bottom=Math.max(bottom,Math.ceil(event.hitbox.y+event.hitbox.height));}
+  }
+  const bounds={x,y,width:right-x,height:bottom-y};
+  const frames=project.clips.reduce((sum,c)=>sum+c.frames.length,0);
+  if(bounds.width>2048||bounds.height>2048||bounds.width*bounds.height*frames>67_108_864) fail('Animation render bounds exceed resource limit (2048 pixels per side / 64M frame pixels); reduce content extent, not body size');
+  return bounds;
+}
+export function renderAnimationFrame(project,clipId,frameId,bounds=getAnimationRenderBounds(project)) {
+  if(!bounds||!['x','y','width','height'].every(k=>Number.isInteger(bounds[k]))||bounds.width<1||bounds.height<1||bounds.width>2048||bounds.height>2048) fail('Invalid animation render bounds');
+  const result=rasterAnimationFrame(project,clipId,frameId,bounds);
+  if(result.clippedPixels) fail('Supplied animation render bounds would crop artwork; recompute project bounds');
+  delete result.measured;
+  return result;
 }
 export function checkAnimationProject(project) {
   const findings = [];
   try { validateAnimationProject(project); } catch (e) { return [{ severity: 'error', code: 'schema', message: e.message }]; }
+  let bounds;try { bounds=getAnimationRenderBounds(project); } catch(e) { return [{severity:'error',code:'render-budget',message:e.message}]; }
   const palette = new Set(project.palette.map(c => c.toLowerCase()));
   for (const clip of project.clips) {
     let previous;
     for (const frame of clip.frames) {
-      const rendered = renderAnimationFrame(project, clip.id, frame.id), add = (code, message, severity = 'warning', partId) => findings.push({ severity, code, message, clipId: clip.id, frameId: frame.id, ...(partId ? { partId } : {}) });
+      const rendered = renderAnimationFrame(project, clip.id, frame.id,bounds), add = (code, message, severity = 'warning', partId) => findings.push({ severity, code, message, clipId: clip.id, frameId: frame.id, ...(partId ? { partId } : {}) });
       if (rendered.clippedPixels) add('clipping', `${rendered.clippedPixels} drawn pixels fall outside the canvas`, 'error');
       let partial = 0, outside = 0, visible = 0;
       for (let i = 0; i < rendered.pixels.length; i += 4) { const a = rendered.pixels[i + 3]; if (!a) continue; visible++; if (a !== 255) partial++; const hex = '#' + [...rendered.pixels.slice(i, i + 3)].map(v => v.toString(16).padStart(2, '0')).join(''); if (!palette.has(hex)) outside++; }
@@ -198,7 +254,8 @@ export function checkAnimationProject(project) {
       for (const c of rendered.contacts) {
         const old = previous?.contacts.find(v => v.boneId === c.boneId);
         if (old && Math.hypot(c.x - old.x, c.y - old.y) > 1) add('foot-slide', 'Contact foot moved more than one pixel; review the contact interval', 'warning', c.boneId);
-        if (Math.abs(c.y - Math.round(project.canvas.height * .854)) > 1) add('contact-unreachable', 'The contact target is beyond the leg reach', 'warning', c.boneId);
+        const footBone=project.bones.find(b=>b.id===c.boneId),calibratedContact=project.rigCalibration?.contacts?.[c.boneId],expectedY=calibratedContact?calibratedContact.y+Math.sin(radians(footBone.angle+(frame.pose[c.boneId]||0)))*footBone.length:Math.round(project.canvas.height*.854);
+        if (Math.abs(c.y - expectedY) > 1) add('contact-unreachable', 'The contact target is beyond the leg reach', 'warning', c.boneId);
       }
       for (const [bone, angle] of Object.entries(frame.pose)) if (Math.abs(angle) > 135) add('joint-limit', 'Extreme joint rotation needs visual review', 'warning', bone);
       if (previous) { let changes = 0; for (let i = 0; i < rendered.pixels.length; i += 4) if (rendered.pixels[i + 3] !== previous.pixels[i + 3]) changes++; if (changes > project.canvas.width * project.canvas.height * .25) add('silhouette-jump', 'Large silhouette change between adjacent frames'); }
@@ -214,8 +271,8 @@ export function checkAnimationProject(project) {
 }
 export function animationDiff(before, after) {
   const diff = [];
-  for (const key of ['name', 'canvas', 'palette', 'bones', 'parts', 'reviews']) if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) diff.push({clipId:null,frameId:null,path:key,before:copy(before[key]),after:copy(after[key])});
-  for (const clip of after.clips) { const old=before.clips.find(c=>c.id===clip.id); for (const key of ['name','action','direction','loop']) if (JSON.stringify(old?.[key])!==JSON.stringify(clip[key])) diff.push({clipId:clip.id,frameId:null,path:key,before:copy(old?.[key]),after:copy(clip[key])}); }
+  for (const key of ['name', 'canvas', 'palette', 'bones', 'parts', 'reviews', 'rigCalibration']) if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) diff.push({clipId:null,frameId:null,path:key,before:copy(before[key]),after:copy(after[key])});
+  for (const clip of after.clips) { const old=before.clips.find(c=>c.id===clip.id); for (const key of ['name','action','direction','loop','motionSource']) if (JSON.stringify(old?.[key])!==JSON.stringify(clip[key])) diff.push({clipId:clip.id,frameId:null,path:key,before:copy(old?.[key]),after:copy(clip[key])}); }
   for (const clip of after.clips) for (const frame of clip.frames) {
     const old = before.clips.find(c => c.id === clip.id)?.frames.find(f => f.id === frame.id);
     if (!old) { diff.push({ clipId: clip.id, frameId: frame.id, path: 'frame', before: null, after: copy(frame) }); continue; }
@@ -251,5 +308,5 @@ export function createAnimationFeedback(project) {
   validateAnimationProject(project);
   const reviews = project.reviews.filter(r => r.status === 'pending');
   const clips = project.clips.flatMap(c => { const ids = new Set(reviews.filter(r => r.clipId === c.id).flatMap(r => r.frameIds)); return ids.size ? [{ ...copy(c), frames: c.frames.filter(f => ids.has(f.id)).map(copy) }] : []; });
-  return { schemaVersion: 1, kind: 'animation-feedback', projectId: project.id, baseRevision: project.revision, canvas: copy(project.canvas), palette: copy(project.palette), bones: copy(project.bones), parts: copy(project.parts), reviews: copy(reviews), constraints: copy(project.reviews.filter(r=>r.status !== 'approved' && clips.some(c=>c.id===r.clipId && c.frames.some(f=>r.frameIds.includes(f.id))))), clips, instructions: 'Return {projectId,baseRevision,operations:[{clipId,frameId,path,value}],reviewIds:[]}. Only change requested frames and respect protectedProperties. Pose values are additive degrees relative to bone.angle. Frame duration is milliseconds. Do not replace the complete project.' };
+  return { schemaVersion: 1, kind: 'animation-feedback', projectId: project.id, baseRevision: project.revision, canvas: copy(project.canvas), bodyReference:copy(project.canvas), ...(project.rigCalibration?{rigCalibration:copy(project.rigCalibration)}:{}), renderBounds:getAnimationRenderBounds(project), palette: copy(project.palette), bones: copy(project.bones), parts: copy(project.parts), reviews: copy(reviews), constraints: copy(project.reviews.filter(r=>r.status !== 'approved' && clips.some(c=>c.id===r.clipId && c.frames.some(f=>r.frameIds.includes(f.id))))), clips, instructions: 'Return {projectId,baseRevision,operations:[{clipId,frameId,path,value}],reviewIds:[]}. Only change requested frames and respect protectedProperties. Pose values are additive degrees relative to bone.angle. Frame duration is milliseconds. Do not replace the complete project.' };
 }

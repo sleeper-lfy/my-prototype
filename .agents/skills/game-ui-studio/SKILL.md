@@ -1,6 +1,6 @@
 ---
 name: game-ui-studio
-description: Create editable UI from local Codex task packages, and review UI or isometric 2.5D maps in Game UI Studio using stable IDs, feedback ZIPs, scoped JSON patches, diffs, rollback and Godot validation. Use for 游戏 UI 生成与审阅, 2.5D 等距地图, 区域评论, Codex 反馈包, 增量修改 or Godot 导出验收 in this project.
+description: Create editable UI from local Codex task packages, and review UI or isometric 2.5D maps in Game UI Studio using stable IDs, feedback ZIPs, scoped JSON patches, diffs, rollback and Godot validation. Use for 像素角色动画与骨架标定, 游戏 UI 生成与审阅, 2.5D 等距地图, 区域评论, Codex 反馈包, 增量修改 or Godot 导出验收 in this project.
 ---
 
 # Game UI Studio
@@ -9,7 +9,7 @@ description: Create editable UI from local Codex task packages, and review UI or
 
 ## 先确定工作区与任务
 
-- **像素角色动画**：默认 64×96，使用独立动画文档与 `studio-animation-patch`，按 [像素动画协议](references/pixel-animation.md) 读取动作骨架、帧 ID、评论限制与局部 PNG，修改姿势和时长后执行确定性生成与检查。动画数据与 UI／地图补丁不可混用。
+- **像素角色动画**：默认主体参考框 64×96（不是帧画布上限），武器与动作可以超出，所有帧按共同范围和原点导出；使用独立动画文档与 `studio-animation-patch`，按 [像素动画协议](references/pixel-animation.md) 读取动作骨架、帧 ID、评论限制与局部 PNG，修改姿势和时长后执行确定性生成与检查。动画数据与 UI／地图补丁不可混用。
 - **新建 UI**：读取工具导出的 Codex 生成任务包，以包内真实模板、素材清单和设计规范输出原生可编辑项目 JSON。不要用网页代码或一张整屏图片替代组件。先读 [地图与生成任务](references/map-and-generation.md)。
 - **修改现有 UI**：使用下面的 `review.mjs` 流程；维护 `project.json` 的组件 ID 与版本。
 - **等距地图**：使用独立 `studio-map` 文档、`studio-map-patch` 和 `scripts/map.mjs`；维护物件 ID、图层 ID 与格子坐标。完整规则和命令见 [地图与生成任务](references/map-and-generation.md)。地图与 UI 的文件、版本、接口和补丁不可混用。

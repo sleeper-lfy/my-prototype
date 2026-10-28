@@ -12,7 +12,7 @@ const version = pkg.version;
 const release = path.join(root, 'releases', `v${version}`);
 const skillRoot = '.agents/skills/game-ui-studio/';
 const sha256 = value => createHash('sha256').update(value).digest('hex');
-const sourceRoots = ['.agents/', '.codex-plugin/', '.github/', 'artifacts/', 'docs/', 'examples/', 'packaging/', 'previews/', 'public/', 'research/penpot/', 'scripts/', 'server/', 'src/', 'tests/'];
+const sourceRoots = ['.agents/', '.codex-plugin/', '.github/', 'artifacts/', 'docs/', 'examples/', 'packaging/', 'previews/', 'public/', 'research/penpot/', 'research/animation-sources/', 'scripts/', 'server/', 'src/', 'tests/'];
 const sourceFiles = ['.gitignore', 'AGENTS.md', 'README.md', 'LICENSE', 'index.html', 'package.json', 'package-lock.json', 'vite.config.js'];
 const listing = spawnSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8' });
 if (listing.status !== 0) throw new Error('Run release packaging from a Git checkout.');

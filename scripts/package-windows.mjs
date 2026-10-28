@@ -102,8 +102,8 @@ try {
   await npm(['run', 'build'], root);
   for (const name of [
     'dist', 'public/assets', 'examples/character.project.json', 'examples/recruit.patch.json',
-    'server', 'src/model.js', 'src/animationModel.js', 'src/patchSelection.js', 'src/mapModel.js', 'src/generationModel.js', 'src/studioFeatures.js', 'src/projectImport.js', 'scripts/desktop-launcher.mjs',
-    'examples/village.map.json', 'docs/PROJECT-TOOLBOX.md', 'docs/PIXEL-ANIMATION.md', 'docs/ALIGNMENT-AND-GRID.md', 'docs/MAP-WORKSPACE.md', 'docs/CODEX-GENERATION.md', 'docs/map-contract.md',
+    'server', 'src/model.js', 'src/animationModel.js', 'src/motionPresets.js', 'src/poseCalibration.js', 'src/patchSelection.js', 'src/mapModel.js', 'src/generationModel.js', 'src/studioFeatures.js', 'src/projectImport.js', 'scripts/desktop-launcher.mjs',
+    'examples/village.map.json', 'research/animation-sources', 'scripts/convert-motion-presets.mjs', 'docs/PROJECT-TOOLBOX.md', 'docs/PIXEL-ANIMATION.md', 'docs/MOTION-SOURCES.md', 'docs/ALIGNMENT-AND-GRID.md', 'docs/MAP-WORKSPACE.md', 'docs/CODEX-GENERATION.md', 'docs/map-contract.md',
     '.agents/skills/game-ui-studio', 'LICENSE',
     'docs/TECHNICAL-DECISION.md', 'docs/CODEX-SKILL.md', 'docs/WINDOWS-INSTALL.md',
   ]) await copyTree(path.join(root, name), path.join(appDir, name));
@@ -191,7 +191,9 @@ try {
     }
   }
   await inventory(payload);
-  if (Object.keys(files).some(name => /(^|\/)(data|\.git|\.env|\.cache|artifacts|research)(\/|$)/.test(name))) throw new Error('Forbidden runtime payload content.');
+  // Only these pinned, publicly licensed motion reference files belong in runtime research paths.
+  const motionReference = /^app\/research\/animation-sources\/robot-expressive\/(RobotExpressive\.glb|UPSTREAM-README\.md|CC0-1\.0\.txt|manifest\.json|LICENSE-NOTICE\.md)$/;
+  if (Object.keys(files).some(name => /(^|\/)(data|\.git|\.env|\.cache|artifacts|research)(\/|$)/.test(name) && !motionReference.test(name))) throw new Error('Forbidden runtime payload content.');
   if (Object.keys(files).some(name => /\.(node|dll)$/i.test(name))) throw new Error('Unexpected native dependency: cross-platform runtime must be pure JavaScript.');
   await fs.mkdir(releaseDir, { recursive: true });
   const installerName = `Game-UI-Studio-Setup-${pkg.version}-x64.exe`;

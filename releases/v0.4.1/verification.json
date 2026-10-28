@@ -1,0 +1,52 @@
+{
+  "version": "0.4.1",
+  "status": "passed",
+  "unitTests": 122,
+  "browserFlows": 10,
+  "bodyReference": {
+    "width": 64,
+    "height": 96
+  },
+  "godot": {
+    "version": "4.6.3",
+    "frames": 88,
+    "events": 12,
+    "fixedOrigin": true,
+    "idleScreenshot": {
+      "width": 628,
+      "height": 672,
+      "sampledOpaquePixels": 1431,
+      "mismatchedPixels": 0,
+      "outsideBodyPixels": 0,
+      "origin": {
+        "x": 0,
+        "y": 56
+      }
+    },
+    "attackScreenshot": {
+      "width": 628,
+      "height": 672,
+      "sampledOpaquePixels": 1547,
+      "mismatchedPixels": 0,
+      "outsideBodyPixels": 1547,
+      "origin": {
+        "x": 0,
+        "y": 56
+      }
+    }
+  },
+  "motionSource": {
+    "name": "RobotExpressive",
+    "author": "Tomás Laulhé / Quaternius",
+    "license": "CC0-1.0",
+    "sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319",
+    "reproducibleConverter": true
+  },
+  "calibration": "17 landmarks; draft suggestions and manual confirmation",
+  "windows": {
+    "checks": 18,
+    "nativeWindows": false,
+    "installerSha256": "5aa365be22b17e7b8dfff9bdf49493e6b5b5273822c926f79b38ae6653aa1ce7"
+  },
+  "artApproval": "pending independent visual review"
+}

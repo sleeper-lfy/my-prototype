@@ -1363,7 +1363,7 @@ export default function App() {
           <button data-testid="workspace-map" aria-pressed={workspace === "map"} onClick={() => { setDialog(null); setMapVisited(true); setWorkspace("map"); }}>{t("workspace.map")}</button>
           <button data-testid="workspace-animation" aria-pressed={workspace === "animation"} onClick={() => { setDialog(null); setAnimationVisited(true); setWorkspace("animation"); }}>{locale === "zh-CN" ? "像素动画" : "Pixel animation"}</button>
         </div>
-        <span>{workspace === "animation" ? (locale === "zh-CN" ? "64×96 · 动作骨架、逐帧评审与验证" : "64×96 · Motion rigs, frame review and validation") : workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
+        <span>{workspace === "animation" ? (locale === "zh-CN" ? "主体 64×96 · 动作范围自动扩展" : "Body 64×96 · Automatic action bounds") : workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
         {workspace === "ui" && <button className="button" data-testid="studio-tools" disabled={busy || pending > 0} onClick={() => action(async () => setDialog("studio"))}>{locale === "zh-CN" ? "项目工具箱" : "Project toolbox"}</button>}
         {workspace === "ui" && <button className="button generation-trigger" data-testid="generation-task" disabled={busy || pending > 0} onClick={() => setDialog("generation")}><Icon name="code" />{t("generation.open")}</button>}
       </nav>
