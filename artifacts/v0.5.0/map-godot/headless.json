@@ -1,0 +1,69 @@
+{
+  "cellCount": 64.0,
+  "checks": [
+    {
+      "id": "ground",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "roads",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "water-layer",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "decoration",
+      "kind": "tile-layer",
+      "passed": true
+    },
+    {
+      "id": "lab-house",
+      "kind": "sprite",
+      "passed": true
+    },
+    {
+      "id": "lab-house",
+      "kind": "collision",
+      "passed": true
+    },
+    {
+      "id": "lab-spawn",
+      "kind": "marker",
+      "passed": true
+    },
+    {
+      "id": "lab-exit",
+      "kind": "marker",
+      "passed": true
+    },
+    {
+      "id": "lab-chest",
+      "kind": "marker",
+      "passed": true
+    },
+    {
+      "id": "lab-unreachable",
+      "kind": "marker",
+      "passed": true
+    }
+  ],
+  "display": "headless",
+  "errors": [],
+  "godot": "4.6.3-stable (official)",
+  "passed": true,
+  "physicsBlockedCells": 2,
+  "projectId": "playability-lab",
+  "revision": 1.0,
+  "screenshot": {
+    "requested": false,
+    "written": false
+  },
+  "walkabilityCells": 64,
+  "walkedSteps": 10,
+  "ySortEnabled": true
+}

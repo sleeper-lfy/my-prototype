@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "host": "Debian 13 x86_64",
+    "windowsCompatibility": "Wine 10.0, Windows 10.0.19043 profile",
+    "nativeWindows": false,
+    "runtime": "Windows Node.js v24.19.0 x64",
+    "browser": "Linux Chromium accessing the installed Windows Node service"
+  },
+  "installer": {
+    "file": "Game-UI-Studio-Setup-0.5.0-x64.exe",
+    "sha256": "29a10f121f4826e3c10fcb18a116c12620037164beb28270525c0c075acec382",
+    "bytes": 25599134
+  },
+  "installPath": "Z:\\tmp\\studio-v050-tools\\安装 测试\\Game UI Studio",
+  "checks": [
+    {
+      "name": "upgrade from running v0.4.2 preserves the existing project",
+      "status": "passed",
+      "seconds": 11.788,
+      "details": {
+        "fromVersion": "0.4.2",
+        "toVersion": "0.5.0",
+        "oldActiveProcessStopped": true,
+        "projectBytesPreserved": true
+      }
+    },
+    {
+      "name": "installer runs and preserves all payload hashes in Unicode/space path",
+      "status": "passed",
+      "seconds": 5.261,
+      "details": {
+        "exitCode": 0,
+        "payloadFilesVerified": 737,
+        "unicodeAndSpacesPath": true
+      }
+    },
+    {
+      "name": "HKCU uninstall registration and actual Shell shortcut targets",
+      "status": "passed",
+      "seconds": 0.317,
+      "details": {
+        "registryVersion": "0.5.0",
+        "desktopShortcut": true,
+        "startMenuShortcuts": 4,
+        "targetsAndArgumentsVerified": true,
+        "method": "Parsed actual .lnk binary; Wine WScript Shell shortcut enumeration unavailable"
+      }
+    },
+    {
+      "name": "actual installer/uninstaller PE resources, shortcut icons and uninstall registry use the original branding",
+      "status": "passed",
+      "seconds": 0.016,
+      "details": {
+        "installerPE": {
+          "iconImages": 7,
+          "iconGroups": 1,
+          "allOriginalIconImagesEmbedded": true
+        },
+        "uninstallerPE": {
+          "iconImages": 7,
+          "iconGroups": 1,
+          "allOriginalIconImagesEmbedded": true
+        },
+        "sizes": [
+          256,
+          128,
+          64,
+          48,
+          32,
+          24,
+          16
+        ],
+        "customShortcutIcons": 4,
+        "uninstallDisplayIcon": true,
+        "originalLogoBytesPreserved": true,
+        "icoSha256": "57feba81cca1276a46319e4d211bbd9ec287be76c615299f1e35e2efdba3c0a2"
+      }
+    },
+    {
+      "name": "installed wscript launch.vbs starts bundled Windows Node",
+      "status": "passed",
+      "seconds": 0.0,
+      "details": {
+        "pid": 764,
+        "dataOutsideInstallDirectory": true
+      }
+    },
+    {
+      "name": "second install directory is refused while original app remains intact",
+      "status": "passed",
+      "seconds": 0.834,
+      "details": {
+        "exitCode": 2,
+        "originalServiceStillRunning": true,
+        "registrationAndShortcutsUnchanged": true,
+        "newDirectoryCreated": false
+      }
+    },
+    {
+      "name": "local health, built frontend and bundled artwork are served",
+      "status": "passed",
+      "seconds": 0.017,
+      "details": {
+        "health": {
+          "ok": true,
+          "app": "Game UI Studio",
+          "schemaVersion": 1
+        },
+        "htmlBytes": 571,
+        "svgBytes": 6295
+      }
+    },
+    {
+      "name": "installed UI imports editable projects and switches Chinese/English with durable preference",
+      "status": "passed",
+      "seconds": 3.509,
+      "details": {
+        "canvasLayers": 2,
+        "nodes": 36,
+        "propertyEditAndReload": true,
+        "nativeProjectImportViaVisibleEntry": true,
+        "bothLanguages": true,
+        "languageSurvivesClearedBrowserStorage": true,
+        "smallViewportDialogFits": true,
+        "pageErrors": [],
+        "chromiumVersion": "154.0.8037.57",
+        "screenshotsGenerated": false
+      }
+    },
+    {
+      "name": "Windows API saves design, applies patch and imports existing artwork",
+      "status": "passed",
+      "seconds": 0.03,
+      "details": {
+        "revision": 6,
+        "incrementalPatch": true,
+        "savedToAppData": true,
+        "importedAssetSha256": "56fda67a311f0ba5f416c38d774ba38624f6ab629acfafcb4006082bd54e3ec3"
+      }
+    },
+    {
+      "name": "installed map workspace, Codex tasks and map Godot exports use bundled modules",
+      "status": "passed",
+      "seconds": 2.42,
+      "details": {
+        "separateMapPersistence": true,
+        "uiUnaffected": true,
+        "taskZipValidatorAndTemplate": true,
+        "nativeTileMapLayerArchive": true,
+        "installedMapCanvasAndTaskDialog": true
+      }
+    },
+    {
+      "name": "installed v0.4 project library, complete resources and Godot updater are functional",
+      "status": "passed",
+      "seconds": 0.391,
+      "details": {
+        "multiplePages": true,
+        "restoredWorkingPage": true,
+        "completePackage": true,
+        "incrementalUpdater": true,
+        "libraryPersisted": true
+      }
+    },
+    {
+      "name": "installed animation workspace persists frames and reviews and exports feedback and Godot",
+      "status": "passed",
+      "seconds": 3.165,
+      "details": {
+        "default64x96": true,
+        "twelveDirectionalClips": true,
+        "frameAndReviewPersisted": true,
+        "feedbackPngs": true,
+        "bundledMotionLicense": true,
+        "feedbackValidatorRunsOnWindowsNode": true,
+        "outsideBodyBluePixelPreserved": true,
+        "expandedFrameDimensions": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 96
+        },
+        "fixedOrigin": {
+          "x": 0,
+          "y": 0
+        },
+        "godotArchive": true
+      }
+    },
+    {
+      "name": "repeated launch reuses the existing Windows instance",
+      "status": "passed",
+      "seconds": 0.716,
+      "details": {
+        "reused": true,
+        "samePid": true,
+        "sameUrl": true
+      }
+    },
+    {
+      "name": "wscript stop wrapper shuts down owner and clears runtime state",
+      "status": "passed",
+      "seconds": 1.117,
+      "details": {
+        "wrapperExitCode": 0,
+        "stateRemoved": true
+      }
+    },
+    {
+      "name": "unrelated process occupying control port blocks unsafe second instance",
+      "status": "passed",
+      "seconds": 0.716,
+      "details": {
+        "exitCode": 1,
+        "unrelatedListenerPreserved": true,
+        "secondServerStarted": false
+      }
+    },
+    {
+      "name": "simultaneous Windows launches converge on one owner",
+      "status": "passed",
+      "seconds": 1.878,
+      "details": {
+        "processes": 2,
+        "oneOwner": true,
+        "oneReuse": true,
+        "bothExitZeroAfterStop": true
+      }
+    },
+    {
+      "name": "restart retains saved design and patch",
+      "status": "passed",
+      "seconds": 0.004,
+      "details": {
+        "savedName": "Windows installed persistence 验收",
+        "patchedText": "RECRUIT · 240"
+      }
+    },
+    {
+      "name": "running application upgrades safely and preserves all user data",
+      "status": "passed",
+      "seconds": 5.093,
+      "details": {
+        "activeProcessStopped": true,
+        "dataHashesPreserved": 12,
+        "payloadFilesVerified": 737
+      }
+    },
+    {
+      "name": "active uninstall removes program and shortcuts but keeps design/imports",
+      "status": "passed",
+      "seconds": 1.849,
+      "details": {
+        "activeProcessStopped": true,
+        "programFilesRemoved": true,
+        "registryRemoved": true,
+        "shortcutsRemoved": true,
+        "dataHashesPreserved": 12
+      }
+    }
+  ],
+  "status": "passed",
+  "limitations": [
+    "This is Wine compatibility testing, not a native Windows machine.",
+    "Default Windows browser association and SmartScreen were not exercised. No screenshots were generated."
+  ],
+  "passed": 19,
+  "failed": 0,
+  "verifiedAtUtc": "2026-10-28T07:20:20.059010+00:00",
+  "testHarnessSha256": "1b54a9153379e22d6bfebd7b1ad947a80b4d02c46b0aac39409a26711e6b8e6d"
+}

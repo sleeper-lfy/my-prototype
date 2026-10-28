@@ -1,0 +1,216 @@
+{
+  "startedAt": "2026-10-28T07:14:35.543Z",
+  "passed": true,
+  "source": "examples/playability.map.json",
+  "checks": [
+    {
+      "name": "version",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "4.6.3.stable.official.7d41c59c4\n",
+      "stderr": ""
+    },
+    {
+      "name": "import",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org\n\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started Project initialization (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Scanning file structure...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Loading global class names...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Verifying GDExtensions...\u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Creating autoload scripts...\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Initializing plugins...\u001b[39m\u001b[0m\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Starting file scan...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started Registering global classes... (3 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Started Scanning actions... (2 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | grass.svg\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | house.svg\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1m_update_scan_actions\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (2 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mreimport\u001b[22m | Preparing files to reimport...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing pre-reimport operations...\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | grass.svg\u001b[39m\u001b[0m\n[  33% ] \u001b[90m\u001b[1mreimport\u001b[22m | house.svg\u001b[39m\u001b[0m\n[  66% ] \u001b[90m\u001b[1mreimport\u001b[22m | Finalizing Asset Import...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (2 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing post-reimport operations...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "name": "headless scene, navigation and physics",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org\n\nSTUDIO_MAP_VERIFY passed=true\n",
+      "stderr": ""
+    },
+    {
+      "name": "rendered map and movement",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org\nOpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)\n\nSTUDIO_MAP_VERIFY passed=true\n",
+      "stderr": "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)\n"
+    }
+  ],
+  "screenshot": {
+    "status": "passed",
+    "path": "artifacts/v0.5.0/map-godot/map.png",
+    "width": 1280,
+    "height": 800,
+    "sha256": "b3b73e524949a3578580522e7066b753435905f8b54cfba756ce241155f38d2c",
+    "uniqueColors": 6456,
+    "mode": "with-preview-player"
+  },
+  "comparison": {
+    "status": "not-requested"
+  },
+  "project": {
+    "id": "playability-lab",
+    "revision": 1,
+    "sourceSha256": "0a5674863b7d0b700e461c0c9226704481a7795748b7c7d7393db4d94fd402ea",
+    "layerCount": 4,
+    "objectCount": 1,
+    "snapshot": "artifacts/v0.5.0/map-godot/source-map.json"
+  },
+  "assets": [
+    {
+      "src": "/assets/map/grass.svg",
+      "destination": "assets/grass.svg",
+      "sha256": "1e2f3ea682ecefa57e24bc1a1b3f1fc25a1b04504e724e15cd2bfa54f0d99411",
+      "bytes": 768
+    },
+    {
+      "src": "/assets/map/house.svg",
+      "destination": "assets/house.svg",
+      "sha256": "d1a5f1323230c9285f8d25f56e5af7c315639b8f79a5c356e90f3640ff89d3b3",
+      "bytes": 1981
+    }
+  ],
+  "archive": {
+    "path": "artifacts/v0.5.0/map-godot/godot-map.zip",
+    "sha256": "4a4f527c3fb6aa572f245cf3175e7b82d9a8bd92b8ffd821e04dcf69a9d584ff",
+    "bytes": 14521
+  },
+  "godot": "4.6.3.stable.official.7d41c59c4",
+  "headless": {
+    "cellCount": 64,
+    "checks": [
+      {
+        "id": "ground",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "roads",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "water-layer",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "decoration",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "lab-house",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "lab-house",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "lab-spawn",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "lab-exit",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "lab-chest",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "lab-unreachable",
+        "kind": "marker",
+        "passed": true
+      }
+    ],
+    "display": "headless",
+    "errors": [],
+    "godot": "4.6.3-stable (official)",
+    "passed": true,
+    "physicsBlockedCells": 2,
+    "projectId": "playability-lab",
+    "revision": 1,
+    "screenshot": {
+      "requested": false,
+      "written": false
+    },
+    "walkabilityCells": 64,
+    "walkedSteps": 10,
+    "ySortEnabled": true
+  },
+  "render": {
+    "cellCount": 64,
+    "checks": [
+      {
+        "id": "ground",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "roads",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "water-layer",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "decoration",
+        "kind": "tile-layer",
+        "passed": true
+      },
+      {
+        "id": "lab-house",
+        "kind": "sprite",
+        "passed": true
+      },
+      {
+        "id": "lab-house",
+        "kind": "collision",
+        "passed": true
+      },
+      {
+        "id": "lab-spawn",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "lab-exit",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "lab-chest",
+        "kind": "marker",
+        "passed": true
+      },
+      {
+        "id": "lab-unreachable",
+        "kind": "marker",
+        "passed": true
+      }
+    ],
+    "display": "X11",
+    "errors": [],
+    "godot": "4.6.3-stable (official)",
+    "passed": true,
+    "physicsBlockedCells": 2,
+    "projectId": "playability-lab",
+    "revision": 1,
+    "screenshot": {
+      "height": 800,
+      "requested": true,
+      "width": 1280,
+      "written": true
+    },
+    "walkabilityCells": 64,
+    "walkedSteps": 10,
+    "ySortEnabled": true
+  },
+  "finishedAt": "2026-10-28T07:14:42.587Z"
+}

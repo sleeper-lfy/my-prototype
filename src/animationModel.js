@@ -3,7 +3,7 @@ import { MOTION_PRESETS } from "./motionPresets.js";
 const copy = value => structuredClone(value);
 const radians = value => value * Math.PI / 180;
 const DIRECTIONS = ['down', 'up', 'left', 'right'];
-const ACTIONS = ['idle', 'walk', 'attack'];
+const ACTIONS = ['idle', 'walk', 'attack', 'hurt', 'dodge'];
 const STATUSES = ['pending', 'modified', 'acceptance', 'approved'];
 const finite = (n, min, max) => Number.isFinite(n) && n >= min && n <= max;
 const fail = message => { throw new Error(message); };
@@ -22,7 +22,7 @@ export function createAnimationProject() {
       bone('rightThigh', 'pelvis', 14, 90, 5, 0), bone('rightShin', 'rightThigh', 15, 90), bone('rightFoot', 'rightShin', 3, 0)],
     parts: [], clips: [], reviews: [],
   };
-  for (const action of ACTIONS) for (const direction of DIRECTIONS) {
+  for (const action of ['idle', 'walk', 'attack']) for (const direction of DIRECTIONS) {
     const id = `${action}-${direction}`, count = action === 'idle' ? 6 : 8;
     project.clips.push({ id, name: `${action} / ${direction}`, action, direction, loop: action !== 'attack', frames: Array.from({ length: count }, (_, i) => presetFrame(project, action, direction, i, count, `${id}-${i + 1}`)) });
   }
@@ -49,6 +49,8 @@ function presetFrame(project, action, direction, i, count, id) {
     pose.torso = [0, -3, -6, 7, 5, 2, 0, 0][Math.floor(i * 8 / count)] * side;
     if (i === Math.floor(count * .375)) events = [{ name: 'hit', hitbox: { x: side > 0 ? 43 : 1, y: 34, width: 20, height: 26 } }];
   }
+  if (action === 'hurt') { pose.torso = Math.sin(Math.PI*i/count)*-18*side; pose.head = -pose.torso/2; pose.rightUpperArm = -30; }
+  if (action === 'dodge') { pose.torso = Math.sin(Math.PI*i/count)*25*side; pose.leftThigh = -35*side; pose.rightThigh = 35*side; root.y += Math.round(Math.sin(Math.PI*i/count)*8); contacts=[]; }
   return { id, durationMs: action === 'idle' ? 160 : action === 'attack' && i === 3 ? 60 : 100, pose, root, contacts, events };
 }
 /** Explicitly retarget verified source motion; frame identity and reviewer associations survive. */
@@ -77,7 +79,7 @@ export function regenerateAnimation(project, clipId) {
   const next = copy(project), clip = next.clips.find(c => c.id === clipId);
   if (!clip) fail('Unknown animation clip');
   if (clip.motionSource) { const preset=MOTION_PRESETS.find(p=>p.id===clip.motionSource.presetId); if(!preset || preset.source.sha256!==clip.motionSource.sha256) fail('Source motion version is unavailable; select a verified preset explicitly'); return applyMotionPreset(project,preset.id,clipId); }
-  clip.frames = clip.frames.map((f, i) => ({ ...f, ...presetFrame(next, clip.action, clip.direction, i, clip.frames.length, f.id), ...(f.image ? { image: f.image } : {}) }));
+  clip.frames = clip.frames.map((f, i) => ({ ...f, ...presetFrame(next, clip.action, clip.direction, i, clip.frames.length, f.id), events:copy(f.events), ...(f.image ? { image: f.image } : {}) }));
   validateAnimationProject(next); return next;
 }
 function pixelImage(image, maxWidth = 256, maxHeight = 256) {
@@ -109,8 +111,18 @@ export function validateAnimationProject(p) {
     if (!id(part.id) || partIds.has(part.id) || !bones.has(part.boneId) || (part.direction && !DIRECTIONS.includes(part.direction)) || !part.pivot || !finite(part.pivot.x, -256, 256) || !finite(part.pivot.y, -256, 256)) fail('Invalid character part');
     partIds.add(part.id); pixelImage(part);
   }
+  if(p.equipment!==undefined){
+    if(!Array.isArray(p.equipment)||p.equipment.length>24)fail('Invalid equipment collection');
+    const equipmentIds=new Set();
+    for(const item of p.equipment){
+      if(!id(item.id)||equipmentIds.has(item.id)||!bones.has(item.boneId)||typeof item.name!=='string'||item.name.length>100||!['weapon','shield','clothes','hair','accessory'].includes(item.slot)||typeof item.enabled!=='boolean'||!finite(item.layer,-16,16)||!Number.isInteger(item.layer)||!finite(item.angle,-180,180)||!item.offset||!finite(item.offset.x,-512,512)||!finite(item.offset.y,-512,512)||!item.pivot||!finite(item.pivot.x,-256,256)||!finite(item.pivot.y,-256,256)||(item.direction&&!DIRECTIONS.includes(item.direction)))fail('Invalid equipment attachment');
+      equipmentIds.add(item.id);pixelImage(item);
+    }
+  }
+  if(p.paletteVariants!==undefined&&(!Array.isArray(p.paletteVariants)||p.paletteVariants.length>16||new Set(p.paletteVariants.map(v=>v?.id)).size!==p.paletteVariants.length||p.paletteVariants.some(v=>!v||!id(v.id)||typeof v.name!=='string'||v.name.length>100||!Array.isArray(v.colors)||v.colors.length!==p.palette.length||v.colors.some(c=>!/^#[0-9a-f]{6}$/i.test(c)))))fail('Invalid palette variants');
+  if(p.playtest!==undefined){const s=p.playtest;if(!s||!finite(s.speed,1,400)||!finite(s.dodgeSpeed,1,800)||!finite(s.comboWindow,0,1)||!Number.isInteger(s.maxCombo)||!finite(s.maxCombo,1,8))fail('Invalid playtest settings');}
   if (!Array.isArray(p.clips) || !p.clips.length || p.clips.length > 64) fail('Invalid animation clips');
-  const clipIds = new Set(), frameIds = new Set(); let total = 0;
+  const clipIds = new Set(), frameIds = new Set(), eventIds = new Set(); let total = 0;
   for (const c of p.clips) {
     if (!id(c.id) || clipIds.has(c.id) || typeof c.name !== 'string' || c.name.length > 200 || !ACTIONS.includes(c.action) || !DIRECTIONS.includes(c.direction) || typeof c.loop !== 'boolean') fail('Invalid animation clip');
     clipIds.add(c.id);
@@ -123,11 +135,19 @@ export function validateAnimationProject(p) {
       for (const [b, a] of Object.entries(f.pose)) if (!bones.has(b) || !finite(a, -180, 180)) fail('Invalid bone pose');
       if (!Array.isArray(f.contacts) || f.contacts.some(b => !bones.has(b))) fail('Invalid foot contacts');
       if (!Array.isArray(f.events) || f.events.length > 32 || f.events.some(e => !e || typeof e.name !== 'string' || !e.name.length || e.name.length > 100)) fail('Invalid animation events');
-      for (const e of f.events) if (e.hitbox && !['x', 'y', 'width', 'height'].every(k => finite(e.hitbox[k], k === 'width' || k === 'height' ? 1 : -256, 512))) fail('Invalid animation hitbox');
+      for (const e of f.events) {
+        if(e.type!==undefined&&!['hitbox-on','hitbox-off','audio','vfx','move','marker'].includes(e.type))fail('Invalid animation event type');
+        if(e.id!==undefined){if(!id(e.id)||eventIds.has(e.id))fail('Invalid or duplicate animation event id');eventIds.add(e.id);}
+        if(e.hitbox && !['x', 'y', 'width', 'height'].every(k => finite(e.hitbox[k], k === 'width' || k === 'height' ? 1 : -256, 512))) fail('Invalid animation hitbox');
+        if(e.type==='hitbox-on'&&!e.hitbox)fail('Hitbox-on requires a rectangle');
+        if(e.type==='move'&&(!e.delta||!finite(e.delta.x,-512,512)||!finite(e.delta.y,-512,512)))fail('Movement event requires a bounded delta');
+        if(e.channel!==undefined&&(typeof e.channel!=='string'||e.channel.length>64))fail('Invalid event channel');
+        if(e.resource!==undefined&&(typeof e.resource!=='string'||e.resource.length>300))fail('Invalid event resource');
+      }
       if (f.image) { pixelImage(f.image, 1024, 1024); if (f.image.offset && (!Number.isInteger(f.image.offset.x) || !Number.isInteger(f.image.offset.y) || Math.abs(f.image.offset.x)>1024 || Math.abs(f.image.offset.y)>1024)) fail('Invalid frame image offset'); }
     }
   }
-  if (total > 1440 || total * p.canvas.width * p.canvas.height > 16_777_216 || total * p.canvas.width * p.canvas.height * Math.max(1, p.parts.length) > 67_108_864) fail('Animation rendering budget exceeded');
+  if (total > 1440 || total * p.canvas.width * p.canvas.height > 16_777_216 || total * p.canvas.width * p.canvas.height * Math.max(1, p.parts.length) > 67_108_864 || total*(p.equipment||[]).reduce((sum,i)=>sum+i.width*i.height,0)>67_108_864) fail('Animation rendering budget exceeded');
   if (!Array.isArray(p.reviews) || p.reviews.length > 2000) fail('Invalid animation reviews');
   const reviews = new Set();
   for (const r of p.reviews) {
@@ -180,9 +200,18 @@ function rasterAnimationFrame(project, clipId, frameId, bounds, measure = false)
   const rect = (x, y, w, h, c) => { for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) put(x + xx, y + yy, colors[c % colors.length]); };
   const line = (a, b, thickness, color) => { const steps = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y))); for (let i = 0; i <= steps; i++) rect(a.x + (b.x - a.x) * i / steps - thickness / 2, a.y + (b.y - a.y) * i / steps - thickness / 2, thickness, thickness, color); };
   const activeParts = project.parts.filter(part => !part.direction || part.direction === clip.direction);
+  const equipment=(project.equipment||[]).filter(i=>i.enabled&&(!i.direction||i.direction===clip.direction)).sort((a,b)=>a.layer-b.layer);
+  const drawEquipment=item=>{
+    const b=byId.get(item.boneId);if(!b)return;
+    const angle=b.angle-radians(project.bones.find(bone=>bone.id===item.boneId).angle)+radians(item.angle),cos=Math.cos(angle),sin=Math.sin(angle);
+    const corners=[[0,0],[item.width-1,0],[0,item.height-1],[item.width-1,item.height-1]].map(([x,y])=>({x:(x-item.pivot.x)*cos-(y-item.pivot.y)*sin,y:(x-item.pivot.x)*sin+(y-item.pivot.y)*cos}));
+    const left=Math.floor(Math.min(...corners.map(c=>c.x)))-1,right=Math.ceil(Math.max(...corners.map(c=>c.x)))+1,top=Math.floor(Math.min(...corners.map(c=>c.y)))-1,bottom=Math.ceil(Math.max(...corners.map(c=>c.y)))+1;
+    for(let dy=top;dy<=bottom;dy++)for(let dx=left;dx<=right;dx++){const sx=Math.round(dx*cos+dy*sin+item.pivot.x),sy=Math.round(-dx*sin+dy*cos+item.pivot.y);if(sx>=0&&sy>=0&&sx<item.width&&sy<item.height)put(b.x+item.offset.x+dx,b.y+item.offset.y+dy,item.pixels.slice((sy*item.width+sx)*4,(sy*item.width+sx)*4+4));}
+  };
+  equipment.filter(i=>i.layer<0).forEach(drawEquipment);
   const replaced = new Set(activeParts.map(part => part.boneId));
   const segment = (name, thickness, color) => { if (replaced.has(name)) return; const b = byId.get(name); if (b) { line({ x: b.parentX, y: b.parentY }, b, thickness + 2, 0); line({ x: b.parentX, y: b.parentY }, b, thickness, color); } };
-  if (frame.image) { const image=frame.image, offset=image.offset || {x:0,y:0}; for(let y=0;y<image.height;y++) for(let x=0;x<image.width;x++) put(x+offset.x,y+offset.y,image.pixels.slice((y*image.width+x)*4,(y*image.width+x)*4+4),true); }
+  if (frame.image) { const image=frame.image, offset=image.offset || {x:0,y:0}; for(let y=0;y<image.height;y++) for(let x=0;x<image.width;x++) put(x+offset.x,y+offset.y,image.pixels.slice((y*image.width+x)*4,(y*image.width+x)*4+4),measure||!equipment.some(i=>i.layer<0)); }
   else {
     for (const s of ['left', 'right']) { segment(`${s}Thigh`, 7, 1); segment(`${s}Shin`, 6, 2); segment(`${s}Foot`, 5, 0); }
     segment('leftUpperArm', 7, 2); segment('leftForearm', 6, 6);
@@ -200,7 +229,7 @@ function rasterAnimationFrame(project, clipId, frameId, bounds, measure = false)
     }
     segment('rightUpperArm', 7, 2); segment('rightForearm', 6, 6);
     const hand = byId.get('rightForearm');
-    if (hand && !replaced.has('rightForearm')) { const angle = hand.angle - Math.PI / 2, end = { x: hand.x + Math.cos(angle) * 16, y: hand.y + Math.sin(angle) * 16 }; line(hand, end, 4, 0); line(hand, end, 2, 8); rect(hand.x - 3, hand.y - 2, 6, 3, 4); }
+    if (hand && !replaced.has('rightForearm')&&!equipment.some(i=>i.slot==='weapon')) { const angle = hand.angle - Math.PI / 2, end = { x: hand.x + Math.cos(angle) * 16, y: hand.y + Math.sin(angle) * 16 }; line(hand, end, 4, 0); line(hand, end, 2, 8); rect(hand.x - 3, hand.y - 2, 6, 3, 4); }
     // Imported parts override their corresponding body area after deterministic nearest-pixel rotation.
     for (const part of activeParts) {
       const b = byId.get(part.boneId); if (!b) continue;
@@ -214,6 +243,7 @@ function rasterAnimationFrame(project, clipId, frameId, bounds, measure = false)
       }
     }
   }
+  equipment.filter(i=>i.layer>=0).forEach(drawEquipment);
   return { width, height, pixels, bounds: {...bounds}, origin:{x:0-bounds.x,y:0-bounds.y}, measured:{minX,minY,maxX,maxY}, bones, contacts: frame.contacts.map(id => { const b = byId.get(id); return { boneId: id, x: b.x, y: b.y }; }), clippedPixels };
 }
 /** canvas is the body reference box, not a clipping rectangle. All frames share this union. */
@@ -271,7 +301,7 @@ export function checkAnimationProject(project) {
 }
 export function animationDiff(before, after) {
   const diff = [];
-  for (const key of ['name', 'canvas', 'palette', 'bones', 'parts', 'reviews', 'rigCalibration']) if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) diff.push({clipId:null,frameId:null,path:key,before:copy(before[key]),after:copy(after[key])});
+  for (const key of ['name', 'canvas', 'palette', 'bones', 'parts', 'reviews', 'rigCalibration','equipment','paletteVariants','playtest']) if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) diff.push({clipId:null,frameId:null,path:key,before:copy(before[key]),after:copy(after[key])});
   for (const clip of after.clips) { const old=before.clips.find(c=>c.id===clip.id); for (const key of ['name','action','direction','loop','motionSource']) if (JSON.stringify(old?.[key])!==JSON.stringify(clip[key])) diff.push({clipId:clip.id,frameId:null,path:key,before:copy(old?.[key]),after:copy(clip[key])}); }
   for (const clip of after.clips) for (const frame of clip.frames) {
     const old = before.clips.find(c => c.id === clip.id)?.frames.find(f => f.id === frame.id);
@@ -308,5 +338,5 @@ export function createAnimationFeedback(project) {
   validateAnimationProject(project);
   const reviews = project.reviews.filter(r => r.status === 'pending');
   const clips = project.clips.flatMap(c => { const ids = new Set(reviews.filter(r => r.clipId === c.id).flatMap(r => r.frameIds)); return ids.size ? [{ ...copy(c), frames: c.frames.filter(f => ids.has(f.id)).map(copy) }] : []; });
-  return { schemaVersion: 1, kind: 'animation-feedback', projectId: project.id, baseRevision: project.revision, canvas: copy(project.canvas), bodyReference:copy(project.canvas), ...(project.rigCalibration?{rigCalibration:copy(project.rigCalibration)}:{}), renderBounds:getAnimationRenderBounds(project), palette: copy(project.palette), bones: copy(project.bones), parts: copy(project.parts), reviews: copy(reviews), constraints: copy(project.reviews.filter(r=>r.status !== 'approved' && clips.some(c=>c.id===r.clipId && c.frames.some(f=>r.frameIds.includes(f.id))))), clips, instructions: 'Return {projectId,baseRevision,operations:[{clipId,frameId,path,value}],reviewIds:[]}. Only change requested frames and respect protectedProperties. Pose values are additive degrees relative to bone.angle. Frame duration is milliseconds. Do not replace the complete project.' };
+  return { schemaVersion: 1, kind: 'animation-feedback', projectId: project.id, baseRevision: project.revision, canvas: copy(project.canvas), bodyReference:copy(project.canvas), ...(project.rigCalibration?{rigCalibration:copy(project.rigCalibration)}:{}), renderBounds:getAnimationRenderBounds(project), palette: copy(project.palette), bones: copy(project.bones), parts: copy(project.parts), equipment:copy(project.equipment||[]), paletteVariants:copy(project.paletteVariants||[]), playtest:copy(project.playtest||null), reviews: copy(reviews), constraints: copy(project.reviews.filter(r=>r.status !== 'approved' && clips.some(c=>c.id===r.clipId && c.frames.some(f=>r.frameIds.includes(f.id))))), clips, instructions: 'Return {projectId,baseRevision,operations:[{clipId,frameId,path,value}],reviewIds:[]}. Only change requested frames and respect protectedProperties. Pose values are additive degrees relative to bone.angle. Frame duration is milliseconds. Do not replace the complete project.' };
 }

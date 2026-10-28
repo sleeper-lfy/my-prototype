@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "id": "godot-scene-1w9lf5",
+  "name": "Root",
+  "revision": 1,
+  "canvas": {
+    "width": 640,
+    "height": 480,
+    "background": "#111b18"
+  },
+  "tokens": {
+    "colors": {},
+    "fonts": {},
+    "rules": []
+  },
+  "assets": [],
+  "nodes": [
+    {
+      "id": "godot-by08hd",
+      "name": "Root",
+      "type": "Control",
+      "parentId": null,
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 480
+      },
+      "style": {},
+      "visible": true,
+      "layout": {
+        "mode": "free",
+        "padding": 0,
+        "gap": 0
+      }
+    },
+    {
+      "id": "godot-a7vsmh",
+      "name": "Title",
+      "type": "Label",
+      "parentId": "godot-by08hd",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 280,
+        "height": 48
+      },
+      "style": {
+        "text": "Imported Godot UI",
+        "fontSize": 16,
+        "color": "#ffffffff",
+        "align": "left"
+      },
+      "visible": true,
+      "layout": {
+        "mode": "free",
+        "padding": 0,
+        "gap": 0
+      }
+    }
+  ],
+  "reviews": [],
+  "history": [],
+  "godotSource": {
+    "schemaVersion": 1,
+    "fileName": "imported.tscn",
+    "text": "[gd_scene format=3]\n[node name=\"Root\" type=\"Control\"]\noffset_right = 640.0\noffset_bottom = 480.0\n[node name=\"Title\" type=\"Label\" parent=\".\"]\noffset_right = 280.0\noffset_bottom = 48.0\ntext = \"Imported Godot UI\"\n",
+    "nodes": [
+      {
+        "id": "godot-by08hd",
+        "path": ".",
+        "framePath": ".",
+        "fields": [
+          "name",
+          "frame.x",
+          "frame.y",
+          "frame.width",
+          "frame.height",
+          "visible"
+        ],
+        "anchors": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "parentSize": {
+          "width": 640,
+          "height": 480
+        },
+        "containerParent": false,
+        "originalType": "Control"
+      },
+      {
+        "id": "godot-a7vsmh",
+        "path": "Title",
+        "framePath": "Title",
+        "fields": [
+          "name",
+          "frame.x",
+          "frame.y",
+          "frame.width",
+          "frame.height",
+          "visible",
+          "style.text",
+          "style.fontSize",
+          "style.color",
+          "style.align"
+        ],
+        "anchors": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "parentSize": {
+          "width": 640,
+          "height": 480
+        },
+        "containerParent": false,
+        "originalType": "Label"
+      }
+    ],
+    "baselineNodes": [
+      {
+        "id": "godot-by08hd",
+        "name": "Root",
+        "type": "Control",
+        "parentId": null,
+        "frame": {
+          "x": 0,
+          "y": 0,
+          "width": 640,
+          "height": 480
+        },
+        "style": {},
+        "visible": true,
+        "layout": {
+          "mode": "free",
+          "padding": 0,
+          "gap": 0
+        }
+      },
+      {
+        "id": "godot-a7vsmh",
+        "name": "Title",
+        "type": "Label",
+        "parentId": "godot-by08hd",
+        "frame": {
+          "x": 0,
+          "y": 0,
+          "width": 280,
+          "height": 48
+        },
+        "style": {
+          "text": "Imported Godot UI",
+          "fontSize": 16,
+          "color": "#ffffffff",
+          "align": "left"
+        },
+        "visible": true,
+        "layout": {
+          "mode": "free",
+          "padding": 0,
+          "gap": 0
+        }
+      }
+    ],
+    "canvas": {
+      "width": 640,
+      "height": 480,
+      "background": "#111b18"
+    },
+    "resourceBindings": {},
+    "warnings": [],
+    "supportedTypes": [
+      "Control",
+      "TextureRect",
+      "Label",
+      "Button",
+      "Panel",
+      "HBoxContainer",
+      "VBoxContainer",
+      "MarginContainer"
+    ]
+  }
+}

@@ -1,4 +1,5 @@
-import { validateMap, isoToScreen, isWalkable, findPath, getActorLayerId, getMapRenderLayers } from '../src/mapModel.js';
+import { analyzeMapPlayability } from '../src/mapPlayability.js';
+import { validateMap, isoToScreen, isWalkable, findPath, getActorLayerId, getMapRenderLayers, getActorFootprint, getObjectCollision, getObjectOcclusion, getMapCollisionBitmap } from '../src/mapModel.js';
 
 const quote = value => JSON.stringify(String(value));
 const num = value => Number(Number(value).toFixed(6));
@@ -53,6 +54,7 @@ extends Sprite2D
 @export var studio_size: Vector2 = Vector2(64, 64)
 @export var studio_anchor: Vector2 = Vector2(0.5, 1.0)
 @export var studio_crop: Rect2i = Rect2i()
+@export var studio_sort_offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
     if studio_source == null:
@@ -66,8 +68,8 @@ func _ready() -> void:
     # A Sprite2D transform preserves fractional display sizes without rounding.
     texture = ImageTexture.create_from_image(image)
     centered = false
-    offset = -Vector2(image.get_size()) * studio_anchor
     scale = studio_size / Vector2(image.get_size())
+    offset = -Vector2(image.get_size()) * studio_anchor - studio_sort_offset / scale
 `;
 
 const RUNTIME_SCRIPT = `extends Node2D
@@ -76,6 +78,8 @@ signal marker_entered(stable_id: String, marker_type: String)
 
 var document: Dictionary
 var blocked: Dictionary = {}
+var actor_size := Vector2i.ONE
+var node_mapping: Dictionary = {}
 var player_cell := Vector2i.ZERO
 var moving_to := Vector2i.ZERO
 var route: Array = []
@@ -92,7 +96,13 @@ func local_to_cell(point: Vector2) -> Vector2i:
     return Vector2i(roundi(point.x / document.grid.tileWidth + point.y / document.grid.tileHeight), roundi(point.y / document.grid.tileHeight - point.x / document.grid.tileWidth))
 
 func walkable(cell: Vector2i) -> bool:
-    return cell.x >= 0 and cell.y >= 0 and cell.x < document.grid.width and cell.y < document.grid.height and not blocked.has(cell)
+    if cell.x < 0 or cell.y < 0 or cell.x + actor_size.x > document.grid.width or cell.y + actor_size.y > document.grid.height:
+        return false
+    for x in range(cell.x, cell.x + actor_size.x):
+        for y in range(cell.y, cell.y + actor_size.y):
+            if blocked.has(Vector2i(x, y)):
+                return false
+    return true
 
 func path_to(start: Vector2i, finish: Vector2i) -> Array:
     if not walkable(start) or not walkable(finish):
@@ -122,12 +132,16 @@ func _ready() -> void:
     for key in document.blocked:
         var parts = key.split(",")
         blocked[Vector2i(int(parts[0]), int(parts[1]))] = true
+    var actor = document.get("playability", {}).get("actor", {"width": 1, "height": 1})
+    actor_size = Vector2i(actor.width, actor.height)
     for object in document.objects:
         if object.blocking:
-            for x in range(int(object.x), int(object.x + object.footprint.width)):
-                for y in range(int(object.y), int(object.y + object.footprint.height)):
+            var region = object.get("collision", {"x": 0, "y": 0, "width": object.footprint.width, "height": object.footprint.height})
+            for x in range(int(object.x + region.x), int(object.x + region.x + region.width)):
+                for y in range(int(object.y + region.y), int(object.y + region.y + region.height)):
                     blocked[Vector2i(x, y)] = true
     var mapping = JSON.parse_string(FileAccess.get_file_as_string("res://node-map.json"))
+    node_mapping = mapping
     player_cell = Vector2i(mapping.spawn.x, mapping.spawn.y)
     preview_enabled = walkable(player_cell)
     player.visible = preview_enabled and mapping.actorVisible
@@ -142,6 +156,10 @@ func _unhandled_input(event: InputEvent) -> void:
         var target := local_to_cell(map_root.get_local_mouse_position())
         set_destination(target)
     if event is InputEventKey and event.pressed and not event.echo and not moving:
+        if event.keycode == KEY_E:
+            for marker in document.markers:
+                if marker.type == "interaction" and absi(int(marker.x) - player_cell.x) + absi(int(marker.y) - player_cell.y) <= 1:
+                    marker_entered.emit(marker.id, marker.type)
         var direction := Vector2i.ZERO
         match event.keycode:
             KEY_RIGHT, KEY_D: direction = Vector2i.RIGHT
@@ -159,6 +177,7 @@ func set_destination(target: Vector2i) -> void:
         route.pop_front()
 
 func _process(_delta: float) -> void:
+    update_occlusion()
     if moving or route.is_empty() or not preview_enabled:
         return
     var next: Vector2i = route.pop_front()
@@ -173,9 +192,17 @@ func _process(_delta: float) -> void:
         player_cell = next
         moving = false
         for marker in document.markers:
-            if Vector2i(marker.x, marker.y) == player_cell:
+            if marker.type != "interaction" and Vector2i(marker.x, marker.y) == player_cell:
                 marker_entered.emit(marker.id, marker.type)
     )
+
+func update_occlusion() -> void:
+    for entry in node_mapping.get("objects", []):
+        var region: Dictionary = entry.occlusion
+        var sprite = get_node_or_null(NodePath(entry.path))
+        if sprite != null:
+            var covered: bool = region.fade and player_cell.x >= entry.cell.x + region.x and player_cell.y >= entry.cell.y + region.y and player_cell.x < entry.cell.x + region.x + region.width and player_cell.y < entry.cell.y + region.y + region.height
+            sprite.modulate.a = 0.3 if covered and preview_enabled and player.visible else 1.0
 
 func verify_scene() -> void:
     var result_path := "res://runtime-results.json"
@@ -232,7 +259,7 @@ func verify_scene() -> void:
     var physics_blocked := 0
     for y in range(int(document.grid.height)):
         for x in range(int(document.grid.width)):
-            if walkable(Vector2i(x, y)):
+            if not blocked.has(Vector2i(x, y)):
                 continue
             var query := PhysicsPointQueryParameters2D.new()
             query.position = map_root.to_global(iso(Vector2(x, y)))
@@ -285,6 +312,7 @@ func verify_scene() -> void:
     route.clear()
     if "--studio-map-only" in OS.get_cmdline_user_args():
         player.visible = false
+    update_occlusion()
     var screenshot := {"requested": not screenshot_path.is_empty(), "written": false}
     if not screenshot_path.is_empty():
         if DisplayServer.get_name() == "headless":
@@ -322,6 +350,7 @@ export function createMapGodotFiles(project) {
   const renderLayers = getMapRenderLayers(project);
   const layerBands = new Map(renderLayers.map(band => [band.layer.id,band]));
   const actorBand = layerBands.get(getActorLayerId(project));
+  mapping.actorFootprint = getActorFootprint(project); mapping.collisionCells = [...getMapCollisionBitmap(project)];
   mapping.actorLayerId = actorBand.layer.id; mapping.actorZ = actorBand.objectZ; mapping.actorVisible = actorBand.layer.visible;
   const used = new Set([...project.layers.flatMap(layer => Object.values(layer.cells)), ...project.objects.map(object => object.assetId)]);
   for (const asset of project.assets.filter(asset => used.has(asset.id))) {
@@ -361,10 +390,10 @@ export function createMapGodotFiles(project) {
   nodes.push('[node name="Actors" type="Node2D" parent="Map"]\ny_sort_enabled = true');
   // Stable document order resolves equal-Y ties, matching the editor.
   project.objects.forEach((object,index) => {
-    const name=`Object_${index}`,asset=assetMap.get(object.assetId),position=isoToScreen(object.x,object.y,project.grid);
+    const name=`Object_${index}`,asset=assetMap.get(object.assetId),basePosition=isoToScreen(object.x,object.y,project.grid),occlusion=getObjectOcclusion(object),sortOffset={x:0,y:occlusion.depthOffset*project.grid.tileHeight/2},position={x:basePosition.x,y:basePosition.y+sortOffset.y};
     const band=layerBands.get(object.layerId),visible=band.layer.visible,zIndex=band.objectZ,crop=asset.atlas||{x:0,y:0,width:0,height:0};
-    nodes.push(`[node name=${quote(name)} type="Sprite2D" parent="Map/Actors"]\nvisible = ${visible}\nz_index = ${zIndex}\nposition = ${vec(position.x,position.y)}\ntexture = ExtResource(${quote(resourceIds.get(asset.id))})\nscript = ExtResource("3_sprites")\nstudio_source = ExtResource(${quote(resourceIds.get(asset.id))})\nstudio_size = ${vec(object.width,object.height)}\nstudio_anchor = ${vec(object.anchorX,object.anchorY)}\nstudio_crop = Rect2i(${crop.x}, ${crop.y}, ${crop.width}, ${crop.height})\nmetadata/studio_id = ${quote(object.id)}\nmetadata/studio_name = ${quote(object.name)}\nmetadata/studio_layer = ${quote(object.layerId)}`);
-    mapping.objects.push({id:object.id,path:`Map/Actors/${name}`,assetId:asset.id,layerId:object.layerId,visible,zIndex,position,size:{x:object.width,y:object.height},offset:{x:-object.width*object.anchorX,y:-object.height*object.anchorY}});
+    nodes.push(`[node name=${quote(name)} type="Sprite2D" parent="Map/Actors"]\nvisible = ${visible}\nz_index = ${zIndex}\nposition = ${vec(position.x,position.y)}\ntexture = ExtResource(${quote(resourceIds.get(asset.id))})\nscript = ExtResource("3_sprites")\nstudio_source = ExtResource(${quote(resourceIds.get(asset.id))})\nstudio_size = ${vec(object.width,object.height)}\nstudio_anchor = ${vec(object.anchorX,object.anchorY)}\nstudio_sort_offset = ${vec(sortOffset.x,sortOffset.y)}\nstudio_crop = Rect2i(${crop.x}, ${crop.y}, ${crop.width}, ${crop.height})\nmetadata/studio_id = ${quote(object.id)}\nmetadata/studio_name = ${quote(object.name)}\nmetadata/studio_layer = ${quote(object.layerId)}`);
+    mapping.objects.push({id:object.id,path:`Map/Actors/${name}`,assetId:asset.id,layerId:object.layerId,visible,zIndex,position,size:{x:object.width,y:object.height},offset:{x:-object.width*object.anchorX-sortOffset.x,y:-object.height*object.anchorY-sortOffset.y},cell:{x:object.x,y:object.y},footprint:object.footprint,collision:getObjectCollision(object),occlusion});
   });
   nodes.push(`[node name="Player" type="Node2D" parent="Map/Actors"]\nz_index = ${actorBand.objectZ}\nvisible = ${actorBand.layer.visible}\nmetadata/studio_layer = ${quote(actorBand.layer.id)}\nmetadata/studio_preview = true`,
     '[node name="Shadow" type="Polygon2D" parent="Map/Actors/Player"]\ncolor = Color(0.015, 0.03, 0.02, 0.5)\npolygon = PackedVector2Array(-12,0,0,-5,12,0,0,5)',
@@ -377,7 +406,7 @@ export function createMapGodotFiles(project) {
     nodes.push(`[node name=${quote(name)} type="StaticBody2D" parent="Map/Collisions"]\nposition = ${vec(position.x,position.y)}\ncollision_layer = 1\ncollision_mask = 0\nmetadata/studio_id = ${quote(id)}`,`[node name="Shape" type="CollisionPolygon2D" parent=${quote(`Map/Collisions/${name}`)}]\npolygon = ${polygon(points)}`);
     mapping.colliders.push({id,path:`Map/Collisions/${name}`});
   };
-  for(const object of project.objects)if(object.blocking)addCollider(object.id,object.x,object.y,object.footprint.width,object.footprint.height);
+  for(const object of project.objects)if(object.blocking){const region=getObjectCollision(object);addCollider(object.id,object.x+region.x,object.y+region.y,region.width,region.height);}
   for(const key of project.blocked){const[x,y]=key.split(',').map(Number);addCollider(`blocked:${key}`,x,y,1,1);}
   nodes.push('[node name="Markers" type="Node2D" parent="Map"]');
   project.markers.forEach((marker,index)=>{
@@ -392,6 +421,7 @@ export function createMapGodotFiles(project) {
   mapping.spawn=spawn?{x:spawn.x,y:spawn.y}:fallback||{x:0,y:0};
   const exit=project.markers.find(marker=>marker.type==='exit');
   if(exit)mapping.testPath=findPath(project,mapping.spawn,{x:exit.x,y:exit.y});
+  const playability = analyzeMapPlayability(project);
   const exitReachable = exit ? mapping.testPath.length > 0 : null;
   if(mapping.testPath.length<2 && isWalkable(project,mapping.spawn.x,mapping.spawn.y)){
     // One adjacent reachable cell is enough to exercise movement when no exit is
@@ -403,14 +433,16 @@ export function createMapGodotFiles(project) {
   }
   const warnings=[
     {code:'isometric-2d',message:'This is a flat isometric 2D map. Elevation, 3D cameras and terrain meshes are not represented.'},
-    {code:'grid-navigation',message:'Preview movement uses four-neighbour grid BFS and static footprint collision polygons. A NavigationRegion2D/navigation mesh is not generated.'},
-    {code:'marker-hooks',message:'Spawn, exit and trigger IDs are retained. marker_entered emits IDs during preview; connect game-specific scene changes and gameplay yourself.'},
+    {code:'grid-navigation',message:'Preview uses four-neighbour grid BFS with the configured actor footprint and independent static object collision polygons. It does not generate a navigation mesh or continuous CharacterBody2D movement.'},
+    {code:'marker-hooks',message:'Spawn, exit, trigger and interaction IDs are retained. Enter exits/triggers or press E beside interactions to emit marker_entered; connect game-specific actions yourself.'},
   ];
   if(!isWalkable(project,mapping.spawn.x,mapping.spawn.y))warnings.push({code:'blocked-spawn',message:'Spawn is blocked. The preview player is hidden until its spawn is moved to a walkable cell.'});
+  for(const issue of playability.issues)if(issue.code==='unreachable-marker')warnings.push({code:issue.code,message:`Marker ${issue.markerId} is unreachable for the configured actor.`});
   if(exitReachable===false)warnings.push({code:'unreachable-exit',message:'The first exit cannot be reached from the preview spawn using the current walkability map.'});
   if(project.assets.some(asset=>asset.kind==='tile'&&(!Number.isInteger(asset.width)||!Number.isInteger(asset.height))))warnings.push({code:'fractional-tile-size',message:'Godot tile textures use whole pixels; fractional tile image display dimensions are rounded.'});
   const scene=`[gd_scene load_steps=${ext.length+sub.length+1} format=3]\n\n${ext.join('\n')}\n\n${sub.join('\n\n')}\n\n${nodes.join('\n\n')}\n`;
   return {assets,files:{
+    'playability-report.json':json(playability),
     'project.godot':`; Game UI Studio map export; requires Godot 4.3 or newer.\nconfig_version=5\n\n[application]\nconfig/name=${quote(project.name)}\nrun/main_scene="res://map.tscn"\nconfig/features=PackedStringArray("4.3", "GL Compatibility")\n\n[display]\nwindow/size/viewport_width=1280\nwindow/size/viewport_height=800\nwindow/stretch/mode="canvas_items"\n\n[rendering]\nrenderer/rendering_method="gl_compatibility"\nrenderer/rendering_method.mobile="gl_compatibility"\nenvironment/defaults/default_clear_color=Color(0.045, 0.075, 0.065, 1)\ntextures/default_filters/use_nearest_mipmap_filter=false\n`,
     'map.tscn':scene,'map_runtime.gd':RUNTIME_SCRIPT,'tile_display.gd':TILE_SCRIPT,'sprite_display.gd':SPRITE_SCRIPT,
     'map.json':json(project),'node-map.json':json(mapping),'export-warnings.json':json(warnings),

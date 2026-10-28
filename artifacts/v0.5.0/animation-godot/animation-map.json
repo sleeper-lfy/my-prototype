@@ -1,0 +1,1460 @@
+{
+  "schemaVersion": 1,
+  "projectId": "pixel-ranger",
+  "revision": 0,
+  "canvas": {
+    "width": 64,
+    "height": 96
+  },
+  "renderBounds": {
+    "x": 0,
+    "y": -56,
+    "width": 218,
+    "height": 152
+  },
+  "origin": {
+    "x": 0,
+    "y": 56
+  },
+  "equipment": [
+    {
+      "id": "validation-sword",
+      "name": "weapon",
+      "slot": "weapon",
+      "boneId": "rightForearm",
+      "width": 7,
+      "height": 34,
+      "pivot": {
+        "x": 3,
+        "y": 30
+      },
+      "offset": {
+        "x": 80,
+        "y": 0
+      },
+      "angle": 0,
+      "enabled": true,
+      "layer": 1,
+      "source": {
+        "kind": "procedural-reference",
+        "license": "MIT"
+      }
+    }
+  ],
+  "playtest": null,
+  "clips": [
+    {
+      "id": "idle-down",
+      "name": "idle / down",
+      "action": "idle",
+      "direction": "down",
+      "loop": true,
+      "motionSource": {
+        "id": "robot-expressive",
+        "author": "Tomás Laulhé / Quaternius",
+        "modifications": "Don McCurdy: FBX2glTF conversion, facial morph targets and material cleanup",
+        "license": "CC0-1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "url": "https://github.com/mrdoob/three.js/blob/68a2712f9d130e8e9813488228dfef3509920fb2/examples/models/gltf/RobotExpressive/README.md",
+        "assetUrl": "https://github.com/mrdoob/three.js/blob/68a2712f9d130e8e9813488228dfef3509920fb2/examples/models/gltf/RobotExpressive/RobotExpressive.glb",
+        "upstreamCommit": "68a2712f9d130e8e9813488228dfef3509920fb2",
+        "sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319",
+        "sourceFormat": "glTF 2.0",
+        "conversion": "glTF local quaternion SLERP + translation interpolation → global skeletal segment positions → XY / ZY orthographic projection → 13-bone pixel rig. Original body translation is scaled to a 64-pixel standing skeleton height; no contact IK or gameplay events are inferred. Depth and foreshortening are lost.",
+        "clip": "Idle",
+        "trackCount": 6,
+        "sampleCount": 81,
+        "presetId": "quaternius-idle"
+      },
+      "frames": [
+        {
+          "id": "idle-down-1",
+          "durationMs": 555.5555,
+          "texture": "frames/idle-down/idle-down-1.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "idle-down-2",
+          "durationMs": 175,
+          "texture": "frames/idle-down/idle-down-2.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "idle-down-3",
+          "durationMs": 555.5555,
+          "texture": "frames/idle-down/idle-down-3.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "idle-down-4",
+          "durationMs": 555.5555,
+          "texture": "frames/idle-down/idle-down-4.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "idle-down-5",
+          "durationMs": 555.5555,
+          "texture": "frames/idle-down/idle-down-5.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "idle-down-6",
+          "durationMs": 555.5555,
+          "texture": "frames/idle-down/idle-down-6.png",
+          "events": [],
+          "contacts": []
+        }
+      ]
+    },
+    {
+      "id": "idle-up",
+      "name": "idle / up",
+      "action": "idle",
+      "direction": "up",
+      "loop": true,
+      "frames": [
+        {
+          "id": "idle-up-1",
+          "durationMs": 160,
+          "texture": "frames/idle-up/idle-up-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-up-2",
+          "durationMs": 160,
+          "texture": "frames/idle-up/idle-up-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-up-3",
+          "durationMs": 160,
+          "texture": "frames/idle-up/idle-up-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-up-4",
+          "durationMs": 160,
+          "texture": "frames/idle-up/idle-up-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-up-5",
+          "durationMs": 160,
+          "texture": "frames/idle-up/idle-up-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-up-6",
+          "durationMs": 160,
+          "texture": "frames/idle-up/idle-up-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "idle-left",
+      "name": "idle / left",
+      "action": "idle",
+      "direction": "left",
+      "loop": true,
+      "frames": [
+        {
+          "id": "idle-left-1",
+          "durationMs": 160,
+          "texture": "frames/idle-left/idle-left-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-left-2",
+          "durationMs": 160,
+          "texture": "frames/idle-left/idle-left-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-left-3",
+          "durationMs": 160,
+          "texture": "frames/idle-left/idle-left-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-left-4",
+          "durationMs": 160,
+          "texture": "frames/idle-left/idle-left-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-left-5",
+          "durationMs": 160,
+          "texture": "frames/idle-left/idle-left-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-left-6",
+          "durationMs": 160,
+          "texture": "frames/idle-left/idle-left-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "idle-right",
+      "name": "idle / right",
+      "action": "idle",
+      "direction": "right",
+      "loop": true,
+      "frames": [
+        {
+          "id": "idle-right-1",
+          "durationMs": 160,
+          "texture": "frames/idle-right/idle-right-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-right-2",
+          "durationMs": 160,
+          "texture": "frames/idle-right/idle-right-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-right-3",
+          "durationMs": 160,
+          "texture": "frames/idle-right/idle-right-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-right-4",
+          "durationMs": 160,
+          "texture": "frames/idle-right/idle-right-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-right-5",
+          "durationMs": 160,
+          "texture": "frames/idle-right/idle-right-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "idle-right-6",
+          "durationMs": 160,
+          "texture": "frames/idle-right/idle-right-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "walk-down",
+      "name": "walk / down",
+      "action": "walk",
+      "direction": "down",
+      "loop": true,
+      "frames": [
+        {
+          "id": "walk-down-1",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-1.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-down-2",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-2.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-down-3",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-3.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-down-4",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-4.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-down-5",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-5.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-down-6",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-down-7",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-down-8",
+          "durationMs": 100,
+          "texture": "frames/walk-down/walk-down-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "walk-up",
+      "name": "walk / up",
+      "action": "walk",
+      "direction": "up",
+      "loop": true,
+      "frames": [
+        {
+          "id": "walk-up-1",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-1.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-up-2",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-2.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-up-3",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-3.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-up-4",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-4.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-up-5",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-5.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-up-6",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-up-7",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-up-8",
+          "durationMs": 100,
+          "texture": "frames/walk-up/walk-up-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "walk-left",
+      "name": "walk / left",
+      "action": "walk",
+      "direction": "left",
+      "loop": true,
+      "frames": [
+        {
+          "id": "walk-left-1",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-1.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-left-2",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-2.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-left-3",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-3.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-left-4",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-4.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-left-5",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-5.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-left-6",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-left-7",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-left-8",
+          "durationMs": 100,
+          "texture": "frames/walk-left/walk-left-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "walk-right",
+      "name": "walk / right",
+      "action": "walk",
+      "direction": "right",
+      "loop": true,
+      "frames": [
+        {
+          "id": "walk-right-1",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-1.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-right-2",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-2.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-right-3",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-3.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-right-4",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-4.png",
+          "events": [],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-right-5",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-5.png",
+          "events": [
+            {
+              "name": "footstep"
+            }
+          ],
+          "contacts": [
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "walk-right-6",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-right-7",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        },
+        {
+          "id": "walk-right-8",
+          "durationMs": 100,
+          "texture": "frames/walk-right/walk-right-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-down",
+      "name": "attack / down",
+      "action": "attack",
+      "direction": "down",
+      "loop": false,
+      "frames": [
+        {
+          "id": "attack-down-1",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-2",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-3",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-4",
+          "durationMs": 60,
+          "texture": "frames/attack-down/attack-down-4.png",
+          "events": [
+            {
+              "name": "hit",
+              "hitbox": {
+                "x": 43,
+                "y": 34,
+                "width": 20,
+                "height": 26
+              }
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-5",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-6",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-7",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-down-8",
+          "durationMs": 100,
+          "texture": "frames/attack-down/attack-down-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-up",
+      "name": "attack / up",
+      "action": "attack",
+      "direction": "up",
+      "loop": false,
+      "frames": [
+        {
+          "id": "attack-up-1",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-2",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-3",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-4",
+          "durationMs": 60,
+          "texture": "frames/attack-up/attack-up-4.png",
+          "events": [
+            {
+              "name": "hit",
+              "hitbox": {
+                "x": 43,
+                "y": 34,
+                "width": 20,
+                "height": 26
+              }
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-5",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-6",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-7",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-up-8",
+          "durationMs": 100,
+          "texture": "frames/attack-up/attack-up-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-left",
+      "name": "attack / left",
+      "action": "attack",
+      "direction": "left",
+      "loop": false,
+      "frames": [
+        {
+          "id": "attack-left-1",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-2",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-3",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-4",
+          "durationMs": 60,
+          "texture": "frames/attack-left/attack-left-4.png",
+          "events": [
+            {
+              "name": "hit",
+              "hitbox": {
+                "x": 1,
+                "y": 34,
+                "width": 20,
+                "height": 26
+              }
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-5",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-6",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-6.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-7",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-left-8",
+          "durationMs": 100,
+          "texture": "frames/attack-left/attack-left-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-right",
+      "name": "attack / right",
+      "action": "attack",
+      "direction": "right",
+      "loop": false,
+      "frames": [
+        {
+          "id": "attack-right-1",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-2",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-2.png",
+          "events": [
+            {
+              "id": "verify-open",
+              "name": "attack-open",
+              "type": "hitbox-on",
+              "channel": "primary",
+              "hitbox": {
+                "x": 70,
+                "y": 30,
+                "width": 24,
+                "height": 30
+              }
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-3",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-3.png",
+          "events": [
+            {
+              "id": "verify-move",
+              "name": "lunge",
+              "type": "move",
+              "delta": {
+                "x": 12,
+                "y": 0
+              }
+            },
+            {
+              "id": "verify-audio",
+              "name": "swing-sound",
+              "type": "audio",
+              "resource": "res://audio/swing.ogg"
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-4",
+          "durationMs": 60,
+          "texture": "frames/attack-right/attack-right-4.png",
+          "events": [
+            {
+              "name": "hit",
+              "hitbox": {
+                "x": 43,
+                "y": 34,
+                "width": 20,
+                "height": 26
+              }
+            },
+            {
+              "id": "verify-vfx",
+              "name": "slash-effect",
+              "type": "vfx",
+              "resource": "res://effects/slash.tscn"
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-5",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-5.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-6",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-6.png",
+          "events": [
+            {
+              "id": "verify-close",
+              "name": "attack-close",
+              "type": "hitbox-off",
+              "channel": "primary"
+            }
+          ],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-7",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-7.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "attack-right-8",
+          "durationMs": 100,
+          "texture": "frames/attack-right/attack-right-8.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hurt-down-reference",
+      "name": "hurt / down",
+      "action": "hurt",
+      "direction": "down",
+      "loop": false,
+      "frames": [
+        {
+          "id": "hurt-down-reference-1",
+          "durationMs": 100,
+          "texture": "frames/hurt-down-reference/hurt-down-reference-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-down-reference-2",
+          "durationMs": 100,
+          "texture": "frames/hurt-down-reference/hurt-down-reference-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-down-reference-3",
+          "durationMs": 100,
+          "texture": "frames/hurt-down-reference/hurt-down-reference-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-down-reference-4",
+          "durationMs": 100,
+          "texture": "frames/hurt-down-reference/hurt-down-reference-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hurt-up-reference",
+      "name": "hurt / up",
+      "action": "hurt",
+      "direction": "up",
+      "loop": false,
+      "frames": [
+        {
+          "id": "hurt-up-reference-1",
+          "durationMs": 100,
+          "texture": "frames/hurt-up-reference/hurt-up-reference-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-up-reference-2",
+          "durationMs": 100,
+          "texture": "frames/hurt-up-reference/hurt-up-reference-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-up-reference-3",
+          "durationMs": 100,
+          "texture": "frames/hurt-up-reference/hurt-up-reference-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-up-reference-4",
+          "durationMs": 100,
+          "texture": "frames/hurt-up-reference/hurt-up-reference-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hurt-left-reference",
+      "name": "hurt / left",
+      "action": "hurt",
+      "direction": "left",
+      "loop": false,
+      "frames": [
+        {
+          "id": "hurt-left-reference-1",
+          "durationMs": 100,
+          "texture": "frames/hurt-left-reference/hurt-left-reference-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-left-reference-2",
+          "durationMs": 100,
+          "texture": "frames/hurt-left-reference/hurt-left-reference-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-left-reference-3",
+          "durationMs": 100,
+          "texture": "frames/hurt-left-reference/hurt-left-reference-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-left-reference-4",
+          "durationMs": 100,
+          "texture": "frames/hurt-left-reference/hurt-left-reference-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hurt-right-reference",
+      "name": "hurt / right",
+      "action": "hurt",
+      "direction": "right",
+      "loop": false,
+      "frames": [
+        {
+          "id": "hurt-right-reference-1",
+          "durationMs": 100,
+          "texture": "frames/hurt-right-reference/hurt-right-reference-1.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-right-reference-2",
+          "durationMs": 100,
+          "texture": "frames/hurt-right-reference/hurt-right-reference-2.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-right-reference-3",
+          "durationMs": 100,
+          "texture": "frames/hurt-right-reference/hurt-right-reference-3.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        },
+        {
+          "id": "hurt-right-reference-4",
+          "durationMs": 100,
+          "texture": "frames/hurt-right-reference/hurt-right-reference-4.png",
+          "events": [],
+          "contacts": [
+            "leftFoot",
+            "rightFoot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dodge-down-reference",
+      "name": "dodge / down",
+      "action": "dodge",
+      "direction": "down",
+      "loop": false,
+      "frames": [
+        {
+          "id": "dodge-down-reference-1",
+          "durationMs": 100,
+          "texture": "frames/dodge-down-reference/dodge-down-reference-1.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-down-reference-2",
+          "durationMs": 100,
+          "texture": "frames/dodge-down-reference/dodge-down-reference-2.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-down-reference-3",
+          "durationMs": 100,
+          "texture": "frames/dodge-down-reference/dodge-down-reference-3.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-down-reference-4",
+          "durationMs": 100,
+          "texture": "frames/dodge-down-reference/dodge-down-reference-4.png",
+          "events": [],
+          "contacts": []
+        }
+      ]
+    },
+    {
+      "id": "dodge-up-reference",
+      "name": "dodge / up",
+      "action": "dodge",
+      "direction": "up",
+      "loop": false,
+      "frames": [
+        {
+          "id": "dodge-up-reference-1",
+          "durationMs": 100,
+          "texture": "frames/dodge-up-reference/dodge-up-reference-1.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-up-reference-2",
+          "durationMs": 100,
+          "texture": "frames/dodge-up-reference/dodge-up-reference-2.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-up-reference-3",
+          "durationMs": 100,
+          "texture": "frames/dodge-up-reference/dodge-up-reference-3.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-up-reference-4",
+          "durationMs": 100,
+          "texture": "frames/dodge-up-reference/dodge-up-reference-4.png",
+          "events": [],
+          "contacts": []
+        }
+      ]
+    },
+    {
+      "id": "dodge-left-reference",
+      "name": "dodge / left",
+      "action": "dodge",
+      "direction": "left",
+      "loop": false,
+      "frames": [
+        {
+          "id": "dodge-left-reference-1",
+          "durationMs": 100,
+          "texture": "frames/dodge-left-reference/dodge-left-reference-1.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-left-reference-2",
+          "durationMs": 100,
+          "texture": "frames/dodge-left-reference/dodge-left-reference-2.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-left-reference-3",
+          "durationMs": 100,
+          "texture": "frames/dodge-left-reference/dodge-left-reference-3.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-left-reference-4",
+          "durationMs": 100,
+          "texture": "frames/dodge-left-reference/dodge-left-reference-4.png",
+          "events": [],
+          "contacts": []
+        }
+      ]
+    },
+    {
+      "id": "dodge-right-reference",
+      "name": "dodge / right",
+      "action": "dodge",
+      "direction": "right",
+      "loop": false,
+      "frames": [
+        {
+          "id": "dodge-right-reference-1",
+          "durationMs": 100,
+          "texture": "frames/dodge-right-reference/dodge-right-reference-1.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-right-reference-2",
+          "durationMs": 100,
+          "texture": "frames/dodge-right-reference/dodge-right-reference-2.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-right-reference-3",
+          "durationMs": 100,
+          "texture": "frames/dodge-right-reference/dodge-right-reference-3.png",
+          "events": [],
+          "contacts": []
+        },
+        {
+          "id": "dodge-right-reference-4",
+          "durationMs": 100,
+          "texture": "frames/dodge-right-reference/dodge-right-reference-4.png",
+          "events": [],
+          "contacts": []
+        }
+      ]
+    }
+  ]
+}

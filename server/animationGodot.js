@@ -8,7 +8,7 @@ export function createAnimationGodotFiles(project) {
   validateAnimationProject(project);
   const renderBounds = getAnimationRenderBounds(project);
   const origin = {x: -renderBounds.x, y: -renderBounds.y};
-  const files={},resources=[],animations=[],mapping={schemaVersion:1,projectId:project.id,revision:project.revision,canvas:project.canvas,renderBounds,origin,clips:[]};
+  const files={},resources=[],animations=[],mapping={schemaVersion:1,projectId:project.id,revision:project.revision,canvas:project.canvas,renderBounds,origin,equipment:(project.equipment||[]).map(({pixels,...item})=>item),playtest:project.playtest||null,clips:[]};
   let resourceIndex=1;
   for(const clip of project.clips){
     const records=[],frames=[];
@@ -29,13 +29,17 @@ export function createAnimationGodotFiles(project) {
   files['animation-map.json']=JSON.stringify(mapping,null,2)+'\n';
   files['animation_player.gd']=`extends AnimatedSprite2D
 signal animation_event(event_name: String, payload: Dictionary)
+signal movement_requested(delta_pixels: Vector2)
+signal resource_event(kind: String, resource_id: String, payload: Dictionary)
 var studio_data: Dictionary = {}
 var emitted_events: Array = []
+var emitted_payloads: Array = []
+var active_hitboxes: Dictionary = {}
 var _events_pending: bool = false
 func _ready():
     studio_data = JSON.parse_string(FileAccess.get_file_as_string("res://animation-map.json"))
     frame_changed.connect(_schedule_events)
-    animation_changed.connect(_schedule_events)
+    animation_changed.connect(_on_animation_changed)
     animation_looped.connect(_schedule_events)
     play(${quote(initial)})
     _schedule_events()
@@ -43,6 +47,9 @@ func _schedule_events():
     if not _events_pending:
         _events_pending = true
         _emit_frame_events.call_deferred()
+func _on_animation_changed():
+    active_hitboxes.clear()
+    _schedule_events()
 func _emit_frame_events():
     _events_pending = false
     for clip in studio_data.get("clips", []):
@@ -51,6 +58,15 @@ func _emit_frame_events():
                 var payload: Dictionary = event if event is Dictionary else {"name": str(event)}
                 var event_name: String = str(payload.get("name", payload.get("type", "event")))
                 emitted_events.append({"clipId": clip.id, "frameId": clip.frames[frame].id, "name": event_name})
+                emitted_payloads.append(payload.duplicate(true))
+                var channel: String = str(payload.get("channel", "primary"))
+                match str(payload.get("type", "marker")):
+                    "hitbox-on": active_hitboxes[channel] = payload.get("hitbox", {}).duplicate(true)
+                    "hitbox-off": active_hitboxes.erase(channel)
+                    "move":
+                        var delta: Dictionary = payload.get("delta", {})
+                        movement_requested.emit(Vector2(float(delta.get("x", 0)), float(delta.get("y", 0))))
+                    "audio", "vfx": resource_event.emit(str(payload.type), str(payload.get("resource", "")), payload)
                 animation_event.emit(event_name, payload)
 func set_clip(clip_id: String):
     if sprite_frames.has_animation(clip_id):
@@ -155,7 +171,7 @@ func verify():
     print(JSON.stringify(report))
     get_tree().quit(0 if failures.is_empty() else 1)
 `;
-  files['README.md']='# Pixel animation export\n\nOpen project.godot in Godot 4.3+. Arrow keys cycle animations. The 64×96 body reference does not clip frame contents. All frames share one union render rectangle and a fixed body origin; AnimatedSprite2D centered=false and offset preserve body coordinates across actions. AnimatedSprite2D uses lossless original-size textures with nearest filtering and variable frame duration. Connect animation_event to game logic; frames retain stable IDs in animation-map.json. Events are data and do not execute supplied code. Imported art retains its original license.\n\nTest with: godot --headless --editor --path . --import, then godot --path . -- --studio-verify --studio-result=/absolute/result.json --studio-screenshot=/absolute/frame.png. A graphical display is required for screenshots.\n';
-  files['export-warnings.json']=JSON.stringify(['Rendered sprite frames are exported; editable rig and IK remain in the Studio project JSON.','Contact markers are metadata; collision geometry and gameplay logic must be integrated separately.'],null,2);
+  files['README.md']='# Pixel animation export\n\nOpen project.godot in Godot 4.3+. Arrow keys cycle animations. The 64×96 body reference does not clip frame contents. All frames share one union render rectangle and a fixed body origin; AnimatedSprite2D centered=false and offset preserve body coordinates across actions. AnimatedSprite2D uses lossless original-size textures with nearest filtering and variable frame duration. Connect animation_event to game logic; typed events also maintain active_hitboxes, emit movement_requested(delta_pixels), and emit resource_event(kind, resource_id, payload) for audio/VFX. Resources are identifiers and are not loaded or executed automatically. Equipment is baked into frame pixels and attachment metadata is recorded in animation-map.json. Frames retain stable IDs in animation-map.json. Events are data and do not execute supplied code. Imported art retains its original license.\n\nTest with: godot --headless --editor --path . --import, then godot --path . -- --studio-verify --studio-result=/absolute/result.json --studio-screenshot=/absolute/frame.png. A graphical display is required for screenshots.\n';
+  files['export-warnings.json']=JSON.stringify(['Rendered sprite frames are exported; editable rig and IK remain in the Studio project JSON.','Contact markers and active_hitboxes are metadata; collision geometry, movement and audio/VFX resource binding must be integrated with game logic.'],null,2);
   return {files,warnings:JSON.parse(files['export-warnings.json'])};
 }

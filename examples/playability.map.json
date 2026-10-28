@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "kind": "studio-map",
+  "id": "playability-lab",
+  "name": "Playability Lab / 地图可玩性实验",
+  "revision": 1,
+  "actorLayerId": "decoration",
+  "grid": {
+    "width": 8,
+    "height": 8,
+    "tileWidth": 64,
+    "tileHeight": 32
+  },
+  "assets": [
+    {
+      "id": "grass",
+      "name": "grass",
+      "src": "/assets/map/grass.svg",
+      "kind": "tile",
+      "width": 64,
+      "height": 32,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "path",
+      "name": "path",
+      "src": "/assets/map/path.svg",
+      "kind": "tile",
+      "width": 64,
+      "height": 32,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "water",
+      "name": "water",
+      "src": "/assets/map/water.svg",
+      "kind": "tile",
+      "width": 64,
+      "height": 32,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "tree",
+      "name": "tree",
+      "src": "/assets/map/tree.svg",
+      "kind": "object",
+      "width": 96,
+      "height": 128,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "house",
+      "name": "house",
+      "src": "/assets/map/house.svg",
+      "kind": "object",
+      "width": 160,
+      "height": 160,
+      "footprint": {
+        "width": 2,
+        "height": 2
+      }
+    },
+    {
+      "id": "wall",
+      "name": "wall",
+      "src": "/assets/map/wall.svg",
+      "kind": "object",
+      "width": 80,
+      "height": 64,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "stone",
+      "name": "stone",
+      "src": "/assets/map/stone.svg",
+      "kind": "tile",
+      "width": 64,
+      "height": 32,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "id": "chest",
+      "name": "chest",
+      "src": "/assets/map/chest.svg",
+      "kind": "object",
+      "width": 64,
+      "height": 56,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      }
+    }
+  ],
+  "layers": [
+    {
+      "id": "ground",
+      "name": "地面 · Ground",
+      "visible": true,
+      "locked": false,
+      "cells": {
+        "0,0": "grass",
+        "1,0": "grass",
+        "2,0": "grass",
+        "3,0": "grass",
+        "4,0": "grass",
+        "5,0": "grass",
+        "6,0": "grass",
+        "7,0": "grass",
+        "0,1": "grass",
+        "1,1": "grass",
+        "2,1": "grass",
+        "3,1": "grass",
+        "4,1": "grass",
+        "5,1": "grass",
+        "6,1": "grass",
+        "7,1": "grass",
+        "0,2": "grass",
+        "1,2": "grass",
+        "2,2": "grass",
+        "3,2": "grass",
+        "4,2": "grass",
+        "5,2": "grass",
+        "6,2": "grass",
+        "7,2": "grass",
+        "0,3": "grass",
+        "1,3": "grass",
+        "2,3": "grass",
+        "3,3": "grass",
+        "4,3": "grass",
+        "5,3": "grass",
+        "6,3": "grass",
+        "7,3": "grass",
+        "0,4": "grass",
+        "1,4": "grass",
+        "2,4": "grass",
+        "3,4": "grass",
+        "4,4": "grass",
+        "5,4": "grass",
+        "6,4": "grass",
+        "7,4": "grass",
+        "0,5": "grass",
+        "1,5": "grass",
+        "2,5": "grass",
+        "3,5": "grass",
+        "4,5": "grass",
+        "5,5": "grass",
+        "6,5": "grass",
+        "7,5": "grass",
+        "0,6": "grass",
+        "1,6": "grass",
+        "2,6": "grass",
+        "3,6": "grass",
+        "4,6": "grass",
+        "5,6": "grass",
+        "6,6": "grass",
+        "7,6": "grass",
+        "0,7": "grass",
+        "1,7": "grass",
+        "2,7": "grass",
+        "3,7": "grass",
+        "4,7": "grass",
+        "5,7": "grass",
+        "6,7": "grass",
+        "7,7": "grass"
+      }
+    },
+    {
+      "id": "roads",
+      "name": "道路 · Roads",
+      "visible": true,
+      "locked": false,
+      "cells": {}
+    },
+    {
+      "id": "water-layer",
+      "name": "水面 · Water",
+      "visible": true,
+      "locked": false,
+      "cells": {}
+    },
+    {
+      "id": "decoration",
+      "name": "装饰 · Decoration",
+      "visible": true,
+      "locked": false,
+      "cells": {}
+    }
+  ],
+  "objects": [
+    {
+      "id": "lab-house",
+      "name": "Roof / 屋檐",
+      "assetId": "house",
+      "layerId": "decoration",
+      "x": 3,
+      "y": 2,
+      "width": 160,
+      "height": 160,
+      "anchorX": 0.5,
+      "anchorY": 1,
+      "blocking": true,
+      "footprint": {
+        "width": 3,
+        "height": 3
+      },
+      "collision": {
+        "x": 0,
+        "y": 1,
+        "width": 2,
+        "height": 1
+      },
+      "occlusion": {
+        "x": -1,
+        "y": 0,
+        "width": 4,
+        "height": 2,
+        "depthOffset": 1,
+        "fade": true
+      }
+    }
+  ],
+  "blocked": [],
+  "markers": [
+    {
+      "id": "lab-spawn",
+      "type": "spawn",
+      "name": "Spawn / 出生点",
+      "x": 1,
+      "y": 6
+    },
+    {
+      "id": "lab-exit",
+      "type": "exit",
+      "name": "Gate / 出口",
+      "x": 6,
+      "y": 1
+    },
+    {
+      "id": "lab-chest",
+      "type": "interaction",
+      "name": "Chest / 交互点",
+      "x": 3,
+      "y": 3
+    },
+    {
+      "id": "lab-unreachable",
+      "type": "exit",
+      "name": "Narrow exit / 狭窄出口",
+      "x": 7,
+      "y": 7
+    }
+  ],
+  "reviews": [],
+  "history": [],
+  "playability": {
+    "actor": {
+      "width": 2,
+      "height": 1
+    }
+  }
+}

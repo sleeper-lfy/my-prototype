@@ -10,7 +10,7 @@ const text = (value, max = 200) => typeof value === 'string' && value.length > 0
 const id = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(value);
 const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const statuses = ['pending', 'modified', 'review', 'approved'];
-export const MAP_OBJECT_FIELDS = Object.freeze(['name', 'assetId', 'x', 'y', 'width', 'height', 'anchorX', 'anchorY', 'blocking', 'footprint.width', 'footprint.height']);
+export const MAP_OBJECT_FIELDS = Object.freeze(['name', 'assetId', 'x', 'y', 'width', 'height', 'anchorX', 'anchorY', 'blocking', 'footprint.width', 'footprint.height', 'collision', 'occlusion']);
 const restrictions = [...MAP_OBJECT_FIELDS, 'footprint', 'id', 'layerId', 'cells', 'blocked'];
 function assertJson(value, depth = 0) {
   if (depth > 32) fail('Map document is too deeply nested.');
@@ -48,6 +48,7 @@ export function validateMap(map) {
   if (!id(map.id) || !text(map.name) || !integer(map.revision, 0, Number.MAX_SAFE_INTEGER - 1)) fail('Invalid map identity or revision.');
   const grid = map.grid;
   if (!record(grid) || !integer(grid.width, 1, 128) || !integer(grid.height, 1, 128) || !integer(grid.tileWidth, 8, 256) || !integer(grid.tileHeight, 8, 256)) fail('Invalid map grid; use 1–128 cells and 8–256 pixel tiles.');
+  if (map.playability !== undefined && (!record(map.playability) || !record(map.playability.actor) || !integer(map.playability.actor.width, 1, grid.width) || !integer(map.playability.actor.height, 1, grid.height))) fail('Invalid playability actor footprint.');
   const assets = records(map.assets, 'asset', 1000);
   for (const asset of assets.values()) {
     if (!text(asset.name) || !['tile', 'object'].includes(asset.kind) || !num(asset.width, 1, 4096) || !num(asset.height, 1, 4096)) fail(`Invalid map asset ${asset.id}.`);
@@ -80,11 +81,16 @@ export function validateMap(map) {
   for (const object of objects.values()) {
     if (!text(object.name) || !layers.has(object.layerId) || assets.get(object.assetId)?.kind !== 'object' || !point(object, grid)) fail(`Invalid map object ${object.id}.`);
     if (!num(object.width, 1, 4096) || !num(object.height, 1, 4096) || !num(object.anchorX, 0, 1) || !num(object.anchorY, 0, 1) || typeof object.blocking !== 'boolean') fail(`Invalid display properties on ${object.id}.`);
+    for (const field of ['collision', 'occlusion']) if (object[field] !== undefined) {
+      const region = object[field];
+      if (!record(region) || !integer(region.x, -127, 127) || !integer(region.y, -127, 127) || !integer(region.width, 1, 128) || !integer(region.height, 1, 128) || object.x + region.x < 0 || object.y + region.y < 0 || object.x + region.x + region.width > grid.width || object.y + region.y + region.height > grid.height) fail(`Invalid ${field} region on ${object.id}.`);
+      if (field === 'occlusion' && (!num(region.depthOffset, -128, 128) || typeof region.fade !== 'boolean')) fail('Invalid occlusion depth or fade.');
+    }
     if (!record(object.footprint) || !integer(object.footprint.width, 1, grid.width - object.x) || !integer(object.footprint.height, 1, grid.height - object.y)) fail(`Invalid footprint on ${object.id}.`);
   }
   if (!Array.isArray(map.blocked) || map.blocked.length > grid.width * grid.height || new Set(map.blocked).size !== map.blocked.length || !map.blocked.every(key => cell(key, grid))) fail('Invalid blocked map cells.');
   const markers = records(map.markers, 'marker', 1000);
-  for (const marker of markers.values()) if (!text(marker.name) || !['spawn', 'exit', 'trigger'].includes(marker.type) || !point(marker, grid)) fail(`Invalid map marker ${marker.id}.`);
+  for (const marker of markers.values()) if (!text(marker.name) || !['spawn', 'exit', 'trigger', 'interaction'].includes(marker.type) || !point(marker, grid)) fail(`Invalid map marker ${marker.id}.`);
   const reviews = records(map.reviews, 'review', 2000);
   for (const review of reviews.values()) {
     const target = review.target;
@@ -112,7 +118,7 @@ export function getActorLayerId(map) {
  */
 export function getMapRenderLayers(map) {
   const actorLayerId = getActorLayerId(map);
-  return map.layers.map((layer, index) => ({ layer, index, terrainZ: index * 2, objectZ: index * 2 + 1, objects: map.objects.filter(object => object.layerId === layer.id).sort((left, right) => (left.x + left.y) - (right.x + right.y)), actor: layer.id === actorLayerId }));
+  return map.layers.map((layer, index) => ({ layer, index, terrainZ: index * 2, objectZ: index * 2 + 1, objects: map.objects.filter(object => object.layerId === layer.id).sort((left, right) => getObjectSortDepth(left) - getObjectSortDepth(right)), actor: layer.id === actorLayerId }));
 }
 
 /** Asset occupancy defaults to one cell; display pixels remain independent. */
@@ -168,37 +174,71 @@ export function moveMapObject(map, { objectId, layerId, x, y, footprint } = {}) 
 
 export function isoToScreen(x, y, grid) { return { x: (x - y) * grid.tileWidth / 2, y: (x + y) * grid.tileHeight / 2 }; }
 export function screenToIso(x, y, grid) { return { x: x / grid.tileWidth + y / grid.tileHeight, y: y / grid.tileHeight - x / grid.tileWidth }; }
-export function isWalkable(map, x, y) {
-  if (!point({ x, y }, map.grid) || map.blocked.includes(`${x},${y}`)) return false;
-  return !map.objects.some(object => object.blocking && x >= object.x && y >= object.y && x < object.x + object.footprint.width && y < object.y + object.footprint.height);
+/** Relative cell regions preserve independent artwork, occupancy, collision and canopy. */
+export function getObjectCollision(object) {
+  return object.collision ?? { x: 0, y: 0, ...object.footprint };
 }
-export function findPath(map, start, end) {
-  // Build one collision bitmap; repeated linear scans make large maps quadratic.
-  const { width, height } = map.grid;
-  const blocked = new Uint8Array(width * height);
-  for (const key of map.blocked) { const [x, y] = key.split(',').map(Number); blocked[y * width + x] = 1; }
+export function getObjectOcclusion(object) {
+  return object.occlusion ?? { x: 0, y: 0, ...object.footprint, depthOffset: 0, fade: false };
+}
+export function getObjectSortDepth(object) { return object.x + object.y + (object.occlusion?.depthOffset ?? 0); }
+export function getActorFootprint(map) { return map.playability?.actor ?? { width: 1, height: 1 }; }
+export function getMapCollisionBitmap(map) {
+  const { width, height } = map.grid, blocked = new Uint8Array(width * height);
+  for (const key of map.blocked) { const [x,y] = key.split(',').map(Number); blocked[y * width + x] = 1; }
   for (const object of map.objects) if (object.blocking) {
-    for (let y = object.y; y < object.y + object.footprint.height; y++) blocked.fill(1, y * width + object.x, y * width + object.x + object.footprint.width);
-  }
-  const walkable = p => point(p, map.grid) && !blocked[p.y * width + p.x];
-  if (!walkable(start) || !walkable(end)) return [];
-  const visited = new Map([[`${start.x},${start.y}`, null]]);
-  const queue = [{ x: start.x, y: start.y }];
-  let head = 0;
-  while (head < queue.length) {
-    const current = queue[head++];
-    if (current.x === end.x && current.y === end.y) {
-      const path = []; let key = `${end.x},${end.y}`;
-      while (key !== null) { const [x, y] = key.split(',').map(Number); path.push({ x, y }); key = visited.get(key); }
-      return path.reverse();
-    }
-    for (const [dx, dy] of [[1, 0], [0, 1], [-1, 0], [0, -1]]) {
-      const next = { x: current.x + dx, y: current.y + dy }; const key = `${next.x},${next.y}`;
-      if (visited.has(key) || !walkable(next)) continue;
-      visited.set(key, `${current.x},${current.y}`); queue.push(next);
+    const region = getObjectCollision(object);
+    for (let y = object.y + region.y; y < object.y + region.y + region.height; y++) {
+      blocked.fill(1, y * width + object.x + region.x, y * width + object.x + region.x + region.width);
     }
   }
-  return [];
+  return blocked;
+}
+export function isCellWalkable(map, x, y) {
+  if (!point({ x, y }, map.grid) || map.blocked.includes(`${x},${y}`)) return false;
+  return !map.objects.some(object => {
+    const region = getObjectCollision(object);
+    return object.blocking && x >= object.x + region.x && y >= object.y + region.y && x < object.x + region.x + region.width && y < object.y + region.y + region.height;
+  });
+}
+export function isWalkable(map, x, y, actor = getActorFootprint(map)) {
+  if (!point({x,y}, map.grid) || x + actor.width > map.grid.width || y + actor.height > map.grid.height) return false;
+  for (let dy=0;dy<actor.height;dy++) for(let dx=0;dx<actor.width;dx++) if(!isCellWalkable(map,x+dx,y+dy)) return false;
+  return true;
+}
+/** Summed-area collision table keeps large-actor reachability linear in map cells. */
+export function getActorWalkability(map, actor = getActorFootprint(map)) {
+  const {width,height}=map.grid, stride=width+1, raw=getMapCollisionBitmap(map), sums=new Int32Array((width+1)*(height+1));
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++)sums[(y+1)*stride+x+1]=raw[y*width+x]+sums[y*stride+x+1]+sums[(y+1)*stride+x]-sums[y*stride+x];
+  const walkable=new Uint8Array(width*height);
+  for(let y=0;y+actor.height<=height;y++)for(let x=0;x+actor.width<=width;x++) {
+    const right=x+actor.width,bottom=y+actor.height;
+    walkable[y*width+x]=Number(sums[bottom*stride+right]-sums[y*stride+right]-sums[bottom*stride+x]+sums[y*stride+x]===0);
+  }
+  return walkable;
+}
+export function getReachableCells(map, start, actor = getActorFootprint(map)) {
+  const {width,height}=map.grid, walkable=getActorWalkability(map,actor), parents=new Int32Array(width*height).fill(-2), cells=[];
+  if(!point(start,map.grid)||!walkable[start.y*width+start.x])return {walkable,parents,cells};
+  const first=start.y*width+start.x,queue=[first];parents[first]=-1;
+  for(let head=0;head<queue.length;head++) {
+    const index=queue[head],x=index%width,y=Math.floor(index/width);cells.push({x,y});
+    for(const [dx,dy]of[[1,0],[0,1],[-1,0],[0,-1]]) {
+      const nx=x+dx,ny=y+dy,next=ny*width+nx;
+      if(nx<0||ny<0||nx>=width||ny>=height||!walkable[next]||parents[next]!==-2)continue;
+      parents[next]=index;queue.push(next);
+    }
+  }
+  return {walkable,parents,cells};
+}
+export function traceMapPath(map, parents, end) {
+  if(!point(end,map.grid)||parents[end.y*map.grid.width+end.x]===-2)return [];
+  const path=[];let cursor=end.y*map.grid.width+end.x;
+  while(cursor>=0){path.push({x:cursor%map.grid.width,y:Math.floor(cursor/map.grid.width)});cursor=parents[cursor];}
+  return path.reverse();
+}
+export function findPath(map, start, end, actor = getActorFootprint(map)) {
+  return traceMapPath(map,getReachableCells(map,start,actor).parents,end);
 }
 
 function changeMatchesReview(change, review) {

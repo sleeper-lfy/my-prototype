@@ -28,12 +28,12 @@ $studioApp = Join-Path $studioInstall 'app'
 
 ## 方式二：安装独立 skill 包
 
-下载仓库 `releases/v0.4.2/game-ui-studio-skill-v0.4.2.zip`。它仅含 skill；使用 helper 仍需完整 Game UI Studio 项目及其 npm 依赖。
+下载仓库 `releases/v0.5.0/game-ui-studio-skill-v0.5.0.zip`。它仅含 skill；使用 helper 仍需完整 Game UI Studio 项目及其 npm 依赖。
 
 Windows PowerShell：
 
 ```powershell
-$studioSkillZip = 'C:\Downloads\game-ui-studio-skill-v0.4.2.zip'
+$studioSkillZip = 'C:\Downloads\game-ui-studio-skill-v0.5.0.zip'
 $studioSkillRoot = Join-Path $HOME '.agents\skills'
 $studioSkillDestination = Join-Path $studioSkillRoot 'game-ui-studio'
 if (Test-Path $studioSkillDestination) {

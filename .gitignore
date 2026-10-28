@@ -8,3 +8,5 @@ __pycache__/
 artifacts/godot-project/
 artifacts/browser/
 research/penpot/node_modules/
+
+.godot/

@@ -1,0 +1,14 @@
+[
+  {
+    "code": "isometric-2d",
+    "message": "This is a flat isometric 2D map. Elevation, 3D cameras and terrain meshes are not represented."
+  },
+  {
+    "code": "grid-navigation",
+    "message": "Preview uses four-neighbour grid BFS with the configured actor footprint and independent static object collision polygons. It does not generate a navigation mesh or continuous CharacterBody2D movement."
+  },
+  {
+    "code": "marker-hooks",
+    "message": "Spawn, exit, trigger and interaction IDs are retained. Enter exits/triggers or press E beside interactions to emit marker_entered; connect game-specific actions yourself."
+  }
+]

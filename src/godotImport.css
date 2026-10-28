@@ -1,0 +1,16 @@
+.godot-readback { width: min(1020px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
+.godot-readback p { line-height: 1.55; }
+.godot-readback-tabs,.godot-readback-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.godot-readback textarea { display: block; width: 100%; min-height: 130px; resize: vertical; margin: 7px 0 12px; font: 12px/1.5 monospace; }
+.godot-readback-files { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 10px; margin: 12px 0; }
+.godot-readback-files input { display: block; width: 100%; margin-top: 6px; }
+.godot-readback fieldset { border: 1px solid #405149; border-radius: 8px; padding: 12px; margin: 12px 0; min-width: 0; }
+.godot-readback-notice { color: #d2bf8b; }
+.godot-resource-row { display: grid; grid-template-columns: minmax(130px,1fr) minmax(130px,1fr) minmax(130px,1fr); gap: 9px; margin: 10px 0; align-items: start; }
+.godot-resource-row code,.godot-report code { overflow-wrap: anywhere; white-space: normal; }
+.godot-upload-label input { display: block; width: 100%; margin-top: 5px; }
+.godot-report { list-style: none; padding: 0; max-height: 240px; overflow: auto; }
+.godot-report li { display: grid; grid-template-columns: minmax(140px, .8fr) minmax(180px,1.2fr); gap: 12px; padding: 7px 0; border-bottom: 1px solid #304039; }
+.godot-report li span { overflow-wrap: anywhere; }
+.godot-source-conflict { border-bottom: 1px solid #405149; padding: 10px 0; }
+@media (max-width: 700px) { .godot-resource-row,.godot-report li { grid-template-columns: 1fr; } }

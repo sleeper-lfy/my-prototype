@@ -130,6 +130,15 @@ code {
 .workspace-switches button { padding: 8px 18px; border-radius: 4px; color: #aab8a7; white-space: nowrap; }
 .workspace-switches button[aria-pressed="true"] { background: #354a32; color: #e3dfbf; box-shadow: inset 0 -2px #c9b37b; }
 .workspace-switchbar > span { color: #879a89; font-size: 11px; flex: 1; }
+.studio-workflows { position: relative; flex-shrink: 0; margin-left: auto; z-index: 35; }
+.studio-workflows > summary { list-style: none; cursor: pointer; user-select: none; }
+.studio-workflows > summary::-webkit-details-marker { display: none; }
+.studio-workflows[open] > summary { border-color: var(--gold, #b9a26e); }
+.studio-workflow-menu { position: absolute; top: calc(100% + 8px); right: 0; width: min(340px, calc(100vw - 32px)); padding: 6px; border: 1px solid #455445; border-radius: 8px; background: #17221c; box-shadow: 0 12px 32px #0008; }
+.studio-workflow-menu > button { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px; border: 0; border-radius: 4px; text-align: left; background: transparent; color: #e4e8dc; cursor: pointer; }
+.studio-workflow-menu > button:hover, .studio-workflow-menu > button:focus-visible { background: #2a3c2d; }
+.studio-workflow-menu > button > span { color: #a0b09f; font-size: 11px; line-height: 1.5; }
+.studio-workflow-menu > button:disabled { opacity: .45; cursor: wait; }
 .generation-trigger { border: 1px solid #726745; color: #e4d6ab; margin-left: auto; }
 .map-workspace-host { flex: 1; min-height: 0; flex-direction: column; }
 .patch-review-modal { width: min(760px, 94vw); max-height: 90vh; overflow: auto; }

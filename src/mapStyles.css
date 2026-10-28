@@ -541,3 +541,11 @@
 .map-palette button[draggable="true"]:active {
   cursor: grabbing;
 }
+.map-playability-panel { display: grid; gap: 12px; }
+.map-playability-panel p { line-height: 1.6; }
+.map-playability-destinations { display: flex; gap: 8px; flex-wrap: wrap; }
+.map-marker-edit { display: grid; grid-template-columns: 2fr 1fr 75px 75px; align-items: end; gap: 8px; }
+.map-check-error { color: #ffac94; }
+.map-region-fields { margin: 10px 0; border: 1px solid #54705b; padding: 8px; min-width: 0; }
+.map-region-fields legend { color: #dcce97; }
+.map-region-fields > button { margin-top: 8px; }

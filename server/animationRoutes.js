@@ -122,4 +122,7 @@ export async function mountAnimationRoutes(app, { dataDir, mutate, archive }) {
     files['LICENSE.txt'] = await fs.readFile(new URL('../LICENSE', import.meta.url));
     res.json({ ...await archive('animation-godot', files), warnings: generated.warnings || [] });
   });
+  // Internal adapters share the same persistence/history path with the task queue.
+  // Callers serialize mutations with the server's mutate() function.
+  return { getAnimation: () => clone(state.project), setAnimation: (project, summary = 'Save animation') => save(project, summary), getAnimationHistory: () => clone(state.history) };
 }

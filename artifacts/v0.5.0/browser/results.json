@@ -1,0 +1,100 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Codex creates a scoped task and exports actual component crops",
+      "status": "passed",
+      "seconds": 0.897,
+      "details": {
+        "appliedAndRolledBack": true,
+        "realCrops": true,
+        "bytes": 694245
+      }
+    },
+    {
+      "name": "Asset inspector indexes references and checks decoded pixels",
+      "status": "passed",
+      "seconds": 1.184,
+      "details": {
+        "decodedResourceChecked": true
+      }
+    },
+    {
+      "name": "Character trial moves the actual animation with keyboard input",
+      "status": "passed",
+      "seconds": 0.636,
+      "details": {
+        "keyboardMovement": true
+      }
+    },
+    {
+      "name": "Timeline saves a typed audio event and complete resource identifier",
+      "status": "passed",
+      "seconds": 0.45,
+      "details": {
+        "eventPersisted": true
+      }
+    },
+    {
+      "name": "Equipment binds to rig and checks every action extent",
+      "status": "passed",
+      "seconds": 0.797,
+      "details": {
+        "attachmentPersisted": true
+      }
+    },
+    {
+      "name": "Godot scene parser previews editable Control and Label",
+      "status": "passed",
+      "seconds": 0.418,
+      "details": {
+        "supportedNodes": 2,
+        "previewValidated": true
+      }
+    },
+    {
+      "name": "map footprint changes actual reachability; moved exit warns and saved character walks by keyboard",
+      "status": "passed",
+      "seconds": 1.826,
+      "details": {
+        "actorFootprintSaved": true,
+        "reachablePositions": 218,
+        "wideActorReachablePositions": 192,
+        "blockedExitDetected": true,
+        "markerEditPersisted": true,
+        "keyboardMovedActor": true,
+        "savedAnimationAvatarLoaded": true
+      }
+    },
+    {
+      "name": "map image, occupancy, collision and occlusion dimensions edit and save independently",
+      "status": "passed",
+      "seconds": 1.643,
+      "details": {
+        "artworkPixels": [
+          160,
+          160
+        ],
+        "occupancyCells": [
+          2,
+          2
+        ],
+        "collisionWidthCells": 1,
+        "occlusionWidthCells": 3,
+        "fadeEnabled": true,
+        "reloadPreserved": true
+      }
+    },
+    {
+      "name": "Both languages and all workspaces fit 1366x768 with original logo",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "isolatedData": true,
+  "nativeWindows": false,
+  "chromiumVersion": "154.0.8037.57",
+  "passed": 9,
+  "failed": 0,
+  "testHarnessSha256": "af1113b5ee346e4957ae4c7a35b090fa657ac4b984cc0ce327486aa15203d1d2"
+}

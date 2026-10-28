@@ -1,0 +1,8 @@
+[gd_scene format=3]
+[node name="Root" type="Control"]
+offset_right = 640.0
+offset_bottom = 480.0
+[node name="Title" type="Label" parent="."]
+offset_right = 280.0
+offset_bottom = 48.0
+text = "Imported Godot UI"

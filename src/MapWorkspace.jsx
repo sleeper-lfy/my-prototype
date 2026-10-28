@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Konva from "konva";
 import {
   Stage,
@@ -22,7 +22,11 @@ import {
   moveMapObject,
   getActorLayerId,
   getMapRenderLayers,
+  getActorFootprint, getObjectCollision, getObjectOcclusion, getObjectSortDepth, isCellWalkable,
 } from "./mapModel.js";
+import { analyzeMapPlayability, objectOccludesActor } from './mapPlayability.js';
+import MapPlayabilityPanel from './MapPlayabilityPanel.jsx';
+import useMapAvatar from './useMapAvatar.js';
 import StudioToolbox from './StudioToolbox.jsx';
 import { terrainStroke, checkPlacementRules, measureMap, placeMapBlock } from './studioFeatures.js';
 import { makeId } from "./model.js";
@@ -46,6 +50,7 @@ const toolNames = [
   "spawn",
   "exit",
   "trigger",
+  "interaction",
   "walk",
   "connected",
   "measure",
@@ -62,6 +67,7 @@ const symbols = {
   spawn: "⚑",
   exit: "↗",
   trigger: "◎",
+  interaction: "✦",
   walk: "♟",
   connected: "⌁",
   measure: "↔",
@@ -198,6 +204,8 @@ export function MapScene({
   onDrag,
   onDragPreview,
   player,
+  avatar,
+  onMarkerDrag,
   showMarkers = true,
 }) {
   const assets = new Map(project.assets.map((asset) => [asset.id, asset]));
@@ -207,14 +215,14 @@ export function MapScene({
       return (
         <Group key={object.id} x={p.x} y={p.y} listening={false}>
           <Circle radius={9} fill="#09160b88" scaleY={0.5} />
-          <Line
+          {avatar ? <KImage image={avatar.image} x={avatar.x} y={avatar.y} listening={false} /> : <Group><Line
             points={[-5, -5, 0, -20, 5, -5]}
             closed
             fill="#cbad67"
             stroke="#f2dfa2"
             strokeWidth={2}
           />
-          <Circle y={-23} radius={5} fill="#edd9ae" stroke="#684c33" />
+          <Circle y={-23} radius={5} fill="#edd9ae" stroke="#684c33" /></Group>}
         </Group>
       );
     const locked = project.layers.find(
@@ -226,6 +234,7 @@ export function MapScene({
         id={"map-object-" + object.id}
         x={p.x}
         y={p.y}
+        opacity={objectOccludesActor(object, player) ? 0.3 : 1}
         draggable={editable && !locked}
         onMouseDown={(event) => {
           if (editable) {
@@ -306,7 +315,7 @@ export function MapScene({
               y: player.y,
               isPlayer: true,
             });
-          objects.sort((a, b) => a.x + a.y - b.x - b.y);
+          objects.sort((a, b) => getObjectSortDepth(a) - getObjectSortDepth(b));
           return (
             <Group key={band.layer.id}>
               <Group listening={false}>
@@ -338,7 +347,9 @@ export function MapScene({
                   ? "#f5cf7b"
                   : "#91cde0";
           return (
-            <Group key={marker.id} x={p.x} y={p.y} listening={false}>
+            <Group key={marker.id} id={"map-marker-"+marker.id} x={p.x} y={p.y} listening={editable} draggable={editable}
+              onMouseDown={event=>{event.cancelBubble=true;}} onTouchStart={event=>{event.cancelBubble=true;}}
+              onDragEnd={event=>{event.cancelBubble=true;const cell=screenToIso(event.target.x(),event.target.y(),project.grid);event.target.position(p);onMarkerDrag?.(marker.id,Math.round(cell.x),Math.round(cell.y));}}>
               <Circle
                 radius={8}
                 stroke={color}
@@ -476,8 +487,8 @@ function NumberField({
   );
 }
 
-export default function MapWorkspace({ locale = "zh-CN", active = true }) {
-  const t = useCallback((name) => mapTranslate(locale, name), [locale]);
+export default function MapWorkspace({ locale = "zh-CN", active = true, onBusyChange, onCaptureReady }) {
+  const t = useCallback((name) => name === "interaction" ? (locale === "zh-CN" ? "交互点" : "Interaction") : mapTranslate(locale, name), [locale]);
   const [project, setProject] = useState(null),
     projectRef = useRef(null),
     saveQueue = useRef(Promise.resolve()),
@@ -519,6 +530,11 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
   });
   const [player, setPlayer] = useState(null),
     walkTimer = useRef(null);
+  const [showReachable,setShowReachable]=useState(false),[walkRoute,setWalkRoute]=useState([]),[markerEvent,setMarkerEvent]=useState(null);
+  const playability=useMemo(()=>project?analyzeMapPlayability(project):null,[project]);
+  const {avatar, error:avatarError}=useMapAvatar(active&&tool==='walk',player);
+  useEffect(()=>{onBusyChange?.(saving||busy);return()=>onBusyChange?.(false);},[saving,busy,onBusyChange]);
+  useEffect(()=>{if(tool==='walk'&&player&&project){const marker=project.markers.find(m=>m.type!=='spawn'&&m.type!=='interaction'&&m.x===player.x&&m.y===player.y);if(marker)setMarkerEvent(marker);}},[player,tool,project]);
   const [reviewTarget, setReviewTarget] = useState(""),
     [expected, setExpected] = useState(""),
     [priority, setPriority] = useState("medium"),
@@ -854,6 +870,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
         return;
       }
       setNotice(null);
+      setWalkRoute(path);
       let index = 0;
       setPlayer(path[0]);
       walkTimer.current = setInterval(() => {
@@ -1003,7 +1020,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
       placeObject(assetId, point);
       return;
     }
-    if (["spawn", "exit", "trigger"].includes(tool)) {
+    if (["spawn", "exit", "trigger", "interaction"].includes(tool)) {
       edit((next) => {
         if (tool === "spawn")
           next.markers = next.markers.filter(
@@ -1162,13 +1179,17 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
           ArrowUp: [0, -1],
           ArrowDown: [0, 1],
           ArrowLeft: [-1, 0],
-          ArrowRight: [1, 0],
+          ArrowRight: [1, 0], w:[0,-1],s:[0,1],a:[-1,0],d:[1,0],W:[0,-1],S:[0,1],A:[-1,0],D:[1,0],
         }[event.key];
+        if(event.key.toLowerCase()==='e'&&player) {
+          const marker=projectRef.current.markers.find(m=>m.type==='interaction'&&Math.abs(m.x-player.x)+Math.abs(m.y-player.y)<=1);
+          if(marker){event.preventDefault();setMarkerEvent(marker);}
+        }
         if (delta && player) {
           event.preventDefault();
           clearInterval(walkTimer.current);
           const next = { x: player.x + delta[0], y: player.y + delta[1] };
-          if (isWalkable(projectRef.current, next.x, next.y)) setPlayer(next);
+          if (isWalkable(projectRef.current, next.x, next.y)) {setPlayer(next);setWalkRoute([]);}
           else setNotice("noPath");
         }
       }
@@ -1258,6 +1279,16 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
       temporary.destroy();
     }
   };
+  useEffect(()=>{
+    const capture=async(reviewIds)=>{
+      if(saving||busy||failed.current||!images.__ready||images.__errors.length)throw new Error('Wait for map saves and artwork to finish before capturing feedback.');
+      const map=projectRef.current,requested=new Set(reviewIds),reviews=map.reviews.filter(r=>requested.has(r.id));
+      if(reviews.length!==requested.size)throw new Error('Unknown map review.');
+      return {baseRevision:map.revision,screenshots:Object.fromEntries(reviews.map(r=>[r.id,screenshot(r)]))};
+    };
+    window.__studioMapReviewCapture=capture;onCaptureReady?.(capture);
+    return()=>{if(window.__studioMapReviewCapture===capture)delete window.__studioMapReviewCapture;onCaptureReady?.(null);};
+  },[project,images,saving,busy,onCaptureReady]);
   const exportFeedback = () =>
     perform(async () => {
       const map = projectRef.current,
@@ -1513,6 +1544,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
           <small>{t("subtitle")}</small>
         </div>
         <div className="map-top-actions">
+          <button data-testid="map-playability" disabled={busy} onClick={()=>{setShowReachable(true);setShowCollisions(true);setDialog('playability');}}>{locale==='zh-CN'?'可玩性检查':'Playability'}</button>
           <button data-testid="map-studio-tools" disabled={busy || saving} onClick={() => perform(async () => setDialog("workbench"))}>{locale === "zh-CN" ? "项目工具箱" : "Project toolbox"}</button>
           <button
             data-testid="map-new"
@@ -2031,8 +2063,15 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
                     onDrag={(id, x, y) => {
                       updateObject(id, { x, y });
                     }}
+                    onMarkerDrag={(id,x,y)=>{if(inside(project,x,y))edit(next=>{Object.assign(next.markers.find(m=>m.id===id),{x,y});});}}
+                    avatar={avatar}
                     player={tool === "walk" ? player : null}
                   />
+                  {showReachable && <Group listening={false}>
+                    {playability.reachable.map(p=><Line key={key(p.x,p.y)} points={diamond(p.x,p.y,project.grid)} closed fill="#62ce6120" stroke="#98ce8130" strokeWidth={0.5}/>)}
+                    {walkRoute.length>0&&<Line points={walkRoute.flatMap(p=>{const q=isoToScreen(p.x,p.y,project.grid);return [q.x,q.y];})} stroke="#ffe396" strokeWidth={3}/>}
+                  </Group>}
+                  {tool==='walk'&&player&&<Group listening={false}>{Array.from({length:getActorFootprint(project).width*getActorFootprint(project).height},(_,i)=><Line key={i} points={diamond(player.x+i%getActorFootprint(project).width,player.y+Math.floor(i/getActorFootprint(project).width),project.grid)} closed stroke="#f5ea96" strokeWidth={2}/>)}</Group>}
                   {showGrid && (
                     <Group listening={false}>
                       {Array.from(
@@ -2061,7 +2100,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
                           const x = index % project.grid.width,
                             y = Math.floor(index / project.grid.width);
                           return (
-                            !isWalkable(project, x, y) && (
+                            !isCellWalkable(project, x, y) && (
                               <Line
                                 key={index}
                                 points={diamond(x, y, project.grid)}
@@ -2109,6 +2148,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
                         )}
                       </Group>
                     )}
+                  {selectedObject&&!placementGhost&&<Group listening={false}>{['collision','occlusion'].flatMap(field=>{const r=field==='collision'?getObjectCollision(selectedObject):getObjectOcclusion(selectedObject);return Array.from({length:r.width*r.height},(_,i)=><Line key={field+i} points={diamond(selectedObject.x+r.x+i%r.width,selectedObject.y+r.y+Math.floor(i/r.width),project.grid)} closed stroke={field==='collision'?'#ff8271':'#6fc7ff'} dash={field==='occlusion'?[4,4]:undefined} strokeWidth={2}/>);})}</Group>}
                   {placementGhost && (
                     <Group listening={false}>
                       {Array.from(
@@ -2314,6 +2354,7 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
                   />
                 </div>
                 <p className="map-muted">{t("instanceFootprintHelp")}</p>
+                {['collision','occlusion'].map(field=>{const region=field==='collision'?getObjectCollision(selectedObject):getObjectOcclusion(selectedObject);return <fieldset key={field} className="map-region-fields"><legend>{field==='collision'?(locale==='zh-CN'?'碰撞区域（格）':'Collision region (cells)'):(locale==='zh-CN'?'遮挡区域（格）':'Occlusion region (cells)')}</legend><div className="map-two">{['x','y','width','height'].map(axis=><NumberField key={axis} label={axis} testId={`map-object-${field}-${axis}`} value={region[axis]} min={axis==='x'?-selectedObject.x:axis==='y'?-selectedObject.y:1} max={axis==='x'?project.grid.width-selectedObject.x-region.width:axis==='y'?project.grid.height-selectedObject.y-region.height:axis==='width'?project.grid.width-selectedObject.x-region.x:project.grid.height-selectedObject.y-region.y} integer disabled={lockedSelection||busy} onChange={value=>updateObject(selectedObject.id,{[field]:{...region,[axis]:value}})}/>)}</div>{field==='occlusion'&&<><NumberField label={locale==='zh-CN'?'排序深度偏移（格）':'Sort depth offset (cells)'} testId="map-object-occlusion-depth" value={region.depthOffset} min={-128} max={128} step={0.5} disabled={lockedSelection||busy} onChange={value=>updateObject(selectedObject.id,{occlusion:{...region,depthOffset:value}})}/><label className="check"><input type="checkbox" data-testid="map-object-occlusion-fade" checked={region.fade} disabled={lockedSelection||busy} onChange={e=>updateObject(selectedObject.id,{occlusion:{...region,fade:e.target.checked}})}/>{locale==='zh-CN'?'人物进入遮挡区域时淡化':'Fade when actor enters occlusion region'}</label></>}<button disabled={lockedSelection||busy} onClick={()=>edit(next=>{delete next.objects.find(o=>o.id===selectedObject.id)[field];})}>{locale==='zh-CN'?'恢复跟随占地':'Reset to occupancy'}</button></fieldset>;})}
                 <label className="check">
                   <input
                     type="checkbox"
@@ -2556,13 +2597,14 @@ export default function MapWorkspace({ locale = "zh-CN", active = true }) {
         </aside>
       </div>
       <footer className="map-footer">
-        <span>{tool === "walk" ? t("walkHint") : t("mapHint")}</span>
+        <span>{tool === "walk" ? t("walkHint") : t("mapHint")}{tool==='walk'&&<span data-testid="map-avatar-status"> · {avatar?(locale==='zh-CN'?'已载入角色动画':'Saved animation loaded'):(locale==='zh-CN'?'导航标记':'Navigation marker')}{avatarError?` (${avatarError})`:''}</span>}{markerEvent&&<span data-testid="map-marker-event"> · {t(markerEvent.type)}: {markerEvent.name}</span>}</span>
         <span data-testid="map-save-state">
           {failed.current ? t("saveFailed") : saving ? t("saving") : t("saved")}{" "}
           · {t("revision")} {project.revision} · {project.grid.width} ×{" "}
           {project.grid.height}
         </span>
       </footer>
+      {dialog==='playability'&&<Modal title={locale==='zh-CN'?'地图可玩性检查':'Map playability'} close={closeDialog} testId="map-playability-dialog"><MapPlayabilityPanel project={project} locale={locale} report={playability} showReachable={showReachable} onShowReachable={setShowReachable} onChange={edit} disabled={busy} onRoute={route=>{setWalkRoute(route);setShowReachable(true);closeDialog();}} onWalk={spawn=>{clearInterval(walkTimer.current);setPlayer({x:spawn.x,y:spawn.y});setTool('walk');setShowReachable(true);closeDialog();}} onExport={()=>download(`${project.id}-playability.json`,playability)}/><button onClick={closeDialog}>{t('close')}</button></Modal>}
       {dialog === "new" && (
         <Modal
           title={t("newMap")}

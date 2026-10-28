@@ -165,7 +165,7 @@ export function transformBlock(block, { rotation = 0, mirror = false } = {}) {
     ].map((p) => point(...p));
     const xs = corners.map((p) => p.x),
       ys = corners.map((p) => p.y);
-    return {
+    const transformed = {
       ...o,
       x: Math.min(...xs),
       y: Math.min(...ys),
@@ -174,6 +174,14 @@ export function transformBlock(block, { rotation = 0, mirror = false } = {}) {
         height: Math.max(...ys) - Math.min(...ys) + 1,
       },
     };
+    for (const field of ['collision', 'occlusion']) if (o[field]) {
+      const r = o[field];
+      const transformedCorners = [[r.x,r.y],[r.x+r.width-1,r.y],[r.x,r.y+r.height-1],[r.x+r.width-1,r.y+r.height-1]].map(([x,y])=>point(o.x+x,o.y+y));
+      const rx = transformedCorners.map(p=>p.x), ry = transformedCorners.map(p=>p.y);
+      transformed[field] = {...r,x:Math.min(...rx)-transformed.x,y:Math.min(...ry)-transformed.y,width:Math.max(...rx)-Math.min(...rx)+1,height:Math.max(...ry)-Math.min(...ry)+1};
+      // Sort depth is an explicit screen-depth adjustment; rotation does not invent directional art.
+    }
+    return transformed;
   };
   result.width = rotation % 180 ? block.height : block.width;
   result.height = rotation % 180 ? block.width : block.height;

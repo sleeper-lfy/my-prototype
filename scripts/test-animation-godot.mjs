@@ -5,10 +5,13 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createAnimationProject, renderAnimationFrame, getAnimationRenderBounds, applyMotionPreset } from '../src/animationModel.js';
 import { MOTION_PRESETS } from '../src/motionPresets.js';
+import { addPlaytestActions, createDemoEquipment } from '../src/animationLabModel.js';
 import { createAnimationGodotFiles } from '../server/animationGodot.js';
 import { decodePng } from './compare-png.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts/v0.4.1/animation-godot');
+const args=process.argv.slice(2),outIndex=args.indexOf('--out');
+if(outIndex>=0&&!args[outIndex+1])throw Error('Missing --out directory');
+const out=path.resolve(root,outIndex>=0?args[outIndex+1]:'artifacts/v0.5.0/animation-godot');
 const game=await fs.mkdtemp(path.join(os.tmpdir(),'studio-animation-godot-'));
 const report={passed:false,nativeWindows:false,checks:[],artApproval:'pending independent visual review'};
 const resultFile=path.join(out,'runtime.json'),screenshotFile=path.join(out,'animation.png');
@@ -20,12 +23,20 @@ const run=(label,args)=>{
  if(r.status!==0||/SCRIPT ERROR|Parse Error|^ERROR:/m.test(r.stderr||''))throw Error(label+': '+(r.stderr||r.error));
 };
 try{
- const initial=createAnimationProject();
+ const initial=addPlaytestActions(createAnimationProject());
  const p=applyMotionPreset(initial,MOTION_PRESETS[0].id,initial.clips[0].id);
+ const equipment=createDemoEquipment('weapon','validation-sword');
+ equipment.offset.x=80;
+ p.equipment=[equipment];
+ report.equipment={id:equipment.id,boneId:equipment.boneId,offset:equipment.offset};
  report.motionSource=p.clips[0].motionSource;
  // Verify duration is genuinely variable, rather than implicitly fixed FPS.
  p.clips[0].frames[1].durationMs=175;
  const attack=p.clips.find(c=>c.id==='attack-right')||p.clips.find(c=>c.action==='attack');
+ attack.frames[1].events.push({id:'verify-open',name:'attack-open',type:'hitbox-on',channel:'primary',hitbox:{x:70,y:30,width:24,height:30}});
+ attack.frames[2].events.push({id:'verify-move',name:'lunge',type:'move',delta:{x:12,y:0}},{id:'verify-audio',name:'swing-sound',type:'audio',resource:'res://audio/swing.ogg'});
+ attack.frames[3].events.push({id:'verify-vfx',name:'slash-effect',type:'vfx',resource:'res://effects/slash.tscn'});
+ attack.frames[5].events.push({id:'verify-close',name:'attack-close',type:'hitbox-off',channel:'primary'});
  attack.frames[3].root.x += 80; attack.frames[3].root.y -= 70;
  const bounds=getAnimationRenderBounds(p);
  if(bounds.x>=0&&bounds.y>=0||bounds.x+bounds.width<=64)throw Error('Test must extend outside body reference');
@@ -34,6 +45,10 @@ try{
   const dest=path.join(game,name);await fs.mkdir(path.dirname(dest),{recursive:true});await fs.writeFile(dest,bytes);
  }
  await fs.writeFile(path.join(out,'animation-map.json'),generated.files['animation-map.json']);
+ const exportedMapping=JSON.parse(generated.files['animation-map.json']);
+ const exportedEvents=exportedMapping.clips.find(c=>c.id===attack.id).frames.flatMap(f=>f.events);
+ for(const event of attack.frames.flatMap(f=>f.events))if(!exportedEvents.some(e=>JSON.stringify(e)===JSON.stringify(event)))throw Error('An event payload changed during export');
+ report.typedEventPayloadsPreserved=exportedEvents.filter(e=>e.type).length;
  run('engine version',['--version']);
  run('import native resources',['--headless','--editor','--path',game,'--import']);
  run('play and capture exported scene',['--path',game,'--audio-driver','Dummy','--rendering-method','gl_compatibility','--','--studio-verify','--studio-result='+resultFile,'--studio-screenshot='+screenshotFile]);
@@ -64,6 +79,6 @@ try{
  if(JSON.stringify(report.attackScreenshot.origin)!==JSON.stringify(report.screenshot.origin))throw Error('Origin changed between idle and attack');
  report.bodyReference=p.canvas;report.renderBounds=bounds;
  report.passed=true;
- console.log('Animation Godot verified: actual playback, all frame durations, events, shared origin, expanded attack bounds and pixel-matched screenshots.');
+ console.log('Animation Godot verified: actual playback, hurt/dodge clips, typed event payloads, attached equipment, shared origin, expanded attack bounds and pixel-matched screenshots.');
 }catch(error){report.error=error.message;process.exitCode=1;console.error(error.message);}
 finally{await fs.writeFile(path.join(out,'results.json'),JSON.stringify(report,null,2)+'\n');await fs.rm(game,{recursive:true,force:true});}

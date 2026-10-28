@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "projectId": "godot-scene-1w9lf5",
+  "revision": 1,
+  "canvas": {
+    "width": 640,
+    "height": 480,
+    "background": "#111b18"
+  },
+  "nodes": [
+    {
+      "id": "godot-by08hd",
+      "name": "Root",
+      "type": "Control",
+      "path": "Control_1",
+      "framePath": "Control_1",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 480
+      },
+      "opacity": 1,
+      "visible": true,
+      "checkGeometry": true
+    },
+    {
+      "id": "godot-a7vsmh",
+      "name": "Title",
+      "type": "Label",
+      "path": "Control_1/Label_2",
+      "framePath": "Control_1/Label_2",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 280,
+        "height": 48
+      },
+      "opacity": 1,
+      "visible": true,
+      "checkGeometry": true,
+      "text": "Imported Godot UI"
+    }
+  ]
+}

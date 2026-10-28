@@ -27,6 +27,9 @@ import StudioToolbox from './StudioToolbox.jsx';
 import { pruneUIReferences } from './studioFeatures.js';
 import GenerationDialog from './GenerationDialog.jsx';
 import PatchReviewDialog from './PatchReviewDialog.jsx';
+import GodotImportDialog from './GodotImportDialog.jsx';
+import AssetInspector from './AssetInspector.jsx';
+import CodexTaskQueue from './CodexTaskQueue.jsx';
 
 const clone = (value) => structuredClone(value);
 const containers = ["HBoxContainer", "VBoxContainer", "MarginContainer"];
@@ -441,6 +444,10 @@ export default function App() {
   const [workspace, setWorkspace] = useState("ui");
   const [mapVisited, setMapVisited] = useState(false);
   const [animationVisited, setAnimationVisited] = useState(false);
+  const [workspaceEpoch, setWorkspaceEpoch] = useState(0);
+  const [mapBusy, setMapBusy] = useState(false);
+  const [animationBusy, setAnimationBusy] = useState(false);
+  const workflowMenuRef = useRef(null);
   const [project, setProject] = useState(null),
     projectRef = useRef(null),
     [selected, setSelected] = useState([]),
@@ -983,28 +990,37 @@ export default function App() {
       window.removeEventListener("keyup", up);
     };
   }, [project, selected, doUndo, doRedo, duplicate, busy, workspace, dialog]);
-  const exportFeedback = () =>
-    action(async () => {
+  const captureReviewScreenshots = async (kind, reviewIds) => {
+      if (kind !== workspace) throw new Error(locale === "zh-CN" ? "请关闭任务队列，切换到对应工作区后再导出，以便截取当前设计。" : "Close the queue and switch to the matching workspace before exporting its current design.");
+      if (kind === "map") {
+        if (!window.__studioMapReviewCapture) throw new Error(locale === "zh-CN" ? "地图画布尚未准备好。" : "The map canvas is not ready.");
+        return window.__studioMapReviewCapture(reviewIds);
+      }
+      if (kind !== "ui") throw new Error("Unsupported screenshot workspace.");
+      await queue.current;
       await document.fonts.ready;
       await new Promise((resolve) =>
         requestAnimationFrame(() => requestAnimationFrame(resolve)),
       );
-      const stage = stageRef.current,
-        overlay = overlayRef.current;
+      const stage = stageRef.current;
+      if (!stage) throw new Error(t("error.canvas"));
+      const currentProject = projectRef.current;
+      const currentLayout = computeLayout(currentProject);
+      const requested = reviewIds ? new Set(reviewIds) : null;
       snapshotVisible(false);
       const shots = {};
       try {
         for (const id of new Set(
-          projectRef.current.reviews
-            .filter((r) => r.status === "pending")
+          currentProject.reviews
+            .filter((r) => r.status === "pending" && (!requested || requested.has(r.id)))
             .map((r) => r.nodeId),
         )) {
-          const r = layout.get(id);
+          const r = currentLayout.get(id);
           if (r) {
             const x = Math.max(0, r.x - 16),
               y = Math.max(0, r.y - 16),
-              w = Math.min(project.canvas.width - x, r.width + 32),
-              h = Math.min(project.canvas.height - y, r.height + 32);
+              w = Math.min(currentProject.canvas.width - x, r.width + 32),
+              h = Math.min(currentProject.canvas.height - y, r.height + 32);
             if (w > 0 && h > 0)
               shots[id] = stage.toDataURL({
                 x: x * zoom,
@@ -1018,10 +1034,11 @@ export default function App() {
       } finally {
         snapshotVisible(true);
       }
-      const result = await api("/api/feedback", {
-        baseRevision: projectRef.current.revision,
-        screenshots: shots,
-      });
+      return { baseRevision: currentProject.revision, screenshots: shots };
+  };
+  const exportFeedback = () =>
+    action(async () => {
+      const result = await api("/api/feedback", await captureReviewScreenshots("ui"));
       downloadArchive(result.downloadUrl);
       notify({ key: "notify.feedback", values: { count: result.count } });
     });
@@ -1221,6 +1238,33 @@ export default function App() {
     setTimeout(fit, 60);
     notify({ key: "notify.import" });
   });
+  const refreshExternalDocuments = async () => {
+    await queue.current;
+    accept(await api("/api/project"));
+    undo.current = [];
+    redo.current = [];
+    setSelected([]);
+    setHistoryTick(value => value + 1);
+    setWorkspaceEpoch(value => value + 1);
+  };
+  const mergeGodotProject = async (value, baseRevision) => {
+    await queue.current;
+    if (projectRef.current.revision !== baseRevision) throw new Error(locale === "zh-CN" ? "项目已经改变，请重新预览导入差异。" : "The project changed. Preview the import again.");
+    const saved = await api("/api/project", { ...value, revision: baseRevision + 1 }, "PUT");
+    accept(saved);
+    undo.current = [];
+    redo.current = [];
+    setSelected([]);
+    setHistoryTick(value => value + 1);
+    setDialog(null);
+    notify(locale === "zh-CN" ? "已合并 Godot 场景中的支持属性。" : "Supported Godot properties merged.");
+    return saved;
+  };
+  const openWorkflow = name => {
+    if (busy || pending || mapBusy || animationBusy) return;
+    if (workflowMenuRef.current) workflowMenuRef.current.open = false;
+    setDialog(name);
+  };
   const addReview = (event) => {
     event.preventDefault();
     if (!selectedNode) return;
@@ -1366,9 +1410,17 @@ export default function App() {
         <span>{workspace === "animation" ? (locale === "zh-CN" ? "主体 64×96 · 动作范围自动扩展" : "Body 64×96 · Automatic action bounds") : workspace === "map" ? t("workspace.mapHint") : t("workspace.uiHint")}</span>
         {workspace === "ui" && <button className="button" data-testid="studio-tools" disabled={busy || pending > 0} onClick={() => action(async () => setDialog("studio"))}>{locale === "zh-CN" ? "项目工具箱" : "Project toolbox"}</button>}
         {workspace === "ui" && <button className="button generation-trigger" data-testid="generation-task" disabled={busy || pending > 0} onClick={() => setDialog("generation")}><Icon name="code" />{t("generation.open")}</button>}
+        <details className="studio-workflows" ref={workflowMenuRef}>
+          <summary className="button" data-testid="studio-workflows">{locale === "zh-CN" ? "工作流" : "Workflows"}<Icon name="chevron" size={12} /></summary>
+          <div className="studio-workflow-menu">
+            <button data-testid="codex-queue-open" disabled={busy || pending > 0 || mapBusy || animationBusy} onClick={() => openWorkflow("codex-queue")}><strong>{locale === "zh-CN" ? "Codex 任务队列" : "Codex task queue"}</strong><span>{locale === "zh-CN" ? "分批导出意见、检查补丁与人工验收" : "Export review tasks, check patches and accept changes"}</span></button>
+            <button data-testid="asset-inspector-open" disabled={busy || pending > 0 || mapBusy || animationBusy} onClick={() => openWorkflow("asset-inspector")}><strong>{locale === "zh-CN" ? "资源体检与引用" : "Asset health & references"}</strong><span>{locale === "zh-CN" ? "检查像素资源、查看引用和替换影响" : "Check pixel art, references and replacement impact"}</span></button>
+            {workspace === "ui" && <button data-testid="godot-readback-open" disabled={busy || pending > 0 || mapBusy || animationBusy} onClick={() => openWorkflow("godot-import")}><strong>{locale === "zh-CN" ? "Godot 场景回读" : "Godot scene readback"}</strong><span>{locale === "zh-CN" ? "预览支持属性与合并冲突" : "Preview supported properties and merge conflicts"}</span></button>}
+          </div>
+        </details>
       </nav>
-      {mapVisited && <div className="map-workspace-host" style={{ display: workspace === "map" ? "flex" : "none" }}><MapWorkspace locale={locale} active={workspace === "map"} /></div>}
-      {animationVisited && <div className="animation-workspace-host" style={{ display: workspace === "animation" ? "flex" : "none", flex: 1, minHeight: 0 }}><AnimationWorkspace locale={locale} active={workspace === "animation"} /></div>}
+      {mapVisited && <div className="map-workspace-host" style={{ display: workspace === "map" ? "flex" : "none" }}><MapWorkspace key={workspaceEpoch} locale={locale} active={workspace === "map" && !dialog} onBusyChange={setMapBusy} /></div>}
+      {animationVisited && <div className="animation-workspace-host" style={{ display: workspace === "animation" ? "flex" : "none", flex: 1, minHeight: 0 }}><AnimationWorkspace key={workspaceEpoch} locale={locale} active={workspace === "animation" && !dialog} onBusyChange={setAnimationBusy} /></div>}
       <div className="ui-workspace-host" style={{ display: workspace === "ui" ? "contents" : "none" }}>
       <div className="workspace">
         <aside className="left-panel">
@@ -2663,6 +2715,9 @@ export default function App() {
       {dialog === "studio" && <StudioToolbox locale={locale} kind="ui" selection={selected} onClose={() => setDialog(null)} />}
       {dialog === "generation" && <GenerationDialog locale={locale} project={project} onClose={() => setDialog(null)} onExport={exportGeneration} />}
       {dialog === "patch" && <PatchReviewDialog t={t} locale={locale} initialText={jsonText} onClose={() => setDialog(null)} onPreview={previewPatch} onApply={patch} downloadJson={downloadJson} />}
+      {dialog === "godot-import" && <GodotImportDialog locale={locale} project={project} busy={busy} onClose={() => setDialog(null)} onImport={importProject} onMerge={mergeGodotProject} downloadJson={downloadJson} />}
+      {dialog === "asset-inspector" && <AssetInspector locale={locale} onClose={() => setDialog(null)} onChanged={refreshExternalDocuments} />}
+      {dialog === "codex-queue" && <CodexTaskQueue locale={locale} onClose={() => setDialog(null)} onDocumentsChanged={refreshExternalDocuments} captureScreenshots={captureReviewScreenshots} />}
       <input
         data-testid="component-file"
         aria-label={t("componentFile")}

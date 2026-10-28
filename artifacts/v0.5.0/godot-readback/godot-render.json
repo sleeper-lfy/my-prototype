@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "errors": [],
+      "id": "godot-by08hd",
+      "passed": true,
+      "path": "Control_1",
+      "type": "Control"
+    },
+    {
+      "errors": [],
+      "id": "godot-a7vsmh",
+      "passed": true,
+      "path": "Control_1/Label_2",
+      "type": "Label"
+    }
+  ],
+  "display": "X11",
+  "failures": [],
+  "godot": "4.6.3-stable (official)",
+  "nodeCount": 2,
+  "passed": true,
+  "screenshot": {
+    "error": 0,
+    "height": 480,
+    "path": "/workspace/my-prototype/artifacts/v0.5.0/godot-readback/godot.png",
+    "requested": true,
+    "width": 640,
+    "written": true
+  }
+}
